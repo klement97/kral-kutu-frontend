@@ -7,7 +7,7 @@ import { AppComponent } from './app.component';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
 import { HttpClientModule } from '@angular/common/http';
-import { TranslocoRootModule } from './transloco-root.module';
+import { preLoad, TranslocoRootModule } from './transloco-root.module';
 
 @NgModule({
   declarations: [
@@ -21,7 +21,9 @@ import { TranslocoRootModule } from './transloco-root.module';
     HttpClientModule,
     TranslocoRootModule
   ],
-  providers: [],
+  providers: [
+    preLoad,
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule {

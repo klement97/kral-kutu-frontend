@@ -13,6 +13,10 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
+            "allowedCommonJsDependencies": [
+              "path",
+              "fs"
+            ],
             "outputPath": "dist/kral-kutu-frontend",
             "index": "src/index.html",
             "main": "src/main.ts",
