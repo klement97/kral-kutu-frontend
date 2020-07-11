@@ -1,0 +1,44 @@
+<p>order-page works!</p>
+
+<div>
+    <p>Products</p>
+    <p>Total Count: {{productsCount}}</p>
+    <ul>
+        <li *ngFor="let product of products">
+            {{product.id}} - {{product.code}}
+        </li>
+    </ul>
+    <p-paginator #paginator
+                 [rows]="10"
+                 [totalRecords]="productsCount"
+                 [rowsPerPageOptions]="[10,20,30]"
+                 (onPageChange)="getProducts()"
+    ></p-paginator>
+</div>
+
+<div>
+    <p>Product Categories</p>
+    <ul>
+        <li *ngFor="let category of productCategories$ | async">
+            {{category.id}} - {{category.name}}
+        </li>
+    </ul>
+</div>
+
+<div>
+    <p>Leathers</p>
+    <ul>
+        <li *ngFor="let leather of leathers$ | async">
+            {{leather.id}}
+        </li>
+    </ul>
+</div>
+
+<div>
+    <p>Leather Serials</p>
+    <ul>
+        <li *ngFor="let serial of leatherSerials$ | async">
+            {{serial.id}} - {{serial.name}}
+        </li>
+    </ul>
+</div>

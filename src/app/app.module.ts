@@ -8,18 +8,23 @@ import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
 import { HttpClientModule } from '@angular/common/http';
 import { preLoad, TranslocoRootModule } from './transloco-root.module';
+import { NavigationComponent } from 'src/app/navigation/navigation.component';
+import { NotFoundComponent } from 'src/app/not-found/not-found.component';
+
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    NavigationComponent,
+    NotFoundComponent
   ],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
-    AppRoutingModule,
     ServiceWorkerModule.register('ngsw-worker.js', {enabled: environment.production}),
     HttpClientModule,
-    TranslocoRootModule
+    TranslocoRootModule,
+    AppRoutingModule,
   ],
   providers: [
     preLoad,
