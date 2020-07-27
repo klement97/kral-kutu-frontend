@@ -20,8 +20,8 @@ import { positiveIntegerWithZeroRegex } from 'src/app/common/const';
       }
 
       .add-to-cart-button mat-icon {
-          width: 35px;
-          font-size: 40px;
+          width: 30px;
+          font-size: 30px;
           height: 25px;
       }
   `],

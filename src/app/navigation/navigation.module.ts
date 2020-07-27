@@ -12,6 +12,7 @@ import { NotFoundComponent } from 'src/app/navigation/components/not-found.compo
 import { RouterModule } from '@angular/router';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatListModule } from '@angular/material/list';
+import { SharedModule } from 'src/app/common/shared.module';
 
 
 @NgModule({
@@ -34,7 +35,8 @@ import { MatListModule } from '@angular/material/list';
     MatButtonModule,
     RouterModule,
     MatBadgeModule,
-    MatListModule
+    MatListModule,
+    SharedModule
   ]
 })
 export class NavigationModule {}

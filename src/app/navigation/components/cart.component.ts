@@ -11,17 +11,20 @@ import { EventEmitter } from '@angular/core';
   template: `
       <ng-container *transloco="let t">
           <mat-list role="list">
+
               <mat-list-item role="listitem" *ngFor="let orderUnit of orderUnits | async">
-                  <img [src]="orderUnit.product.image" alt="product-image" width="70px">
+                  <img [src]="orderUnit.product.image" [alt]="orderUnit.product.image | imageAlt" width="70px">
                   <button mat-icon-button (click)="removeProduct(orderUnit.product.id)">
                       <mat-icon color="warn">remove_shopping_cart</mat-icon>
                   </button>
               </mat-list-item>
+
               <mat-list-item role="listitem" style="margin-top: 40px">
                   <button mat-stroked-button color="primary" type="button" (click)="navigateTo(['order'])">
                       {{t('continue shopping')}}
                   </button>
               </mat-list-item>
+
               <mat-list-item role="listitem">
                   <button mat-raised-button color="primary" type="button" (click)="navigateTo(['order', 'checkout'])">
                       {{t('checkout')}}

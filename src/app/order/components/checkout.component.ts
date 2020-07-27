@@ -72,13 +72,13 @@ import { clearCart, productsInCart } from 'src/app/common/const';
                   <mat-hint>{{t('address hint')}}</mat-hint>
               </mat-form-field>
 
-              <button type="submit" mat-stroked-button color="primary">Submit</button>
+              <button type="submit" mat-raised-button color="primary">Submit</button>
 
           </form>
 
           <!-- Selected Products in Cards -->
+          <h3>{{t('selected products')}}</h3>
           <div class="products">
-              <h3>{{t('selected products')}}</h3>
               <!-- Selected Products -->
               <div class="product-card" *ngFor="let unit of productsInCart.getValue()">
                   <div class="image-wrapper">
@@ -176,10 +176,11 @@ export class CheckoutComponent implements OnInit {
   }
 
   calculateTotalQuantityAndPrice(): void {
-    this.productsInCart.getValue().forEach(unit => {
-      this.totalQuantity += unit.quantity;
-      this.totalPrice += unit.product.price * unit.quantity;
-    });
+    this.productsInCart.subscribe(units =>
+      units.forEach(unit => {
+        this.totalQuantity += unit.quantity;
+        this.totalPrice += unit.product.price * unit.quantity;
+      }));
   }
 
   /**

@@ -8,14 +8,12 @@ import { PRODUCTS_IN_CART, productsInCart } from 'src/app/common/const';
       <ng-container *transloco="let t">
           <!-- BEGIN TOOLBAR -->
           <mat-toolbar style="height: 50px; background-color: rgb(50, 50, 50); color: white">
-              <span routerLink="/" style="cursor: pointer">Kral Kutu</span>
-              <span class="spacer"></span>
+              <span routerLink="/" style="cursor: pointer">Kral Kutu</span> <span class="spacer"></span>
 
               <!-- BEGIN ACTIONS -->
               <div>
                   <button mat-icon-button [matMenuTriggerFor]="menu" id="menuTrigger">
-                      <mat-icon [matBadge]="productsInCartCount"
-                                matBadgeColor="warn"
+                      <mat-icon [matBadge]="productsInCartCount" matBadgeColor="warn"
                                 [matBadgeDescription]="t('product count')">
                           shopping_cart
                       </mat-icon>
@@ -23,8 +21,7 @@ import { PRODUCTS_IN_CART, productsInCart } from 'src/app/common/const';
               </div>
               <mat-menu #menu yPosition="below" xPosition="before" class="menu">
                   <ng-template matMenuContent>
-                      <app-cart (click)="$event.stopPropagation()" (buttonsClicked)="closeMenu()">
-                      </app-cart>
+                      <app-cart (click)="$event.stopPropagation()" (buttonsClicked)="closeMenu()"></app-cart>
                   </ng-template>
               </mat-menu>
               <!-- END ACTIONS -->
@@ -38,6 +35,10 @@ import { PRODUCTS_IN_CART, productsInCart } from 'src/app/common/const';
           .spacer {
               display: flex;
               flex: 1 1 auto;
+          }
+
+          ::ng-deep .mat-menu-panel {
+              width: 280px;
           }
     `
   ]
