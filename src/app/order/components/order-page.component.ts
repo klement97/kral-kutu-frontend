@@ -222,7 +222,7 @@ import {
                                   <img src="../../../assets/images/width-arrow.svg" alt="width-icon">
                               </div>
                               <div class="size length-dimension">
-                                  <span>{{product.lenght}}</span>
+                                  <span>{{product.length}}</span>
                                   <img src="../../../assets/images/depth-arrow.svg" alt="length-icon">
                               </div>
                               <div class="size">
@@ -311,7 +311,7 @@ export class OrderPageComponent implements OnInit {
       });
   }
 
-  openProductDetails(product) {
+  openProductDetails(product): void {
     this.bottomSheet.open(ProductDetailComponent, {data: {product}})
       .afterDismissed().subscribe(((result: { addToCart: boolean, quantity: number }) => {
       if (result?.addToCart) {
