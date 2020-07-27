@@ -5,6 +5,26 @@ import { positiveIntegerWithZeroRegex } from 'src/app/common/const';
 
 @Component({
   selector: 'app-product-detail',
+  styles: [`
+      .close-button {
+          display: flex;
+          justify-content: flex-end;
+      }
+
+      .add-to-cart {
+          background-color: #3f51b5;
+          color: white;
+          width: 60px;
+          height: 60px;
+          box-shadow: 0 0 15px grey;
+      }
+
+      .add-to-cart mat-icon {
+          width: 35px;
+          font-size: 40px;
+          height: 25px;
+      }
+  `],
   template: `
       <ng-container *transloco="let t">
           <div class="details">
@@ -48,37 +68,30 @@ import { positiveIntegerWithZeroRegex } from 'src/app/common/const';
           </div>
           <hr>
           <div class="card-actions">
+              <!-- Product Price -->
+              <span class="product-price">{{'$'}}{{data.product.price}}</span>
+
+              <!-- Quantity Inputs -->
               <div class="quantity-input-group">
-              <span class="up-down-buttons">
-                  <button mat-icon-button type="button"
-                          (click)="changeInputValue($event, quantity, -1)">
-                      <mat-icon color="primary">keyboard_arrow_down</mat-icon>
-                  </button>
-                  <input type="text" [value]="1"
-                         (click)="$event.stopPropagation()"
-                         (input)="onInputChange($event, quantity)"
-                         #quantity
-                         style="height: 100%; width: 50px">
-                  <button mat-icon-button type="button" (click)="changeInputValue($event, quantity, 1)">
-                      <mat-icon color="primary">keyboard_arrow_up</mat-icon>
-                  </button>
+                    <span class="up-down-buttons">
+                      <button mat-icon-button (click)="changeInputValue($event, quantity, -1)">
+                          <mat-icon color="primary">keyboard_arrow_down</mat-icon>
+                      </button>
+                      <input type="text" [value]="1" (click)="$event.stopPropagation()"
+                             (input)="onInputChange($event, quantity)" #quantity class="quantity-input">
+                      <button mat-icon-button (click)="changeInputValue($event, quantity, 1)">
+                          <mat-icon color="primary">keyboard_arrow_up</mat-icon>
+                      </button>
               </span>
-                  <button mat-raised-button color="primary" type="button" class="add-to-cart"
-                          (click)="addToCart(quantity.value)">
-                      <mat-icon #addToCartIcon style="z-index: 2; position: relative;">
-                          add_shopping_cart
-                      </mat-icon>
-                  </button>
               </div>
+
+              <!-- Add To Shopping Cart Button -->
+              <button mat-icon-button color="primary" (click)="addToCart(quantity.value)" class="add-to-cart">
+                  <mat-icon>add_shopping_cart</mat-icon>
+              </button>
           </div>
       </ng-container>
-  `,
-  styles: [`
-      .close-button {
-          display: flex;
-          justify-content: flex-end;
-      }
-  `]
+  `
 })
 export class ProductDetailComponent implements OnInit {
 

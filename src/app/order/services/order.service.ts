@@ -18,7 +18,8 @@ export class OrderService {
   }
 
   getProducts(paginator, filter) {
-    return this.http.get(`${ORDER_URLS.PRODUCT}${buildQueryString(paginator, null, filter)}`);
+    return this.http.get('/assets/fixtures/products.json');
+    // return this.http.get(`${ORDER_URLS.PRODUCT}${buildQueryString(paginator, null, filter)}`);
   }
 
   getProductCategories() {

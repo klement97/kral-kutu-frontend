@@ -1,0 +1,95 @@
+{
+  "count": 3,
+  "results": [
+    {
+      "id": 1,
+      "code": "TB0116",
+      "title": "Lorem Ipsum",
+      "description": "Lorem Ipsum Dolor Sit Amet",
+      "image": "/assets/fixtures/TB0116.jpg",
+      "category": 1,
+      "inner_leather": {
+        "code": "1",
+        "serial": {
+          "name": "ALCANTARA",
+          "deleted": false
+        },
+        "image": "",
+        "deleted": false
+      },
+      "outer_leather": {
+        "code": "10 DARK GRAY",
+        "serial": {
+          "name": "ALCANTARA",
+          "deleted": false
+        },
+        "image": "",
+        "deleted": false
+      },
+      "price": "25.00",
+      "height": "3.00",
+      "width": "25.00",
+      "length": "30.00"
+    },
+    {
+      "id": 2,
+      "code": "TB01020",
+      "title": "Lorem Ipsum",
+      "description": "Lorem Ipsum Dolor Sit Amet",
+      "image": "/assets/fixtures/TB01020.jpg",
+      "category": 1,
+      "inner_leather": {
+        "code": "1",
+        "serial": {
+          "name": "ALCANTARA",
+          "deleted": false
+        },
+        "image": "",
+        "deleted": false
+      },
+      "outer_leather": {
+        "code": "10 DARK GRAY",
+        "serial": {
+          "name": "ALCANTARA",
+          "deleted": false
+        },
+        "image": "",
+        "deleted": false
+      },
+      "price": "30.00",
+      "height": null,
+      "width": null,
+      "length": null
+    },
+    {
+      "id": 3,
+      "code": "TB01118",
+      "title": "Lorem Ipsum",
+      "description": "Lorem Ipsum Dolor Sit Amet",
+      "image": "/assets/fixtures/TB01118.jpg",
+      "category": 1,
+      "inner_leather": {
+        "code": "1",
+        "serial": {
+          "name": "ALCANTARA",
+          "deleted": false
+        },
+        "image": "",
+        "deleted": false
+      },
+      "outer_leather": {
+        "code": "10 DARK GRAY",
+        "serial": {
+          "name": "ALCANTARA",
+          "deleted": false
+        },
+        "image": "",
+        "deleted": false
+      },
+      "price": "30.00",
+      "height": null,
+      "width": null,
+      "length": null
+    }
+  ]
+}
