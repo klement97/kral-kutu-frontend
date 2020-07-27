@@ -14,10 +14,12 @@ import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { CheckoutComponent } from './components/checkout.component';
 import { MatListModule } from '@angular/material/list';
+import { PrefixPipe } from 'src/app/common/prefix.pipe';
+import { MatTableModule } from '@angular/material/table';
 
 
 @NgModule({
-  declarations: [OrderPageComponent, ProductDetailComponent, CheckoutComponent],
+  declarations: [OrderPageComponent, ProductDetailComponent, CheckoutComponent, PrefixPipe],
   imports: [
     CommonModule,
     OrderRoutingModule,
@@ -29,7 +31,8 @@ import { MatListModule } from '@angular/material/list';
     MatBottomSheetModule,
     MatInputModule,
     MatIconModule,
-    MatListModule
+    MatListModule,
+    MatTableModule
   ]
 })
 export class OrderModule {}

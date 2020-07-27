@@ -11,7 +11,7 @@ import { positiveIntegerWithZeroRegex } from 'src/app/common/const';
           justify-content: flex-end;
       }
 
-      .add-to-cart {
+      .add-to-cart-button {
           background-color: #3f51b5;
           color: white;
           width: 60px;
@@ -19,7 +19,7 @@ import { positiveIntegerWithZeroRegex } from 'src/app/common/const';
           box-shadow: 0 0 15px grey;
       }
 
-      .add-to-cart mat-icon {
+      .add-to-cart-button mat-icon {
           width: 35px;
           font-size: 40px;
           height: 25px;
@@ -53,7 +53,7 @@ import { positiveIntegerWithZeroRegex } from 'src/app/common/const';
                       {{t('outer leather')}}: {{outer_leather.serial.name}}-{{outer_leather.code}}
                   </mat-list-item>
                   <mat-list-item *ngIf="data.product.price as price">
-                      {{t('price')}}: {{'$'}}{{price}}
+                      {{t('price')}}: {{price | prefix: '$'}}
                   </mat-list-item>
                   <mat-list-item *ngIf="data.product.height as height">
                       {{t('height')}}: {{height}}cm
@@ -69,7 +69,7 @@ import { positiveIntegerWithZeroRegex } from 'src/app/common/const';
           <hr>
           <div class="card-actions">
               <!-- Product Price -->
-              <span class="product-price">{{'$'}}{{data.product.price}}</span>
+              <span class="product-price">{{data.product.price | prefix: '$'}}</span>
 
               <!-- Quantity Inputs -->
               <div class="quantity-input-group">
@@ -86,7 +86,7 @@ import { positiveIntegerWithZeroRegex } from 'src/app/common/const';
               </div>
 
               <!-- Add To Shopping Cart Button -->
-              <button mat-icon-button color="primary" (click)="addToCart(quantity.value)" class="add-to-cart">
+              <button mat-icon-button color="primary" (click)="addToCart(quantity.value)" class="add-to-cart-button">
                   <mat-icon>add_shopping_cart</mat-icon>
               </button>
           </div>

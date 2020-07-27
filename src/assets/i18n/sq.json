@@ -19,5 +19,9 @@
   "price": "Çmimi",
   "height": "Lartësia",
   "width": "Gjerësia",
-  "length": "Gjatësia"
+  "length": "Gjatësia",
+  "selected products": "Produktet e zgjedhura",
+  "total": "Total",
+  "sub total": "Nëntotal",
+  "order review": "Përmledhje e porosisë"
 }

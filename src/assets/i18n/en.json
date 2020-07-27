@@ -19,5 +19,9 @@
   "price": "Price",
   "height": "Height",
   "width": "Width",
-  "length": "Length"
+  "length": "Length",
+  "selected products": "Selected products",
+  "total": "Total",
+  "sub total": "Sub Total",
+  "order review": "Order Review"
 }

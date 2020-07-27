@@ -19,5 +19,9 @@
   "price": "Fiyat",
   "height": "Yükseklik",
   "width": "Genişlik",
-  "length": "Uzunluk"
+  "length": "Uzunluk",
+  "selected products": "Seçtiğiniz ürünler",
+  "total": "Toplam",
+  "sub total": "Ara Toplam",
+  "order review": "Sipariş Özeti"
 }

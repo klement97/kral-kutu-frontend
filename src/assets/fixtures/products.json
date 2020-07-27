@@ -57,9 +57,9 @@
         "deleted": false
       },
       "price": "30.00",
-      "height": null,
-      "width": null,
-      "length": null
+      "height": "3.00",
+      "width": "25.00",
+      "length": "30.00"
     },
     {
       "id": 3,
@@ -87,9 +87,9 @@
         "deleted": false
       },
       "price": "30.00",
-      "height": null,
-      "width": null,
-      "length": null
+      "height": "3.00",
+      "width": "25.00",
+      "length": "30.00"
     }
   ]
 }
