@@ -4,10 +4,10 @@ import { CommonModule } from '@angular/common';
 import { OrderRoutingModule } from './order-routing.module';
 import { OrderPageComponent } from './order-page/order-page.component';
 import { ReactiveFormsModule } from '@angular/forms';
-import { PaginatorModule } from 'primeng/paginator';
-import { CardModule } from 'primeng/card';
-import { ButtonModule } from 'primeng/button';
 import { TranslocoRootModule } from 'src/app/transloco-root.module';
+import { MatCardModule } from '@angular/material/card';
+import { MatGridListModule } from '@angular/material/grid-list';
+import { MatButtonModule } from '@angular/material/button';
 
 
 @NgModule({
@@ -16,10 +16,10 @@ import { TranslocoRootModule } from 'src/app/transloco-root.module';
     CommonModule,
     OrderRoutingModule,
     ReactiveFormsModule,
-    PaginatorModule,
-    CardModule,
-    ButtonModule,
-    TranslocoRootModule
+    TranslocoRootModule,
+    MatCardModule,
+    MatGridListModule,
+    MatButtonModule
   ]
 })
 export class OrderModule {}

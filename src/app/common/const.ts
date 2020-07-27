@@ -1,12 +1,12 @@
 import { formatDate } from '@angular/common';
-import { Paginator } from 'primeng/paginator';
 
 
 export const MIN_TIME = '00:00:00.000000';
 export const MAX_TIME = '23:59:59.999999';
 
 
-export function buildQueryString(paginator: Paginator = null, sort = null, filter: any): string {
+// FIXME: fix paginator here after material installation
+export function buildQueryString(paginator = null, sort = null, filter: any): string {
   const queryString = [];
   const page_size: number = paginator?.rows ? paginator.rows : 10;
   let page: number = paginator?.getPage() ? paginator.getPage() : 0;

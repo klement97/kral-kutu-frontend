@@ -2,17 +2,13 @@
     <div>
         <p>Products</p>
         <div class="products">
-            <p-card *ngFor="let product of products"
-                    [header]="product.code"
-                    [subheader]="product.price">
-                <p-header>
-                    <img [src]="product.image" alt="product-image">
-                </p-header>
-
-                <p-footer>
-                    <button pButton type="button" [label]="t('add')" icon="pi pi-check"></button>
-                </p-footer>
-            </p-card>
+            <mat-card *ngFor="let product of products">
+                <img mat-card-image [src]="product.image" alt="product-image">
+                <mat-card-actions>
+                    <button mat-stroked-button color="primary" type="button">{{t('add')}}</button>
+                    <button mat-stroked-button color="primary" type="button">{{t('add')}}</button>
+                </mat-card-actions>
+            </mat-card>
         </div>
     </div>
 </ng-container>

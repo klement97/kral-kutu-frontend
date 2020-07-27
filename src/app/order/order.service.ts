@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ORDER_URLS } from 'src/app/order/urls';
 import { buildQueryString } from 'src/app/common/const';
-import { Paginator } from 'primeng/paginator';
 
 
 @Injectable({
@@ -18,7 +17,7 @@ export class OrderService {
     return this.http.get(`${ORDER_URLS.PRODUCT}${product_id}`);
   }
 
-  getProducts(paginator: Paginator, filter) {
+  getProducts(paginator, filter) {
     return this.http.get(`${ORDER_URLS.PRODUCT}${buildQueryString(paginator, null, filter)}`);
   }
 

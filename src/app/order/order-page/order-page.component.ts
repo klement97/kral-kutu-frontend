@@ -1,8 +1,8 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { OrderService } from 'src/app/order/order.service';
 import { Observable } from 'rxjs';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { Paginator } from 'primeng/paginator';
+import { BreakpointObserver } from '@angular/cdk/layout';
 
 
 @Component({
@@ -11,7 +11,6 @@ import { Paginator } from 'primeng/paginator';
   styleUrls: ['./order-page.component.css']
 })
 export class OrderPageComponent implements OnInit {
-  @ViewChild('paginator', {static: true}) paginator: Paginator;
 
   products: any[];
   productsCount = 0;
@@ -21,9 +20,12 @@ export class OrderPageComponent implements OnInit {
 
   productFilterForm: FormGroup;
 
+  colspan = 1;
+
   constructor(
     private orderService: OrderService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private observer: BreakpointObserver
   ) { }
 
   ngOnInit(): void {
@@ -42,7 +44,8 @@ export class OrderPageComponent implements OnInit {
   }
 
   getProducts() {
-    this.orderService.getProducts(this.paginator, this.productFilterForm.value).subscribe(
+    // fixme: fix paginator here
+    this.orderService.getProducts(null, this.productFilterForm.value).subscribe(
       (res: any) => {
         this.products = res.results ? res.results : res;
         this.productsCount = res.count ? res.count : res.length();
