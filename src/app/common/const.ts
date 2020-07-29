@@ -1,6 +1,7 @@
 import { formatDate } from '@angular/common';
+import { BehaviorSubject } from 'rxjs';
 
-
+export const PRODUCTS_IN_CART = 'kralKutuCartProducts';
 export const MIN_TIME = '00:00:00.000000';
 export const MAX_TIME = '23:59:59.999999';
 
@@ -77,4 +78,9 @@ export function formatDateToString(date: Date | string, time: string = ''): stri
 export function getSort(active: string, direction: 'asc' | 'desc' | '') {
   const sort = direction === 'desc' ? '-' : '';
   return sort + active;
+}
+
+export function setProductsInCart(products: BehaviorSubject<any[]>, newProducts: any[]) {
+  products.next(newProducts);
+  localStorage.setItem(PRODUCTS_IN_CART, JSON.stringify(newProducts));
 }

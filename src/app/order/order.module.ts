@@ -8,10 +8,12 @@ import { TranslocoRootModule } from 'src/app/transloco-root.module';
 import { MatCardModule } from '@angular/material/card';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatButtonModule } from '@angular/material/button';
+import { ProductDetailComponent } from 'src/app/order/components/product-detail.component';
+import { MatBottomSheetModule } from '@angular/material/bottom-sheet';
 
 
 @NgModule({
-  declarations: [OrderPageComponent],
+  declarations: [OrderPageComponent, ProductDetailComponent],
   imports: [
     CommonModule,
     OrderRoutingModule,
@@ -19,7 +21,8 @@ import { MatButtonModule } from '@angular/material/button';
     TranslocoRootModule,
     MatCardModule,
     MatGridListModule,
-    MatButtonModule
+    MatButtonModule,
+    MatBottomSheetModule
   ]
 })
 export class OrderModule {}

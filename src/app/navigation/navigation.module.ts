@@ -10,6 +10,8 @@ import { TranslocoRootModule } from 'src/app/transloco-root.module';
 import { MatButtonModule } from '@angular/material/button';
 import { NotFoundComponent } from 'src/app/navigation/not-found.component';
 import { RouterModule } from '@angular/router';
+import { MatBadgeModule } from '@angular/material/badge';
+import { MatListModule } from '@angular/material/list';
 
 
 @NgModule({
@@ -30,7 +32,9 @@ import { RouterModule } from '@angular/router';
     MatIconModule,
     MatMenuModule,
     MatButtonModule,
-    RouterModule
+    RouterModule,
+    MatBadgeModule,
+    MatListModule
   ]
 })
 export class NavigationModule {}

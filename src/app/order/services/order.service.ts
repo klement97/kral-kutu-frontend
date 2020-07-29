@@ -2,12 +2,15 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ORDER_URLS } from 'src/app/order/services/urls';
 import { buildQueryString } from 'src/app/common/const';
+import { BehaviorSubject } from 'rxjs';
 
 
 @Injectable({
   providedIn: 'root'
 })
 export class OrderService {
+
+  productsInCart = new BehaviorSubject([]);
 
   constructor(
     private http: HttpClient

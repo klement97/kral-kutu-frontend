@@ -1,26 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { OrderService } from 'src/app/order/services/order.service';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { FormBuilder, FormGroup } from '@angular/forms';
+import { MatBottomSheet } from '@angular/material/bottom-sheet';
+import { ProductDetailComponent } from 'src/app/order/components/product-detail.component';
+import { setProductsInCart } from 'src/app/common/const';
 
 
 @Component({
   selector: 'app-order-page',
-  template: `
-      <ng-container *transloco="let t">
-          <div>
-              <p>Products</p>
-              <div class="products">
-                  <mat-card *ngFor="let product of products">
-                      <img mat-card-image [src]="product.image" alt="product-image">
-                      <mat-card-actions>
-                          <button mat-stroked-button color="primary" type="button">{{t('add')}}</button>
-                      </mat-card-actions>
-                  </mat-card>
-              </div>
-          </div>
-      </ng-container>
-  `,
   styles: [`
       .products {
           width: 75%;
@@ -34,6 +22,12 @@ import { FormBuilder, FormGroup } from '@angular/forms';
       mat-card {
           display: flex;
           flex-direction: column;
+          cursor: pointer;
+      }
+
+      mat-card:hover {
+          box-shadow: 0 0 10px gray;
+          transform: scale(1.05, 1.05);
       }
 
       mat-card-actions {
@@ -48,7 +42,30 @@ import { FormBuilder, FormGroup } from '@angular/forms';
               grid-template-columns: 1fr;
           }
       }
-  `]
+  `],
+  template: `
+      <ng-container *transloco="let t">
+          <div>
+              <h1>Products</h1>
+              <div class="products">
+                  <mat-card *ngFor="let product of products" (click)="openProductDetails(product)">
+                      <img mat-card-image [src]="product.image" alt="product-image">
+                      <mat-card-content>
+                          <p>
+                              {{product.code}} - $ {{product.price}}
+                          </p>
+                      </mat-card-content>
+                      <mat-card-actions>
+                          <button mat-stroked-button color="primary" type="button"
+                                  (click)="addProductToCart($event, product)">
+                              {{t('add')}}
+                          </button>
+                      </mat-card-actions>
+                  </mat-card>
+              </div>
+          </div>
+      </ng-container>
+  `
 })
 export class OrderPageComponent implements OnInit {
 
@@ -59,10 +76,12 @@ export class OrderPageComponent implements OnInit {
   leatherSerials$: Observable<any>;
 
   productFilterForm: FormGroup;
+  productsInCart: BehaviorSubject<any>;
 
   constructor(
     private orderService: OrderService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private bottomSheet: MatBottomSheet
   ) { }
 
   ngOnInit(): void {
@@ -71,6 +90,7 @@ export class OrderPageComponent implements OnInit {
     this.productCategories$ = this.orderService.getProductCategories();
     this.leathers$ = this.orderService.getLeathers();
     this.leatherSerials$ = this.orderService.getLeatherSerials();
+    this.productsInCart = this.orderService.productsInCart;
   }
 
   getProductFilterForm(): FormGroup {
@@ -87,6 +107,17 @@ export class OrderPageComponent implements OnInit {
         this.products = res.results ? res.results : res;
         this.productsCount = res.count ? res.count : res.length();
       });
+  }
+
+  addProductToCart(e, product) {
+    e.stopPropagation();
+    const products: any[] = this.productsInCart.getValue();
+    products.push(product);
+    setProductsInCart(this.productsInCart, products);
+  }
+
+  openProductDetails(product) {
+    this.bottomSheet.open(ProductDetailComponent, {data: {product}});
   }
 
 }

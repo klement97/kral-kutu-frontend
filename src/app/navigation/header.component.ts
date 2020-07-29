@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { OrderService } from 'src/app/order/services/order.service';
+import { PRODUCTS_IN_CART } from 'src/app/common/const';
 
 
 @Component({
@@ -13,12 +15,16 @@ import { Component, OnInit } from '@angular/core';
               <!-- BEGIN ACTIONS -->
               <div>
                   <button mat-icon-button [matMenuTriggerFor]="menu">
-                      <mat-icon>shopping_cart</mat-icon>
+                      <mat-icon [matBadge]="productsInCartCount"
+                                matBadgeColor="warn"
+                                [matBadgeDescription]="t('product count')">
+                          shopping_cart
+                      </mat-icon>
                   </button>
               </div>
               <mat-menu #menu yPosition="below" xPosition="before" class="menu">
                   <ng-template matMenuContent>
-                      <app-cart></app-cart>
+                      <app-cart (click)="$event.stopPropagation()"></app-cart>
                   </ng-template>
               </mat-menu>
               <!-- END ACTIONS -->
@@ -33,21 +39,32 @@ import { Component, OnInit } from '@angular/core';
               display: flex;
               flex: 1 1 auto;
           }
-
-          .menu .mat-menu-panel {
-              min-width: unset;
-              max-width: 320px;
-              width: 320px;
-          }
-
     `
   ]
 })
 export class HeaderComponent implements OnInit {
 
-  constructor() { }
+  productsInCartCount = '0';
+
+  constructor(
+    private orderService: OrderService
+  ) { }
 
   ngOnInit(): void {
+    this.loadProductsFromLocalStorage();
+    this.getCountOfProductsInCart();
   }
 
+  loadProductsFromLocalStorage() {
+    const productsInLocalStorage = localStorage.getItem(PRODUCTS_IN_CART);
+    if (productsInLocalStorage) {
+      this.orderService.productsInCart.next(JSON.parse(productsInLocalStorage));
+    }
+  }
+
+  getCountOfProductsInCart() {
+    this.orderService.productsInCart.subscribe((value) => {
+      this.productsInCartCount = value?.length.toString() || '0';
+    });
+  }
 }
