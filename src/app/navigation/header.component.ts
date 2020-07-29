@@ -9,7 +9,7 @@ import { PRODUCTS_IN_CART } from 'src/app/common/const';
       <ng-container *transloco="let t">
           <!-- BEGIN TOOLBAR -->
           <mat-toolbar color="primary" style="height: 50px">
-              <span>Kral Kutu</span>
+              <span routerLink="/" style="cursor: pointer">Kral Kutu</span>
               <span class="spacer"></span>
 
               <!-- BEGIN ACTIONS -->
