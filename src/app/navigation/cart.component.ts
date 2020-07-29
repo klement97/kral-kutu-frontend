@@ -8,9 +8,9 @@ import { setProductsInCart } from 'src/app/common/const';
   selector: 'app-cart',
   template: `
       <mat-list role="list">
-          <mat-list-item role="listitem" *ngFor="let product of products | async">
-              <img [src]="product.image" alt="product-image" width="70px">
-              <button mat-icon-button (click)="removeProduct(product.id)">
+          <mat-list-item role="listitem" *ngFor="let orderUnit of orderUnits | async">
+              <img [src]="orderUnit.product.image" alt="product-image" width="70px">
+              <button mat-icon-button (click)="removeProduct(orderUnit.product.id)">
                   <mat-icon color="warn">delete</mat-icon>
               </button>
           </mat-list-item>
@@ -20,22 +20,22 @@ import { setProductsInCart } from 'src/app/common/const';
 })
 export class CartComponent implements OnInit {
 
-  products: BehaviorSubject<any[]>;
+  orderUnits: BehaviorSubject<{ product, quantity: number }[]>;
 
   constructor(
     private orderService: OrderService
   ) {
-    this.products = orderService.productsInCart;
+    this.orderUnits = orderService.productsInCart;
   }
 
   ngOnInit(): void {
   }
 
   removeProduct(id: number) {
-    const products = this.products.getValue();
-    const index: number = products.findIndex((product) => product.id === id);
+    const products = this.orderUnits.getValue();
+    const index: number = products.findIndex((orderUnit) => orderUnit.product.id === id);
     products.splice(index, 1);
-    setProductsInCart(this.products, products);
+    setProductsInCart(this.orderUnits, products);
   }
 
 }

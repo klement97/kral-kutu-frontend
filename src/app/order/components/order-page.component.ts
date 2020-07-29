@@ -4,7 +4,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatBottomSheet } from '@angular/material/bottom-sheet';
 import { ProductDetailComponent } from 'src/app/order/components/product-detail.component';
-import { setProductsInCart } from 'src/app/common/const';
+import { composeOrderUnit, setProductsInCart } from 'src/app/common/const';
 
 
 @Component({
@@ -57,7 +57,7 @@ import { setProductsInCart } from 'src/app/common/const';
                       </mat-card-content>
                       <mat-card-actions>
                           <button mat-stroked-button color="primary" type="button"
-                                  (click)="addProductToCart($event, product)">
+                                  (click)="addProductToCart($event, product, 1)">
                               {{t('add')}}
                           </button>
                       </mat-card-actions>
@@ -109,15 +109,25 @@ export class OrderPageComponent implements OnInit {
       });
   }
 
-  addProductToCart(e, product) {
-    e.stopPropagation();
-    const products: any[] = this.productsInCart.getValue();
-    products.push(product);
-    setProductsInCart(this.productsInCart, products);
+  addProductToCart(e, product, quantity) {
+    e.stopPropagation(); // prevents product detail to be opened up
+    const productsInCart: any[] = this.productsInCart.getValue();
+    const productIndex: number = this.isProductInCart(product.id);
+    if (productIndex > -1) {
+      productsInCart[productIndex].quantity += quantity;
+    } else {
+      productsInCart.push(composeOrderUnit(product, quantity));
+    }
+    setProductsInCart(this.productsInCart, productsInCart);
   }
 
   openProductDetails(product) {
     this.bottomSheet.open(ProductDetailComponent, {data: {product}});
+  }
+
+  isProductInCart(productId): number {
+    return this.productsInCart.getValue()
+      .findIndex((orderUnit) => orderUnit.product.id === productId);
   }
 
 }

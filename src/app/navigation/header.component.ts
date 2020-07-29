@@ -64,7 +64,9 @@ export class HeaderComponent implements OnInit {
 
   getCountOfProductsInCart() {
     this.orderService.productsInCart.subscribe((value) => {
-      this.productsInCartCount = value?.length.toString() || '0';
+      let quantity = 0;
+      value.forEach((v) => quantity += v.quantity);
+      this.productsInCartCount = quantity.toString();
     });
   }
 }
