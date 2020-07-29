@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { OrderRoutingModule } from './order-routing.module';
-import { OrderPageComponent } from './order-page/order-page.component';
+import { OrderPageComponent } from 'src/app/order/components/order-page.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { TranslocoRootModule } from 'src/app/transloco-root.module';
 import { MatCardModule } from '@angular/material/card';
