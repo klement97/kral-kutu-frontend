@@ -37,6 +37,23 @@ import { composeOrderUnit, setProductsInCart } from 'src/app/common/const';
           justify-content: flex-end;
       }
 
+      .quantity-input-group {
+          display: flex;
+          /*justify-content: center;*/
+          /*align-items: center;*/
+          height: 30px;
+          width: 90px;
+      }
+
+      .up-down-buttons {
+          height: 100%;
+          display: block;
+      }
+
+      .up-down-buttons button {
+          height: 50%;
+      }
+
       @media screen and (max-width: 1000px) {
           .products {
               grid-template-columns: 1fr;
@@ -56,8 +73,23 @@ import { composeOrderUnit, setProductsInCart } from 'src/app/common/const';
                           </p>
                       </mat-card-content>
                       <mat-card-actions>
+                          <div class="quantity-input-group">
+                              <input type="text" [value]="1"
+                                     (click)="$event.stopPropagation()"
+                                     (input)="onInputChange($event, quantity)"
+                                     #quantity
+                                     style="height: 100%; width: 50px">
+                              <span class="up-down-buttons">
+                                  <button mat-icon-button type="button" (click)="changeInputValue($event, quantity, 1)">
+                                      <mat-icon color="primary">keyboard_arrow_up</mat-icon>
+                                  </button>
+                                  <button mat-icon-button type="button" (click)="changeInputValue($event, quantity, -1)">
+                                      <mat-icon color="primary">keyboard_arrow_down</mat-icon>
+                                  </button>
+                              </span>
+                          </div>
                           <button mat-stroked-button color="primary" type="button"
-                                  (click)="addProductToCart($event, product, 1)">
+                                  (click)="addProductToCart($event, product, quantity.value)">
                               {{t('add')}}
                           </button>
                       </mat-card-actions>
@@ -77,6 +109,9 @@ export class OrderPageComponent implements OnInit {
 
   productFilterForm: FormGroup;
   productsInCart: BehaviorSubject<any>;
+
+  positiveIntegerRegex = new RegExp('^[1-9]\\d*$');
+  positiveIntegerWithZeroRegex = new RegExp('^\\d+$');
 
   constructor(
     private orderService: OrderService,
@@ -109,14 +144,14 @@ export class OrderPageComponent implements OnInit {
       });
   }
 
-  addProductToCart(e, product, quantity) {
+  addProductToCart(e, product, quantity: string) {
     e.stopPropagation(); // prevents product detail to be opened up
     const productsInCart: any[] = this.productsInCart.getValue();
-    const productIndex: number = this.isProductInCart(product.id);
+    const productIndex: number = this.findProductInCart(product.id);
     if (productIndex > -1) {
-      productsInCart[productIndex].quantity += quantity;
+      productsInCart[productIndex].quantity += Number(quantity);
     } else {
-      productsInCart.push(composeOrderUnit(product, quantity));
+      productsInCart.push(composeOrderUnit(product, Number(quantity)));
     }
     setProductsInCart(this.productsInCart, productsInCart);
   }
@@ -125,9 +160,46 @@ export class OrderPageComponent implements OnInit {
     this.bottomSheet.open(ProductDetailComponent, {data: {product}});
   }
 
-  isProductInCart(productId): number {
+  findProductInCart(productId): number {
     return this.productsInCart.getValue()
       .findIndex((orderUnit) => orderUnit.product.id === productId);
+  }
+
+  changeInputValue(e, input, value) {
+    e.stopPropagation();
+    if (!input.value) {
+      input.value = '1';
+      return;
+    }
+    let inputValue = Number(input.value);
+    if (inputValue === 1 && value === -1) {
+      return;
+    }
+    inputValue += value;
+    input.value = inputValue.toString();
+    e.data = '1';
+    this.onInputChange(e, input);
+  }
+
+  onInputChange(e, input) {
+    e.stopPropagation();
+    const inputChar: string = e.data;
+    // setting a timeout to let the user understand the changes
+    setTimeout(() => {
+      if (!input.value || input.value === '0') {
+        input.value = '1';
+        return;
+      }
+      if (inputChar && !this.positiveIntegerWithZeroRegex.test(inputChar)) {
+        const inputValueArray: string[] = input.value.split('');
+        inputValueArray.splice(input.value.indexOf(inputChar), 1);
+        input.value = inputValueArray.join('');
+        return;
+      }
+      if (Number(input.value) > 10_000) {
+        input.value = '10000';
+      }
+    }, 200);
   }
 
 }

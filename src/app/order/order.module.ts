@@ -10,6 +10,8 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import { MatButtonModule } from '@angular/material/button';
 import { ProductDetailComponent } from 'src/app/order/components/product-detail.component';
 import { MatBottomSheetModule } from '@angular/material/bottom-sheet';
+import { MatInputModule } from '@angular/material/input';
+import { MatIconModule } from '@angular/material/icon';
 
 
 @NgModule({
@@ -22,7 +24,9 @@ import { MatBottomSheetModule } from '@angular/material/bottom-sheet';
     MatCardModule,
     MatGridListModule,
     MatButtonModule,
-    MatBottomSheetModule
+    MatBottomSheetModule,
+    MatInputModule,
+    MatIconModule
   ]
 })
 export class OrderModule {}
