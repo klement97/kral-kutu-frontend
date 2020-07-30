@@ -38,20 +38,12 @@ import { composeOrderUnit, setProductsInCart } from 'src/app/common/const';
       }
 
       .quantity-input-group {
-          display: flex;
-          /*justify-content: center;*/
-          /*align-items: center;*/
-          height: 30px;
-          width: 90px;
       }
 
       .up-down-buttons {
-          height: 100%;
-          display: block;
       }
 
       .up-down-buttons button {
-          height: 50%;
       }
 
       @media screen and (max-width: 1000px) {
@@ -74,16 +66,17 @@ import { composeOrderUnit, setProductsInCart } from 'src/app/common/const';
                       </mat-card-content>
                       <mat-card-actions>
                           <div class="quantity-input-group">
-                              <input type="text" [value]="1"
+                              <input type="text" [value]="'1'"
                                      (click)="$event.stopPropagation()"
                                      (input)="onInputChange($event, quantity)"
                                      #quantity
-                                     style="height: 100%; width: 50px">
+                                     style="height: 30px; width: 50px">
                               <span class="up-down-buttons">
                                   <button mat-icon-button type="button" (click)="changeInputValue($event, quantity, 1)">
                                       <mat-icon color="primary">keyboard_arrow_up</mat-icon>
                                   </button>
-                                  <button mat-icon-button type="button" (click)="changeInputValue($event, quantity, -1)">
+                                  <button mat-icon-button type="button"
+                                          (click)="changeInputValue($event, quantity, -1)">
                                       <mat-icon color="primary">keyboard_arrow_down</mat-icon>
                                   </button>
                               </span>
@@ -144,6 +137,16 @@ export class OrderPageComponent implements OnInit {
       });
   }
 
+  openProductDetails(product) {
+    this.bottomSheet.open(ProductDetailComponent, {data: {product}})
+      .afterDismissed().subscribe(((result: { addToCart: boolean, quantity: number }) => {
+      if (result?.addToCart) {
+        const fakeEvent = {stopPropagation: () => {}};
+        this.addProductToCart(fakeEvent, product, result.quantity.toString());
+      }
+    }));
+  }
+
   addProductToCart(e, product, quantity: string) {
     e.stopPropagation(); // prevents product detail to be opened up
     const productsInCart: any[] = this.productsInCart.getValue();
@@ -154,10 +157,6 @@ export class OrderPageComponent implements OnInit {
       productsInCart.push(composeOrderUnit(product, Number(quantity)));
     }
     setProductsInCart(this.productsInCart, productsInCart);
-  }
-
-  openProductDetails(product) {
-    this.bottomSheet.open(ProductDetailComponent, {data: {product}});
   }
 
   findProductInCart(productId): number {
