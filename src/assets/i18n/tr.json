@@ -2,5 +2,7 @@
   "add": "Ekle",
   "add to cart": "Sepete ekle",
   "quantity": "miktar",
-  "product count": "ürün sayısı"
+  "product count": "ürün sayısı",
+  "checkout": "Alışverişi Tamamla",
+  "continue shopping": "Alışverişe devam et"
 }

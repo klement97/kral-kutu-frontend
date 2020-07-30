@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { OrderService } from 'src/app/order/services/order.service';
 import { PRODUCTS_IN_CART } from 'src/app/common/const';
+import { MatMenu, MatMenuTrigger } from '@angular/material/menu';
 
 
 @Component({
@@ -14,7 +15,7 @@ import { PRODUCTS_IN_CART } from 'src/app/common/const';
 
               <!-- BEGIN ACTIONS -->
               <div>
-                  <button mat-icon-button [matMenuTriggerFor]="menu">
+                  <button mat-icon-button [matMenuTriggerFor]="menu" id="menuTrigger">
                       <mat-icon [matBadge]="productsInCartCount"
                                 matBadgeColor="warn"
                                 [matBadgeDescription]="t('product count')">
@@ -24,7 +25,8 @@ import { PRODUCTS_IN_CART } from 'src/app/common/const';
               </div>
               <mat-menu #menu yPosition="below" xPosition="before" class="menu">
                   <ng-template matMenuContent>
-                      <app-cart (click)="$event.stopPropagation()"></app-cart>
+                      <app-cart (click)="$event.stopPropagation()" (buttonsClicked)="closeMenu()">
+                      </app-cart>
                   </ng-template>
               </mat-menu>
               <!-- END ACTIONS -->
@@ -43,7 +45,6 @@ import { PRODUCTS_IN_CART } from 'src/app/common/const';
   ]
 })
 export class HeaderComponent implements OnInit {
-
   productsInCartCount = '0';
 
   constructor(
@@ -68,5 +69,9 @@ export class HeaderComponent implements OnInit {
       value.forEach((v) => quantity += v.quantity);
       this.productsInCartCount = quantity.toString();
     });
+  }
+
+  closeMenu() {
+    document.getElementById('menuTrigger').click();
   }
 }

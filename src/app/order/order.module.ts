@@ -12,10 +12,11 @@ import { ProductDetailComponent } from 'src/app/order/components/product-detail.
 import { MatBottomSheetModule } from '@angular/material/bottom-sheet';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
+import { CheckoutComponent } from './components/checkout.component';
 
 
 @NgModule({
-  declarations: [OrderPageComponent, ProductDetailComponent],
+  declarations: [OrderPageComponent, ProductDetailComponent, CheckoutComponent],
   imports: [
     CommonModule,
     OrderRoutingModule,
