@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiHost: 'http://192.168.100.8:8000'
+  apiHost: 'https://kral-kutu-backend.herokuapp.com/'
 };
