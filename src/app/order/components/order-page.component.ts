@@ -11,7 +11,7 @@ import { composeOrderUnit, setProductsInCart } from 'src/app/common/const';
   selector: 'app-order-page',
   styles: [`
       .products {
-          width: 75%;
+          width: 85%;
           margin: auto;
           display: grid;
           grid-template-columns: 1fr 1fr 1fr;
@@ -19,31 +19,189 @@ import { composeOrderUnit, setProductsInCart } from 'src/app/common/const';
           grid-row-gap: 30px;
       }
 
-      mat-card {
+      .product-card {
           display: flex;
           flex-direction: column;
           cursor: pointer;
+          border-radius: 5px;
+          overflow: hidden;
+          -webkit-box-shadow: 0 0 30px -15px rgba(0, 0, 0, 0.66);
+          -moz-box-shadow: 0 0 30px -15px rgba(0, 0, 0, 0.66);
+          box-shadow: 0 0 30px -15px rgba(0, 0, 0, 0.66);
+          transition: .3s;
       }
 
-      mat-card:hover {
-          box-shadow: 0 0 10px gray;
-          transform: scale(1.05, 1.05);
+      .product-card:hover {
+          -webkit-box-shadow: 0 0 30px -7px rgba(0, 0, 0, 0.66);
+          -moz-box-shadow: 0 0 30px -7px rgba(0, 0, 0, 0.66);
+          box-shadow: 0 0 30px -7px rgba(0, 0, 0, 0.66);
+          transform: translateY(-7px);
       }
 
-      mat-card-actions {
-          flex: 1;
+      .image-wrapper {
+          width: 100%;
+          height: 350px;
+          overflow: hidden;
+          position: relative;
+      }
+
+      .image-wrapper > img {
+          width: 100%;
+          position: absolute;
+          left: 0;
+          top: 0;
+      }
+
+      .card-content {
           display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 10px 15px;
+      }
+
+      .dimensions {
+          display: flex;
+          justify-content: center;
+          align-items: flex-start;
+      }
+
+      .size {
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          perspective: 800px;
+      }
+
+      .size > img {
+          width: 20px;
+      }
+
+      .length-dimension {
+          padding: 0 7px;
+          margin: 0 7px;
+          border-left: 1px solid rgb(230, 230, 230);
+          border-right: 1px solid rgb(230, 230, 230);
+      }
+
+      .length-dimension > img {
+          width: 27px;
+          transform: rotateX(60deg) rotateZ(13deg);
+      }
+
+      .card-content > h4 {
+          font-size: 18px;
+          font-weight: 500;
+          margin: 0;
+      }
+
+      .card-actions {
+          min-height: 70px;
+          display: flex;
+          flex: 1;
           align-items: flex-end;
           justify-content: flex-end;
+          padding: 10px 15px;
+          background-color: rgb(245, 245, 245);
+          position: relative;
       }
 
       .quantity-input-group {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
       }
 
-      .up-down-buttons {
+      .quantity-input {
+          text-align: center;
+          width: 50px;
+          height: 36px;
+          line-height: 20px;
+          color: #24292e;
+          border: 1px solid #e1e4e8;
+          outline: none;
+          box-shadow: inset 0 1px 0 rgba(225, 228, 232, .2);
+          max-width: 100%;
+          background-color: #fafbfc;
+          padding: 10px;
+          font-size: 16px;
+          border-radius: 5px;
       }
 
-      .up-down-buttons button {
+      .quantity-input:focus {
+          background-color: #fff;
+          border-color: #0366d6;
+          outline: none;
+          box-shadow: 0 0 0 3px rgba(3, 102, 214, .3);
+      }
+
+      .add-to-cart {
+          display: block;
+          position: absolute;
+          right: 5px;
+          bottom: 5px;
+          color: white;
+          transition: .4s;
+          transition-timing-function: linear;
+      }
+
+      .add-to-cart::after {
+          width: 100px;
+          height: 100px;
+          content: '';
+          background-color: #3f51b5;
+          z-index: 1;
+          position: absolute;
+          top: -20px;
+          left: -20px;
+          border-radius: 50%;
+          box-shadow: 0 0 15px gray;
+          transition: .2s;
+      }
+
+      .add-to-cart:hover:after {
+          background-color: #2b387c;
+      }
+
+      .add-to-cart mat-icon, .added-to-cart mat-icon {
+          width: 30px;
+          height: 30px;
+          font-size: 30px;
+          line-height: 30px;
+          transition: .4s;
+          transition-timing-function: ease-in-out;
+      }
+
+      .added-to-cart {
+          position: absolute;
+          right: 5px;
+          bottom: 5px;
+          z-index: 3;
+          pointer-events: none;
+          width: 40px;
+          line-height: 24px;
+          font-size: 24px;
+          color: white;
+      }
+
+      .added-to-cart mat-icon {
+          opacity: 0;
+          transition: .8s;
+      }
+
+      .product-price {
+          height: 100%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          position: absolute;
+          left: 0;
+          bottom: 0;
+          padding: 0 15px;
+          color: white;
+          font-size: 18px;
+          background-color: rgb(53, 53, 53);
       }
 
       @media screen and (max-width: 1000px) {
@@ -57,36 +215,63 @@ import { composeOrderUnit, setProductsInCart } from 'src/app/common/const';
           <div>
               <h1>Products</h1>
               <div class="products">
-                  <mat-card *ngFor="let product of products" (click)="openProductDetails(product)">
-                      <img mat-card-image [src]="product.image" alt="product-image">
-                      <mat-card-content>
-                          <p>
-                              {{product.code}} - $ {{product.price}}
-                          </p>
-                      </mat-card-content>
-                      <mat-card-actions>
+
+                  <!-- CARD -->
+                  <div class="product-card" *ngFor="let product of products" (click)="openProductDetails(product)">
+                      <div class="image-wrapper">
+                          <img [src]="product.image" alt="product-image">
+                      </div>
+
+                      <!-- CARD CONTENT -->
+                      <div class="card-content">
+                          <h4>{{product.code}}</h4>
+                          <div class="dimensions">
+                              <div class="size">
+                                  <span>15.00</span>
+                                  <img src="../../../assets/images/width-arrow.svg" alt="width-icon">
+                              </div>
+                              <div class="size length-dimension">
+                                  <span>15.00</span>
+                                  <img src="../../../assets/images/depth-arrow.svg" alt="length-icon">
+                              </div>
+                              <div class="size">
+                                  <span>15.00</span>
+                                  <img src="../../../assets/images/height-arrow.svg" alt="height-icon">
+                              </div>
+                          </div>
+                      </div>
+
+                      <!-- CARD ACTIONS -->
+                      <div class="card-actions">
+                          <span class="product-price">$20</span>
                           <div class="quantity-input-group">
-                              <input type="text" [value]="'1'"
-                                     (click)="$event.stopPropagation()"
-                                     (input)="onInputChange($event, quantity)"
-                                     #quantity
-                                     style="height: 30px; width: 50px">
                               <span class="up-down-buttons">
-                                  <button mat-icon-button type="button" (click)="changeInputValue($event, quantity, 1)">
-                                      <mat-icon color="primary">keyboard_arrow_up</mat-icon>
-                                  </button>
                                   <button mat-icon-button type="button"
                                           (click)="changeInputValue($event, quantity, -1)">
                                       <mat-icon color="primary">keyboard_arrow_down</mat-icon>
                                   </button>
+                                  <input type="text" [value]="'1'"
+                                         (click)="$event.stopPropagation()"
+                                         (input)="onInputChange($event, quantity)"
+                                         #quantity
+                                         class="quantity-input">
+                                  <button mat-icon-button type="button"
+                                          (click)="changeInputValue($event, quantity, 1)">
+                                      <mat-icon color="primary">keyboard_arrow_up</mat-icon>
+                                  </button>
                               </span>
                           </div>
-                          <button mat-stroked-button color="primary" type="button"
-                                  (click)="addProductToCart($event, product, quantity.value)">
-                              {{t('add')}}
+                          <button mat-icon-button color="primary" type="button"
+                                  class="add-to-cart"
+                                  (click)="addProductToCart($event, product, quantity.value, addToCartIcon, addedToCartIcon)">
+                              <mat-icon #addToCartIcon style="z-index: 2; position: relative;">add_shopping_cart
+                              </mat-icon>
                           </button>
-                      </mat-card-actions>
-                  </mat-card>
+                          <button mat-icon-button class="added-to-cart">
+                              <mat-icon #addedToCartIcon>shopping_cart</mat-icon>
+                          </button>
+                      </div>
+                  </div>
               </div>
           </div>
       </ng-container>
@@ -147,7 +332,7 @@ export class OrderPageComponent implements OnInit {
     }));
   }
 
-  addProductToCart(e, product, quantity: string) {
+  addProductToCart(e, product, quantity: string, addToCartIcon?, addedToCartIcon?) {
     e.stopPropagation(); // prevents product detail to be opened up
     const productsInCart: any[] = this.productsInCart.getValue();
     const productIndex: number = this.findProductInCart(product.id);
@@ -157,6 +342,30 @@ export class OrderPageComponent implements OnInit {
       productsInCart.push(composeOrderUnit(product, Number(quantity)));
     }
     setProductsInCart(this.productsInCart, productsInCart);
+    if (addToCartIcon) {
+      this.animate(addToCartIcon, addedToCartIcon);
+    }
+  }
+
+  animate(addToCartIcon, addedToCartIcon) {
+    const isItemAlreadyInCart: boolean = addToCartIcon._elementRef.nativeElement.style.opacity === '0';
+    if (typeof addToCartIcon.counter === 'undefined') {
+      Object.defineProperty(addToCartIcon, 'counter', {writable: true, value: 1});
+    }
+    if (isItemAlreadyInCart) {
+      const counter = addToCartIcon.counter;
+      Object.defineProperty(addToCartIcon, 'counter', {writable: true, value: counter + 1});
+      const rotateDegree = `${360 * addToCartIcon.counter}deg`;
+      addedToCartIcon._elementRef.nativeElement.style.transform = 'rotate(' + rotateDegree + ')';
+      return;
+    }
+
+    addToCartIcon._elementRef.nativeElement.style.opacity = 0;
+    addedToCartIcon._elementRef.nativeElement.style.opacity = 1;
+    addToCartIcon._elementRef.nativeElement.style.transform = 'rotate(360deg)';
+    addedToCartIcon._elementRef.nativeElement.style.transform = 'rotate(360deg)';
+
+
   }
 
   findProductInCart(productId): number {

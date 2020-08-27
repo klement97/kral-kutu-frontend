@@ -4,5 +4,11 @@
   "quantity": "sasia",
   "product count": "numri i produkteve",
   "checkout": "Përfundoje porosinë",
-  "continue shopping": "Vazhdoje porosinë"
+  "continue shopping": "Vazhdoje porosinë",
+  "first name": "Emri",
+  "last name": "Mbiemri",
+  "phone": "Numri i celularit",
+  "phone hint": "Ky numër telefoni do të përdoret për t'ju kontaktuar.",
+  "address": "Adresa",
+  "address hint": "Kjo adres do te perdoret per t'ju derguar produktet."
 }

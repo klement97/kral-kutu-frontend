@@ -4,5 +4,11 @@
   "quantity": "miktar",
   "product count": "ürün sayısı",
   "checkout": "Alışverişi Tamamla",
-  "continue shopping": "Alışverişe devam et"
+  "continue shopping": "Alışverişe devam et",
+  "first name": "Adınız",
+  "last name": "Soyadınız",
+  "phone": "Telefon numarası",
+  "phone hint": "Bu telefon numarası sizinle iletişim kurmak için kullanılacaktır.",
+  "address": "Adres",
+  "address hint": "Bu adres, ürünleri size göndermek için kullanılacaktır."
 }

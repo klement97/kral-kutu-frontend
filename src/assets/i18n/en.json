@@ -4,5 +4,11 @@
   "quantity": "quantity",
   "product count": "product count",
   "checkout": "Checkout",
-  "continue shopping": "Continue shopping"
+  "continue shopping": "Continue shopping",
+  "first name": "First Name",
+  "last name": "Last Name",
+  "phone": "Phone",
+  "phone hint": "This phone number will be used to contact you.",
+  "address": "Address",
+  "address hint": "This address will be used to send the products to you."
 }

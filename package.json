@@ -24,6 +24,7 @@
     "@angular/router": "~10.0.1",
     "@angular/service-worker": "~10.0.1",
     "@ngneat/transloco": "^2.17.3",
+    "express": "^4.17.1",
     "google-translate": "^3.0.0",
     "rxjs": "~6.5.4",
     "tslib": "^2.0.0",

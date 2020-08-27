@@ -1,7 +1,6 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { OrderService } from 'src/app/order/services/order.service';
 import { PRODUCTS_IN_CART } from 'src/app/common/const';
-import { MatMenu, MatMenuTrigger } from '@angular/material/menu';
 
 
 @Component({
@@ -9,7 +8,7 @@ import { MatMenu, MatMenuTrigger } from '@angular/material/menu';
   template: `
       <ng-container *transloco="let t">
           <!-- BEGIN TOOLBAR -->
-          <mat-toolbar color="primary" style="height: 50px">
+          <mat-toolbar style="height: 50px; background-color: rgb(50, 50, 50); color: white">
               <span routerLink="/" style="cursor: pointer">Kral Kutu</span>
               <span class="spacer"></span>
 

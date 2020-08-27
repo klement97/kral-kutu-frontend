@@ -14,7 +14,7 @@ import { EventEmitter } from '@angular/core';
               <mat-list-item role="listitem" *ngFor="let orderUnit of orderUnits | async">
                   <img [src]="orderUnit.product.image" alt="product-image" width="70px">
                   <button mat-icon-button (click)="removeProduct(orderUnit.product.id)">
-                      <mat-icon color="warn">delete</mat-icon>
+                      <mat-icon color="warn">remove_shopping_cart</mat-icon>
                   </button>
               </mat-list-item>
               <mat-list-item role="listitem" style="margin-top: 40px">
