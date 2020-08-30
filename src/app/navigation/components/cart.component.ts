@@ -1,7 +1,7 @@
 import { Component, OnInit, Output } from '@angular/core';
 import { OrderService } from 'src/app/order/services/order.service';
 import { BehaviorSubject } from 'rxjs';
-import { setProductsInCart } from 'src/app/common/const';
+import { productsInCart, setProductsInCart } from 'src/app/common/const';
 import { Router } from '@angular/router';
 import { EventEmitter } from '@angular/core';
 
@@ -42,7 +42,7 @@ export class CartComponent implements OnInit {
     private orderService: OrderService,
     private router: Router
   ) {
-    this.orderUnits = orderService.productsInCart;
+    this.orderUnits = productsInCart;
   }
 
   ngOnInit(): void {

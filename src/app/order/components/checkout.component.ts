@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { OrderService } from 'src/app/order/services/order.service';
 import { BehaviorSubject } from 'rxjs';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { clearCart, productsInCart } from 'src/app/common/const';
 
 
 @Component({
@@ -10,7 +11,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
       <ng-container *transloco="let t">
           <h1>{{t('checkout')}}</h1>
 
-          <form [formGroup]="orderForm">
+          <form [formGroup]="orderForm" class="vertical-form" (ngSubmit)="submit()">
 
               <!-- First Name -->
               <mat-form-field color="primary">
@@ -40,12 +41,24 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
                   <mat-hint>{{t('address hint')}}</mat-hint>
               </mat-form-field>
 
-              <button type="submit">Submit</button>
+              <button type="submit" mat-stroked-button color="primary">Submit</button>
 
           </form>
       </ng-container>
   `,
-  styles: []
+  styles: [`
+      .vertical-form {
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+      }
+
+      .vertical-form mat-form-field, button {
+          width: 80%;
+          margin-top: 20px;
+      }
+  `]
 })
 export class CheckoutComponent implements OnInit {
 
@@ -56,23 +69,50 @@ export class CheckoutComponent implements OnInit {
     private orderService: OrderService,
     private fb: FormBuilder
   ) {
-    this.productsInCart = orderService.productsInCart;
   }
 
   ngOnInit(): void {
+    this.productsInCart = productsInCart;
     this.orderForm = this.getOrderForm();
   }
 
   getOrderForm(): FormGroup {
     return this.fb.group({
-      first_name: ['', [Validators.required, Validators.maxLength(50)]],
-      last_name: ['', [Validators.required, Validators.maxLength(50)]],
-      phone: ['', [Validators.required, Validators.maxLength(20)]],
-      address: ['', [Validators.maxLength(254)]],
+      first_name: ['klement', [Validators.required, Validators.maxLength(50)]],
+      last_name: ['omeri', [Validators.required, Validators.maxLength(50)]],
+      phone: ['123123', [Validators.required, Validators.maxLength(20)]],
+      address: ['tirane', [Validators.maxLength(254)]],
       order_units: [[]],
-      inner_leather: [''],
-      outer_leather: [''],
+      inner_leather: ['1'],
+      outer_leather: ['1'],
     });
+  }
+
+  /**
+   * Serialization process is to replace products with their respective ID
+   * instead of a product object.
+   */
+  getSerializedOrderUnits() {
+    const orderUnits = Array.from(this.productsInCart.getValue());
+    orderUnits.forEach(orderUnit => orderUnit.product = orderUnit.product.id);
+
+    return orderUnits;
+  }
+
+  submit() {
+    // Replace order units with serialized ones
+    this.orderForm.get('order_units').patchValue(this.getSerializedOrderUnits());
+    this.orderService.createOrder(this.orderForm.value)
+      .subscribe(
+        () => {
+          console.log('The order has been created successfully!');
+          clearCart();
+          this.orderForm = this.getOrderForm();
+        },
+        () => {
+          console.log('The order cannot been created! Please try again later.');
+        }
+      );
   }
 
 }

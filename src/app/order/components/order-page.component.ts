@@ -4,7 +4,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatBottomSheet } from '@angular/material/bottom-sheet';
 import { ProductDetailComponent } from 'src/app/order/components/product-detail.component';
-import { composeOrderUnit, setProductsInCart } from 'src/app/common/const';
+import { composeOrderUnit, setProductsInCart, productsInCart } from 'src/app/common/const';
 
 
 @Component({
@@ -303,7 +303,7 @@ export class OrderPageComponent implements OnInit {
     this.productCategories$ = this.orderService.getProductCategories();
     this.leathers$ = this.orderService.getLeathers();
     this.leatherSerials$ = this.orderService.getLeatherSerials();
-    this.productsInCart = this.orderService.productsInCart;
+    this.productsInCart = productsInCart;
   }
 
   getProductFilterForm(): FormGroup {
@@ -334,14 +334,14 @@ export class OrderPageComponent implements OnInit {
 
   addProductToCart(e, product, quantity: string, addToCartIcon?, addedToCartIcon?) {
     e.stopPropagation(); // prevents product detail to be opened up
-    const productsInCart: any[] = this.productsInCart.getValue();
+    const selectedProducts: any[] = this.productsInCart.getValue();
     const productIndex: number = this.findProductInCart(product.id);
     if (productIndex > -1) {
-      productsInCart[productIndex].quantity += Number(quantity);
+      selectedProducts[productIndex].quantity += Number(quantity);
     } else {
-      productsInCart.push(composeOrderUnit(product, Number(quantity)));
+      selectedProducts.push(composeOrderUnit(product, Number(quantity)));
     }
-    setProductsInCart(this.productsInCart, productsInCart);
+    setProductsInCart(this.productsInCart, selectedProducts);
     if (addToCartIcon) {
       this.animate(addToCartIcon, addedToCartIcon);
     }

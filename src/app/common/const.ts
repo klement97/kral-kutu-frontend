@@ -2,6 +2,9 @@ import { formatDate } from '@angular/common';
 import { BehaviorSubject } from 'rxjs';
 
 
+export const productsInCart = new BehaviorSubject([]);
+
+
 export const PRODUCTS_IN_CART = 'kralKutuCartProducts';
 export const MIN_TIME = '00:00:00.000000';
 export const MAX_TIME = '23:59:59.999999';
@@ -89,3 +92,9 @@ export function setProductsInCart(products: BehaviorSubject<any[]>, newProducts:
   products.next(newProducts);
   localStorage.setItem(PRODUCTS_IN_CART, JSON.stringify(newProducts));
 }
+
+export function clearCart() {
+  productsInCart.next([]);
+  localStorage.setItem(PRODUCTS_IN_CART, JSON.stringify([]));
+}
+

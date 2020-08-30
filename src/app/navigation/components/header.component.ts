@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { OrderService } from 'src/app/order/services/order.service';
-import { PRODUCTS_IN_CART } from 'src/app/common/const';
+import { PRODUCTS_IN_CART, productsInCart } from 'src/app/common/const';
 
 
 @Component({
@@ -46,9 +45,7 @@ import { PRODUCTS_IN_CART } from 'src/app/common/const';
 export class HeaderComponent implements OnInit {
   productsInCartCount = '0';
 
-  constructor(
-    private orderService: OrderService
-  ) { }
+  constructor() { }
 
   ngOnInit(): void {
     this.loadProductsFromLocalStorage();
@@ -58,12 +55,12 @@ export class HeaderComponent implements OnInit {
   loadProductsFromLocalStorage() {
     const productsInLocalStorage = localStorage.getItem(PRODUCTS_IN_CART);
     if (productsInLocalStorage) {
-      this.orderService.productsInCart.next(JSON.parse(productsInLocalStorage));
+      productsInCart.next(JSON.parse(productsInLocalStorage));
     }
   }
 
   getCountOfProductsInCart() {
-    this.orderService.productsInCart.subscribe((value) => {
+    productsInCart.subscribe((value) => {
       let quantity = 0;
       value.forEach((v) => quantity += v.quantity);
       this.productsInCartCount = quantity.toString();
