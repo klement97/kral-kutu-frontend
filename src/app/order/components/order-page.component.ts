@@ -5,6 +5,7 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatBottomSheet } from '@angular/material/bottom-sheet';
 import { ProductDetailComponent } from 'src/app/order/components/product-detail.component';
 import { composeOrderUnit, setProductsInCart, productsInCart } from 'src/app/common/const';
+import { MatPaginator } from '@angular/material/paginator';
 
 
 @Component({
@@ -272,6 +273,11 @@ import { composeOrderUnit, setProductsInCart, productsInCart } from 'src/app/com
                           </button>
                       </div>
                   </div>
+                  <mat-paginator [pageSizeOptions]="[10, 20, 50]"
+                                 (page)="getProducts()"
+                                 showFirstLastButtons
+                                 [length]="100"
+                  ></mat-paginator>
               </div>
           </div>
       </ng-container>
@@ -294,7 +300,8 @@ export class OrderPageComponent implements OnInit {
   constructor(
     private orderService: OrderService,
     private fb: FormBuilder,
-    private bottomSheet: MatBottomSheet
+    private bottomSheet: MatBottomSheet,
+    private paginator: MatPaginator
   ) { }
 
   ngOnInit(): void {
