@@ -13,7 +13,6 @@ import { MatBottomSheetModule } from '@angular/material/bottom-sheet';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { CheckoutComponent } from './components/checkout.component';
-import { MatPaginatorModule } from '@angular/material/paginator';
 
 
 @NgModule({
@@ -28,8 +27,7 @@ import { MatPaginatorModule } from '@angular/material/paginator';
     MatButtonModule,
     MatBottomSheetModule,
     MatInputModule,
-    MatIconModule,
-    MatPaginatorModule
+    MatIconModule
   ]
 })
 export class OrderModule {}
