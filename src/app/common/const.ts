@@ -4,6 +4,8 @@ import { BehaviorSubject } from 'rxjs';
 
 export const productsInCart = new BehaviorSubject([]);
 
+export const positiveIntegerRegex = new RegExp('^[1-9]\\d*$');
+export const positiveIntegerWithZeroRegex = new RegExp('^\\d+$');
 
 export const PRODUCTS_IN_CART = 'kralKutuCartProducts';
 export const MIN_TIME = '00:00:00.000000';

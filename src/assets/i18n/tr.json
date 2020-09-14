@@ -10,5 +10,14 @@
   "phone": "Telefon numarası",
   "phone hint": "Bu telefon numarası sizinle iletişim kurmak için kullanılacaktır.",
   "address": "Adres",
-  "address hint": "Bu adres, ürünleri size göndermek için kullanılacaktır."
+  "address hint": "Bu adres, ürünleri size göndermek için kullanılacaktır.",
+  "code": "Kod",
+  "title": "Başlık",
+  "description": "Açıklama",
+  "inner leather": "İç deri",
+  "outer leather": "Dış deri",
+  "price": "Fiyat",
+  "height": "Yükseklik",
+  "width": "Genişlik",
+  "length": "Uzunluk"
 }

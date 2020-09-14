@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
+import { environment } from 'src/environments/environment';
+
 
 @Injectable({
   providedIn: 'root'
@@ -11,6 +13,9 @@ export class UserService {
   }
 
   ipLookUp(): Observable<any> {
-    return this.http.get('http://ip-api.com/json');
+    if (environment.production) {
+      return this.http.get('http://ip-api.com/json');
+    }
+    return of({});
   }
 }

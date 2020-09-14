@@ -10,5 +10,14 @@
   "phone": "Phone",
   "phone hint": "This phone number will be used to contact you.",
   "address": "Address",
-  "address hint": "This address will be used to send the products to you."
+  "address hint": "This address will be used to send the products to you.",
+  "code": "Code",
+  "title": "Title",
+  "description": "Description",
+  "inner leather": "Inner leather",
+  "outer leather": "Outer Leather",
+  "price": "Price",
+  "height": "Height",
+  "width": "Width",
+  "length": "Length"
 }

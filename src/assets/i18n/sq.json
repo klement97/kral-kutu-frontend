@@ -10,5 +10,14 @@
   "phone": "Numri i celularit",
   "phone hint": "Ky numër telefoni do të përdoret për t'ju kontaktuar.",
   "address": "Adresa",
-  "address hint": "Kjo adres do të përdoret per t'ju dërguar produktet."
+  "address hint": "Kjo adres do të përdoret per t'ju dërguar produktet.",
+  "code": "Kodi",
+  "title": "Titulli",
+  "description": "Përshkrimi",
+  "inner leather": "Lëkura e brëndshme",
+  "outer leather": "Lëkura e jashtme",
+  "price": "Çmimi",
+  "height": "Lartësia",
+  "width": "Gjerësia",
+  "length": "Gjatësia"
 }

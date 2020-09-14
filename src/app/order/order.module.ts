@@ -13,6 +13,7 @@ import { MatBottomSheetModule } from '@angular/material/bottom-sheet';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { CheckoutComponent } from './components/checkout.component';
+import { MatListModule } from '@angular/material/list';
 
 
 @NgModule({
@@ -27,7 +28,8 @@ import { CheckoutComponent } from './components/checkout.component';
     MatButtonModule,
     MatBottomSheetModule,
     MatInputModule,
-    MatIconModule
+    MatIconModule,
+    MatListModule
   ]
 })
 export class OrderModule {}

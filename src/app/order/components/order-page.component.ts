@@ -4,7 +4,12 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatBottomSheet } from '@angular/material/bottom-sheet';
 import { ProductDetailComponent } from 'src/app/order/components/product-detail.component';
-import { composeOrderUnit, setProductsInCart, productsInCart } from 'src/app/common/const';
+import {
+  composeOrderUnit,
+  positiveIntegerWithZeroRegex,
+  productsInCart,
+  setProductsInCart
+} from 'src/app/common/const';
 
 
 @Component({
@@ -36,20 +41,6 @@ import { composeOrderUnit, setProductsInCart, productsInCart } from 'src/app/com
           -moz-box-shadow: 0 0 30px -7px rgba(0, 0, 0, 0.66);
           box-shadow: 0 0 30px -7px rgba(0, 0, 0, 0.66);
           transform: translateY(-7px);
-      }
-
-      .image-wrapper {
-          width: 100%;
-          height: 350px;
-          overflow: hidden;
-          position: relative;
-      }
-
-      .image-wrapper > img {
-          width: 100%;
-          position: absolute;
-          left: 0;
-          top: 0;
       }
 
       .card-content {
@@ -227,15 +218,15 @@ import { composeOrderUnit, setProductsInCart, productsInCart } from 'src/app/com
                           <h4>{{product.code}}</h4>
                           <div class="dimensions">
                               <div class="size">
-                                  <span>15.00</span>
+                                  <span>{{product.width}}</span>
                                   <img src="../../../assets/images/width-arrow.svg" alt="width-icon">
                               </div>
                               <div class="size length-dimension">
-                                  <span>15.00</span>
+                                  <span>{{product.lenght}}</span>
                                   <img src="../../../assets/images/depth-arrow.svg" alt="length-icon">
                               </div>
                               <div class="size">
-                                  <span>15.00</span>
+                                  <span>{{product.height}}</span>
                                   <img src="../../../assets/images/height-arrow.svg" alt="height-icon">
                               </div>
                           </div>
@@ -243,7 +234,7 @@ import { composeOrderUnit, setProductsInCart, productsInCart } from 'src/app/com
 
                       <!-- CARD ACTIONS -->
                       <div class="card-actions">
-                          <span class="product-price">$20</span>
+                          <span class="product-price">{{'$'}}{{product.price}}</span>
                           <div class="quantity-input-group">
                               <span class="up-down-buttons">
                                   <button mat-icon-button type="button"
@@ -264,7 +255,8 @@ import { composeOrderUnit, setProductsInCart, productsInCart } from 'src/app/com
                           <button mat-icon-button color="primary" type="button"
                                   class="add-to-cart"
                                   (click)="addProductToCart($event, product, quantity.value, addToCartIcon, addedToCartIcon)">
-                              <mat-icon #addToCartIcon style="z-index: 2; position: relative;">add_shopping_cart
+                              <mat-icon #addToCartIcon style="z-index: 2; position: relative;">
+                                  add_shopping_cart
                               </mat-icon>
                           </button>
                           <button mat-icon-button class="added-to-cart">
@@ -287,9 +279,6 @@ export class OrderPageComponent implements OnInit {
 
   productFilterForm: FormGroup;
   productsInCart: BehaviorSubject<any>;
-
-  positiveIntegerRegex = new RegExp('^[1-9]\\d*$');
-  positiveIntegerWithZeroRegex = new RegExp('^\\d+$');
 
   constructor(
     private orderService: OrderService,
@@ -398,7 +387,7 @@ export class OrderPageComponent implements OnInit {
         input.value = '1';
         return;
       }
-      if (inputChar && !this.positiveIntegerWithZeroRegex.test(inputChar)) {
+      if (inputChar && !positiveIntegerWithZeroRegex.test(inputChar)) {
         const inputValueArray: string[] = input.value.split('');
         inputValueArray.splice(input.value.indexOf(inputChar), 1);
         input.value = inputValueArray.join('');
