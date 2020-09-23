@@ -41,6 +41,11 @@ import {
           font-size: 24px;
           color: white;
       }
+
+      .metric-hint {
+          font-size: 10px;
+          color: gray;
+      }
   `],
   template: `
       <ng-container *transloco="let t">
@@ -58,17 +63,23 @@ import {
                       <div class="card-content">
                           <h4>{{product.code}}</h4>
                           <div class="dimensions">
-                              <div class="size">
-                                  <span>{{product.width}}</span> <img src="../../../assets/images/width-arrow.svg"
-                                                                      alt="width-icon">
+                              <div class="size" (click)="focusInput($event, width.focus())">
+                                  <input type="number" class="quantity-input" [value]="product.width | number" #width
+                                         (input)="product.width = width.value">
+                                  <img src="../../../assets/images/width-arrow.svg" alt="width-icon">
+                                  <span class="metric-hint">(cm)</span>
                               </div>
-                              <div class="size length-dimension">
-                                  <span>{{product.length}}</span> <img src="../../../assets/images/depth-arrow.svg"
-                                                                       alt="length-icon">
+                              <div class="size length-dimension" (click)="focusInput($event, length.focus())">
+                                  <input type="number" class="quantity-input" [value]="product.length | number" #length
+                                         (input)="product.length = length.value">
+                                  <img src="../../../assets/images/depth-arrow.svg" alt="length-icon">
+                                  <span class="metric-hint">(cm)</span>
                               </div>
-                              <div class="size">
-                                  <span>{{product.height}}</span> <img src="../../../assets/images/height-arrow.svg"
-                                                                       alt="height-icon">
+                              <div class="size" (click)="focusInput($event, height.focus())">
+                                  <input type="number" class="quantity-input" [value]="product.height | number" #height
+                                         (input)="product.height = height.value">
+                                  <img src="../../../assets/images/height-arrow.svg" alt="height-icon">
+                                  <span class="metric-hint">(cm)</span>
                               </div>
                           </div>
                       </div>
@@ -105,7 +116,7 @@ import {
       </ng-container>
   `
 })
-export class OrderPageComponent implements OnInit {
+export class ProductPageComponent implements OnInit {
 
   products: any[];
   productsCount = 0;
@@ -159,9 +170,12 @@ export class OrderPageComponent implements OnInit {
 
   addProductToCart(e, product, quantity: string, addToCartIcon?, addedToCartIcon?) {
     e.stopPropagation(); // prevents product detail to be opened up
+    console.log(product);
     const selectedProducts: any[] = this.productsInCart.getValue();
     const productIndex: number = this.findProductInCart(product.id);
-    if (productIndex > -1) {
+    const isProductInCart = productIndex > -1;
+
+    if (isProductInCart) {
       selectedProducts[productIndex].quantity += Number(quantity);
     } else {
       selectedProducts.push(composeOrderUnit(product, Number(quantity)));
@@ -189,8 +203,6 @@ export class OrderPageComponent implements OnInit {
     addedToCartIcon._elementRef.nativeElement.style.opacity = 1;
     addToCartIcon._elementRef.nativeElement.style.transform = 'rotate(360deg)';
     addedToCartIcon._elementRef.nativeElement.style.transform = 'rotate(360deg)';
-
-
   }
 
   findProductInCart(productId): number {
@@ -233,6 +245,10 @@ export class OrderPageComponent implements OnInit {
         input.value = '10000';
       }
     }, 200);
+  }
+
+  focusInput(e, _) {
+    e.stopPropagation();
   }
 
 }
