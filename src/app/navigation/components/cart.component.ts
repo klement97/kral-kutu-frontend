@@ -1,19 +1,20 @@
-import { Component, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { OrderService } from 'src/app/order/services/order.service';
 import { BehaviorSubject } from 'rxjs';
 import { productsInCart, setProductsInCart } from 'src/app/common/const';
 import { Router } from '@angular/router';
-import { EventEmitter } from '@angular/core';
 
 
 @Component({
   selector: 'app-cart',
+  styles: [`
+  `],
   template: `
       <ng-container *transloco="let t">
           <mat-list role="list">
 
               <mat-list-item role="listitem" *ngFor="let orderUnit of orderUnits | async">
-                  <img [src]="orderUnit.product.image" [alt]="orderUnit.product.image | imageAlt" width="70px">
+                  <img [src]="orderUnit.product.image" [alt]="orderUnit.product.image | imageAlt" width="100px">
                   <button mat-icon-button (click)="removeProduct(orderUnit.product.id)">
                       <mat-icon color="warn">remove_shopping_cart</mat-icon>
                   </button>
@@ -32,8 +33,7 @@ import { EventEmitter } from '@angular/core';
               </mat-list-item>
           </mat-list>
       </ng-container>
-  `,
-  styles: []
+  `
 })
 export class CartComponent implements OnInit {
 

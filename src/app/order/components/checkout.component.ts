@@ -72,7 +72,7 @@ import { clearCart, productsInCart } from 'src/app/common/const';
                   <mat-hint>{{t('address hint')}}</mat-hint>
               </mat-form-field>
 
-              <button type="submit" mat-raised-button color="primary">Submit</button>
+              <button type="submit" mat-raised-button color="primary">{{t('submit')}}</button>
 
           </form>
 

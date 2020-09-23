@@ -13,9 +13,9 @@ export class UserService {
   }
 
   ipLookUp(): Observable<any> {
-    if (environment.production) {
-      return this.http.get('http://ip-api.com/json');
-    }
-    return of({});
+    // if (environment.production) {
+    return this.http.get('http://ip-api.com/json');
+    // }
+    // return of({});
   }
 }
