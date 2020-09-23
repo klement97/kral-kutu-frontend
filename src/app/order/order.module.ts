@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { OrderRoutingModule } from './order-routing.module';
-import { OrderPageComponent } from 'src/app/order/components/order-page.component';
+import { ProductPageComponent } from 'src/app/order/components/product-page.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { TranslocoRootModule } from 'src/app/transloco-root.module';
 import { MatCardModule } from '@angular/material/card';
@@ -13,11 +13,15 @@ import { MatBottomSheetModule } from '@angular/material/bottom-sheet';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { CheckoutComponent } from './components/checkout.component';
+import { MatListModule } from '@angular/material/list';
+import { MatTableModule } from '@angular/material/table';
+import { SharedModule } from 'src/app/common/shared.module';
 
 
 @NgModule({
-  declarations: [OrderPageComponent, ProductDetailComponent, CheckoutComponent],
+  declarations: [ProductPageComponent, ProductDetailComponent, CheckoutComponent],
   imports: [
+    SharedModule,
     CommonModule,
     OrderRoutingModule,
     ReactiveFormsModule,
@@ -27,7 +31,9 @@ import { CheckoutComponent } from './components/checkout.component';
     MatButtonModule,
     MatBottomSheetModule,
     MatInputModule,
-    MatIconModule
+    MatIconModule,
+    MatListModule,
+    MatTableModule
   ]
 })
 export class OrderModule {}

@@ -18,7 +18,7 @@ const countryCodeLanguageMapping = {
   tr: 'tr'
 };
 
-const getActiveLanguageFromCountryCode = (countryCode: string) => {
+const getActiveLanguageFromCountryCode = (countryCode: string = 'en') => {
   if (countryCodeLanguageMapping[countryCode.toLowerCase()]) {
     return countryCodeLanguageMapping[countryCode.toLowerCase()];
   }

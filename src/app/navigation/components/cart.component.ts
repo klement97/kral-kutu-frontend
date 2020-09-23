@@ -1,27 +1,31 @@
-import { Component, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { OrderService } from 'src/app/order/services/order.service';
 import { BehaviorSubject } from 'rxjs';
-import { setProductsInCart } from 'src/app/common/const';
+import { productsInCart, setProductsInCart } from 'src/app/common/const';
 import { Router } from '@angular/router';
-import { EventEmitter } from '@angular/core';
 
 
 @Component({
   selector: 'app-cart',
+  styles: [`
+  `],
   template: `
       <ng-container *transloco="let t">
           <mat-list role="list">
+
               <mat-list-item role="listitem" *ngFor="let orderUnit of orderUnits | async">
-                  <img [src]="orderUnit.product.image" alt="product-image" width="70px">
+                  <img [src]="orderUnit.product.image" [alt]="orderUnit.product.image | imageAlt" width="100px">
                   <button mat-icon-button (click)="removeProduct(orderUnit.product.id)">
                       <mat-icon color="warn">remove_shopping_cart</mat-icon>
                   </button>
               </mat-list-item>
+
               <mat-list-item role="listitem" style="margin-top: 40px">
                   <button mat-stroked-button color="primary" type="button" (click)="navigateTo(['order'])">
                       {{t('continue shopping')}}
                   </button>
               </mat-list-item>
+
               <mat-list-item role="listitem">
                   <button mat-raised-button color="primary" type="button" (click)="navigateTo(['order', 'checkout'])">
                       {{t('checkout')}}
@@ -29,8 +33,7 @@ import { EventEmitter } from '@angular/core';
               </mat-list-item>
           </mat-list>
       </ng-container>
-  `,
-  styles: []
+  `
 })
 export class CartComponent implements OnInit {
 
@@ -42,7 +45,7 @@ export class CartComponent implements OnInit {
     private orderService: OrderService,
     private router: Router
   ) {
-    this.orderUnits = orderService.productsInCart;
+    this.orderUnits = productsInCart;
   }
 
   ngOnInit(): void {
