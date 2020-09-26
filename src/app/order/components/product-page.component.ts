@@ -174,7 +174,7 @@ export class ProductPageComponent implements OnInit {
   }
 
   openProductDetails(product): void {
-    this.bottomSheet.open(ProductDetailComponent, {data: {product}})
+    this.bottomSheet.open(ProductDetailComponent, {data: {product}, panelClass: 'no-top-padding'})
       .afterDismissed().subscribe(((result: { addToCart: boolean, quantity: number }) => {
       if (result?.addToCart) {
         const fakeEvent = {stopPropagation: () => {}};

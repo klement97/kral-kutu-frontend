@@ -6,9 +6,31 @@ import { positiveIntegerWithZeroRegex } from 'src/app/common/const';
 @Component({
   selector: 'app-product-detail',
   styles: [`
-      .close-button {
+      .title {
           display: flex;
-          justify-content: flex-end;
+          justify-content: space-between;
+          align-items: center;
+          top: 0;
+          height: 50px;
+      }
+
+      .mat-card.sticky {
+          position: -webkit-sticky; /* Safari */
+          position: sticky;
+          top: 0;
+          z-index: 2;
+          width: 100%;
+      }
+
+      .title h3 {
+          margin: 0
+      }
+
+      .title mat-icon {
+          width: 30px;
+          height: 30px;
+          font-size: 30px;
+          color: rgba(189, 0, 3, 0.76);
       }
 
       .add-to-cart-button {
@@ -24,49 +46,99 @@ import { positiveIntegerWithZeroRegex } from 'src/app/common/const';
           font-size: 30px;
           height: 25px;
       }
+
+      /* Transposing the table */
+      tr {
+          display: block;
+          float: left;
+      }
+
+      th {
+          text-align: start;
+      }
+
+      td {
+          margin-left: 10px;
+      }
+
+      th, td {
+          display: block;
+          border-bottom: 1px solid gray;
+      }
+
+      ::-webkit-scrollbar {
+          width: 5px;
+      }
+
+      /* Track */
+      ::-webkit-scrollbar-track {
+          box-shadow: inset 0 0 5px grey;
+          border-radius: 10px;
+      }
+
+      /* Handle */
+      ::-webkit-scrollbar-thumb {
+          background: red;
+          border-radius: 10px;
+      }
+
+      /* Handle on hover */
+      ::-webkit-scrollbar-thumb:hover {
+          background: #b30000;
+      }
   `],
   template: `
       <ng-container *transloco="let t">
-          <div class="details">
-              <div class="close-button">
+          <div>
+              <mat-card class="title sticky">
+                  <h3>{{t('product details')}}</h3>
+                  <!-- Close button -->
                   <button mat-icon-button color="warn" (click)="closeBottomSheet()">
                       <mat-icon>close</mat-icon>
                   </button>
-              </div>
-              <div class="image-wrapper">
+              </mat-card>
+              <br>
+              <!-- Image -->
+              <div class="image-wrapper mat-elevation-z2">
                   <img [src]="data.product.image" alt="product-image">
               </div>
-              <mat-list>
-                  <mat-list-item>
-                      {{t('code')}}: {{data.product.code}}
-                  </mat-list-item>
-                  <mat-list-item *ngIf="data.product.title as title">
-                      {{t('title')}}: {{title}}
-                  </mat-list-item>
-                  <mat-list-item *ngIf="data.product.description as description">
-                      {{t('description')}}: {{description}}
-                  </mat-list-item>
-                  <mat-list-item *ngIf="data.product.inner_leather as inner_leather">
-                      {{t('inner leather')}}: {{inner_leather.serial.name}}-{{inner_leather.code}}
-                  </mat-list-item>
-                  <mat-list-item *ngIf="data.product.outer_leather as outer_leather">
-                      {{t('outer leather')}}: {{outer_leather.serial.name}}-{{outer_leather.code}}
-                  </mat-list-item>
-                  <mat-list-item *ngIf="data.product.price as price">
-                      {{t('price')}}: {{price | prefix: '$'}}
-                  </mat-list-item>
-                  <mat-list-item *ngIf="data.product.height as height">
-                      {{t('height')}}: {{height}}cm
-                  </mat-list-item>
-                  <mat-list-item *ngIf="data.product.width as width">
-                      {{t('width')}}: {{width}}cm
-                  </mat-list-item>
-                  <mat-list-item *ngIf="data.product.length as length">
-                      {{t('length')}}: {{length}}cm
-                  </mat-list-item>
-              </mat-list>
+
+              <br>
+              <mat-divider></mat-divider>
+              <br>
+              <!-- Details list -->
+              <mat-card class="mat-elevation-z2">
+                  <table>
+                      <tr>
+                          <th>{{t('code')}}</th>
+                          <th *ngIf="data.product.title as title">{{t('title')}}</th>
+                          <th *ngIf="data.product.description as description">{{t('description')}}</th>
+                          <th *ngIf="data.product.inner_leather as inner_leather">{{t('inner leather')}}</th>
+                          <th *ngIf="data.product.outer_leather as outer_leather">{{t('outer leather')}}</th>
+                          <th *ngIf="data.product.price as price">{{t('price')}}</th>
+                          <th *ngIf="data.product.height as height">{{t('height')}}</th>
+                          <th *ngIf="data.product.width as width">{{t('width')}}</th>
+                          <th *ngIf="data.product.length as length">{{t('length')}}</th>
+                      </tr>
+                      <tr>
+                          <td>{{data.product.code}}</td>
+                          <td *ngIf="data.product.title as title">{{title}}</td>
+                          <td *ngIf="data.product.description as description">{{description}}</td>
+                          <td *ngIf="data.product.inner_leather as inner_leather">{{inner_leather.serial.name}}
+                              -{{inner_leather.code}}</td>
+                          <td *ngIf="data.product.outer_leather as outer_leather">{{outer_leather.serial.name}}
+                              -{{outer_leather.code}}</td>
+                          <td *ngIf="data.product.price as price">{{price | prefix: '$'}}</td>
+                          <td *ngIf="data.product.height as height">{{height}}cm</td>
+                          <td *ngIf="data.product.width as width">{{width}}cm</td>
+                          <td *ngIf="data.product.length as length">{{length}}cm</td>
+                      </tr>
+                  </table>
+              </mat-card>
           </div>
-          <hr>
+          <br>
+          <mat-divider></mat-divider>
+          <br>
           <div class="card-actions">
               <!-- Product Price -->
               <span class="product-price">{{data.product.price | prefix: '$'}}</span>

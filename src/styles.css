@@ -13,3 +13,7 @@ body {
 * {
     box-sizing: border-box;
 }
+
+.no-top-padding {
+    padding-top: 0 !important;
+}

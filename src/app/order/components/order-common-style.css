@@ -203,7 +203,7 @@
 
 .mat-cell {
     text-align: start;
-    justify-content:start;
+    justify-content: start;
 }
 
 @media screen and (max-width: 1000px) {
