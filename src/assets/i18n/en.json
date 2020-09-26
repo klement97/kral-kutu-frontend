@@ -28,5 +28,7 @@
   "order review": "Order Review",
   "submit": "Submit",
   "personal details": "Personal details",
-  "product details": "Product details"
+  "product details": "Product details",
+  "cart": "Cart",
+  "cart success message": "The product added to the cart successfully!"
 }

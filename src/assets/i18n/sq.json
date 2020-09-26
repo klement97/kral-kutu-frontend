@@ -28,5 +28,7 @@
   "order review": "Përmbledhje e porosisë",
   "submit": "Dërgo",
   "personal details": "Detaje personale",
-  "product details": "Detaje të produktit"
+  "product details": "Detaje të produktit",
+  "cart": "Shporta",
+  "cart success message": "Produkti u shtua në shportë me sukses!"
 }

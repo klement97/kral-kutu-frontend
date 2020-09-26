@@ -249,14 +249,12 @@ export class CheckoutComponent implements OnInit {
     this.orderService.createOrder(this.orderForm.value)
       .subscribe(
         () => {
-          console.log('The order has been created successfully!');
           clearCart();
           this.orderForm = this.getOrderForm();
           this.totalQuantity = 0;
           this.totalPrice = 0;
         },
         () => {
-          console.log('The order cannot been created! Please try again later.');
         });
   }
 

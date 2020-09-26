@@ -11,6 +11,7 @@ import {
   setProductsInCart
 } from 'src/app/common/const';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { TranslocoService } from '@ngneat/transloco';
 
 
 @Component({
@@ -63,6 +64,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
   `],
   template: `
       <ng-container *transloco="let t">
+          <app-checkout-button *ngIf="productsInCart.getValue().length as length"></app-checkout-button>
           <div style="margin: 30px auto; width: 85%">
               <mat-card><h1 style="margin: 0">{{t('products')}}</h1></mat-card>
           </div>
@@ -145,7 +147,8 @@ export class ProductPageComponent implements OnInit {
     private orderService: OrderService,
     private fb: FormBuilder,
     private bottomSheet: MatBottomSheet,
-    private snackbar: MatSnackBar
+    private snackbar: MatSnackBar,
+    private transloco: TranslocoService
   ) { }
 
   ngOnInit(): void {
@@ -185,7 +188,6 @@ export class ProductPageComponent implements OnInit {
 
   addProductToCart(e, product, quantity: string, addToCartIcon?, addedToCartIcon?) {
     e.stopPropagation(); // prevents product detail to be opened up
-    console.log(product);
     const selectedProducts: any[] = this.productsInCart.getValue();
     const productIndex: number = this.findProductInCart(product.id);
     const isProductInCart = productIndex > -1;
@@ -196,9 +198,9 @@ export class ProductPageComponent implements OnInit {
       selectedProducts.push(composeOrderUnit(product, Number(quantity)));
     }
     setProductsInCart(this.productsInCart, selectedProducts);
-    // todo: add custom css classes for snackbars
-    this.snackbar.open('Produkti u shtua ne shport me sukses!', 'OK', {
-      horizontalPosition: 'end', verticalPosition: 'top', duration: 3000
+    const message = this.transloco.translate('cart success message');
+    this.snackbar.open(message, 'OK', {
+      horizontalPosition: 'end', verticalPosition: 'top', duration: 3000, panelClass: ['success-snackbar']
     });
     if (addToCartIcon) {
       this.animate(addToCartIcon, addedToCartIcon);
