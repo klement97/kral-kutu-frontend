@@ -19,6 +19,8 @@ import { SharedModule } from 'src/app/common/shared.module';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { CheckoutButtonComponent } from 'src/app/order/components/checkout-button.component';
 import { PostCheckoutPageComponent } from 'src/app/order/components/post-checkout-page.component';
+import { ProductCategoryTabsComponent } from 'src/app/order/components/product-category-tabs.component';
+import { MatTabsModule } from '@angular/material/tabs';
 
 
 @NgModule({
@@ -27,7 +29,8 @@ import { PostCheckoutPageComponent } from 'src/app/order/components/post-checkou
     ProductDetailComponent,
     CheckoutComponent,
     CheckoutButtonComponent,
-    PostCheckoutPageComponent
+    PostCheckoutPageComponent,
+    ProductCategoryTabsComponent
   ],
   imports: [
     SharedModule,
@@ -43,7 +46,8 @@ import { PostCheckoutPageComponent } from 'src/app/order/components/post-checkou
     MatIconModule,
     MatListModule,
     MatTableModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    MatTabsModule
   ]
 })
 export class OrderModule {}
