@@ -223,7 +223,7 @@ export class ProductPageComponent implements OnInit {
     }
     setProductsInCart(this.productsInCart, selectedProducts);
     this.snackbar.open(this.transloco.translate('cart success message'), 'OK', {
-      horizontalPosition: 'end', verticalPosition: 'top', duration: 3000, panelClass: ['success-snackbar']
+      horizontalPosition: 'end', verticalPosition: 'bottom', duration: 2000, panelClass: ['success-snackbar']
     });
     if (addToCartIcon) {
       this.animate(addToCartIcon, addedToCartIcon);
