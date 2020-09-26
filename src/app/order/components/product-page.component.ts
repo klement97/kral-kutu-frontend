@@ -10,6 +10,7 @@ import {
   productsInCart,
   setProductsInCart
 } from 'src/app/common/const';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 
 @Component({
@@ -46,48 +47,62 @@ import {
           font-size: 10px;
           color: gray;
       }
+
+      /* Hide Up Down Buttons on Number Input */
+      /* Chrome, Safari, Edge, Opera */
+      input::-webkit-outer-spin-button,
+      input::-webkit-inner-spin-button {
+          -webkit-appearance: none;
+          margin: 0;
+      }
+
+      /* Firefox */
+      input[type=number] {
+          -moz-appearance: textfield;
+      }
   `],
   template: `
       <ng-container *transloco="let t">
-          <div>
-              <h1>Products</h1>
-              <div class="products">
+          <div style="margin: 30px auto; width: 85%">
+              <mat-card><h1 style="margin: 0">{{t('products')}}</h1></mat-card>
+          </div>
+          <div class="products">
 
-                  <!-- CARD -->
-                  <div class="product-card" *ngFor="let product of products" (click)="openProductDetails(product)">
-                      <div class="image-wrapper">
-                          <img [src]="product.image" alt="product-image">
-                      </div>
+              <!-- CARD -->
+              <div class="product-card" *ngFor="let product of products" (click)="openProductDetails(product)">
+                  <div class="image-wrapper">
+                      <img [src]="product.image" alt="product-image">
+                  </div>
 
-                      <!-- CARD CONTENT -->
-                      <div class="card-content">
-                          <h4>{{product.code}}</h4>
-                          <div class="dimensions">
-                              <div class="size" (click)="focusInput($event, width.focus())">
-                                  <input type="number" class="quantity-input" [value]="product.width | number" #width
-                                         (input)="product.width = width.value">
-                                  <img src="../../../assets/images/width-arrow.svg" alt="width-icon">
-                                  <span class="metric-hint">(cm)</span>
-                              </div>
-                              <div class="size length-dimension" (click)="focusInput($event, length.focus())">
-                                  <input type="number" class="quantity-input" [value]="product.length | number" #length
-                                         (input)="product.length = length.value">
-                                  <img src="../../../assets/images/depth-arrow.svg" alt="length-icon">
-                                  <span class="metric-hint">(cm)</span>
-                              </div>
-                              <div class="size" (click)="focusInput($event, height.focus())">
-                                  <input type="number" class="quantity-input" [value]="product.height | number" #height
-                                         (input)="product.height = height.value">
-                                  <img src="../../../assets/images/height-arrow.svg" alt="height-icon">
-                                  <span class="metric-hint">(cm)</span>
-                              </div>
+                  <!-- CARD CONTENT -->
+                  <div class="card-content">
+                      <h4>{{product.code}}</h4>
+                      <div class="dimensions">
+                          <div class="size" (click)="focusInput($event, width.focus())">
+                              <input type="number" class="quantity-input" [value]="product.width | number" #width
+                                     (input)="product.width = width.value">
+                              <img src="../../../assets/images/width-arrow.svg" alt="width-icon">
+                              <span class="metric-hint">(cm)</span>
+                          </div>
+                          <div class="size length-dimension" (click)="focusInput($event, length.focus())">
+                              <input type="number" class="quantity-input" [value]="product.length | number" #length
+                                     (input)="product.length = length.value">
+                              <img src="../../../assets/images/depth-arrow.svg" alt="length-icon">
+                              <span class="metric-hint">(cm)</span>
+                          </div>
+                          <div class="size" (click)="focusInput($event, height.focus())">
+                              <input type="number" class="quantity-input" [value]="product.height | number" #height
+                                     (input)="product.height = height.value">
+                              <img src="../../../assets/images/height-arrow.svg" alt="height-icon">
+                              <span class="metric-hint">(cm)</span>
                           </div>
                       </div>
+                  </div>
 
-                      <!-- CARD ACTIONS -->
-                      <div class="card-actions">
-                          <span class="product-price">{{product.price | prefix: '$'}}</span>
-                          <div class="quantity-input-group">
+                  <!-- CARD ACTIONS -->
+                  <div class="card-actions">
+                      <span class="product-price">{{product.price | prefix: '$'}}</span>
+                      <div class="quantity-input-group">
                               <span class="up-down-buttons">
                                   <button mat-icon-button type="button"
                                           (click)="changeInputValue($event, quantity, -1)">
@@ -99,17 +114,16 @@ import {
                                       <mat-icon color="primary">keyboard_arrow_up</mat-icon>
                                   </button>
                               </span>
-                          </div>
-                          <button mat-icon-button color="primary" type="button" class="add-to-cart"
-                                  (click)="addProductToCart($event, product, quantity.value, addToCartIcon, addedToCartIcon)">
-                              <mat-icon #addToCartIcon style="z-index: 2; position: relative;">
-                                  add_shopping_cart
-                              </mat-icon>
-                          </button>
-                          <button mat-icon-button class="added-to-cart">
-                              <mat-icon #addedToCartIcon>shopping_cart</mat-icon>
-                          </button>
                       </div>
+                      <button mat-icon-button color="primary" type="button" class="add-to-cart"
+                              (click)="addProductToCart($event, product, quantity.value, addToCartIcon, addedToCartIcon)">
+                          <mat-icon #addToCartIcon style="z-index: 2; position: relative;">
+                              add_shopping_cart
+                          </mat-icon>
+                      </button>
+                      <button mat-icon-button class="added-to-cart">
+                          <mat-icon #addedToCartIcon>shopping_cart</mat-icon>
+                      </button>
                   </div>
               </div>
           </div>
@@ -130,7 +144,8 @@ export class ProductPageComponent implements OnInit {
   constructor(
     private orderService: OrderService,
     private fb: FormBuilder,
-    private bottomSheet: MatBottomSheet
+    private bottomSheet: MatBottomSheet,
+    private snackbar: MatSnackBar
   ) { }
 
   ngOnInit(): void {
@@ -181,6 +196,10 @@ export class ProductPageComponent implements OnInit {
       selectedProducts.push(composeOrderUnit(product, Number(quantity)));
     }
     setProductsInCart(this.productsInCart, selectedProducts);
+    // todo: add custom css classes for snackbars
+    this.snackbar.open('Produkti u shtua ne shport me sukses!', 'OK', {
+      horizontalPosition: 'end', verticalPosition: 'top', duration: 3000
+    });
     if (addToCartIcon) {
       this.animate(addToCartIcon, addedToCartIcon);
     }

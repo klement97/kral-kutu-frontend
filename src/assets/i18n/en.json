@@ -10,6 +10,7 @@
   "phone": "Phone",
   "phone hint": "This phone number will be used to contact you.",
   "address": "Address",
+  "business address": "Business Address",
   "address hint": "This address will be used to send the products to you.",
   "code": "Code",
   "title": "Title",
@@ -20,9 +21,11 @@
   "height": "Height",
   "width": "Width",
   "length": "Length",
+  "products": "Products",
   "selected products": "Selected products",
   "total": "Total",
   "sub total": "Sub Total",
   "order review": "Order Review",
-  "submit": "Submit"
+  "submit": "Submit",
+  "personal details": "Personal details"
 }

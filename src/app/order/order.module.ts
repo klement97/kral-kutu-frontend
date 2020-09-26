@@ -16,6 +16,7 @@ import { CheckoutComponent } from './components/checkout.component';
 import { MatListModule } from '@angular/material/list';
 import { MatTableModule } from '@angular/material/table';
 import { SharedModule } from 'src/app/common/shared.module';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 
 @NgModule({
@@ -33,7 +34,8 @@ import { SharedModule } from 'src/app/common/shared.module';
     MatInputModule,
     MatIconModule,
     MatListModule,
-    MatTableModule
+    MatTableModule,
+    MatSnackBarModule
   ]
 })
 export class OrderModule {}

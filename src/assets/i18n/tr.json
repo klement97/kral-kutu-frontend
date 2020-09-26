@@ -10,6 +10,7 @@
   "phone": "Telefon numarası",
   "phone hint": "Bu telefon numarası sizinle iletişim kurmak için kullanılacaktır.",
   "address": "Adres",
+  "business address": "Şirket Adresi",
   "address hint": "Bu adres, ürünleri size göndermek için kullanılacaktır.",
   "code": "Kod",
   "title": "Başlık",
@@ -20,8 +21,11 @@
   "height": "Yükseklik",
   "width": "Genişlik",
   "length": "Uzunluk",
+  "products": "Ürünler",
   "selected products": "Seçtiğiniz ürünler",
   "total": "Toplam",
   "sub total": "Ara Toplam",
-  "order review": "Sipariş Özeti"
+  "order review": "Sipariş Özeti",
+  "submit": "Gönder",
+  "personal details": "Kişisel bilgiler"
 }
