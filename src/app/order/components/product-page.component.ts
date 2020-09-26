@@ -6,12 +6,14 @@ import { MatBottomSheet } from '@angular/material/bottom-sheet';
 import { ProductDetailComponent } from 'src/app/order/components/product-detail.component';
 import {
   composeOrderUnit,
+  hashCodeFromObject,
   positiveIntegerWithZeroRegex,
   productsInCart,
   setProductsInCart
 } from 'src/app/common/const';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslocoService } from '@ngneat/transloco';
+import { Product } from 'src/app/order/models/order.model';
 
 
 @Component({
@@ -134,7 +136,7 @@ import { TranslocoService } from '@ngneat/transloco';
 })
 export class ProductPageComponent implements OnInit {
 
-  products: any[];
+  products: Product[];
   productsCount = 0;
   productCategories$: Observable<any>;
   leathers$: Observable<any>;
@@ -143,6 +145,7 @@ export class ProductPageComponent implements OnInit {
   productFilterForm: FormGroup;
   productsInCart: BehaviorSubject<any>;
 
+
   constructor(
     private orderService: OrderService,
     private fb: FormBuilder,
@@ -150,6 +153,7 @@ export class ProductPageComponent implements OnInit {
     private snackbar: MatSnackBar,
     private transloco: TranslocoService
   ) { }
+
 
   ngOnInit(): void {
     this.productFilterForm = this.getProductFilterForm();
@@ -160,12 +164,14 @@ export class ProductPageComponent implements OnInit {
     this.productsInCart = productsInCart;
   }
 
+
   getProductFilterForm(): FormGroup {
     return this.fb.group({
       title: '', price_min: null, price_max: null,
       category: null, inner_leather: null, outer_leather: null
     });
   }
+
 
   getProducts() {
     // fixme: fix paginator here
@@ -175,6 +181,7 @@ export class ProductPageComponent implements OnInit {
         this.productsCount = res.count ? res.count : res.length();
       });
   }
+
 
   openProductDetails(product): void {
     this.bottomSheet.open(ProductDetailComponent, {data: {product}, panelClass: 'no-top-padding'})
@@ -186,26 +193,43 @@ export class ProductPageComponent implements OnInit {
     }));
   }
 
+
+  /**
+   * Add selected product with selected quantity to the cart.
+   * If the product is already in the cart we just increment the quantity of it.
+   * Otherwise we add a new unit to the cart.
+   * @param e                 Event, used to prevent product detail to be opened up
+   * @param product           Selected product to add to the cart
+   * @param quantity          Quantity of the product, taken from input
+   * @param addToCartIcon     Respective icon of the product, if never added to cart
+   * @param addedToCartIcon   Respective icon of the product, if already in cart
+   */
   addProductToCart(e, product, quantity: string, addToCartIcon?, addedToCartIcon?) {
     e.stopPropagation(); // prevents product detail to be opened up
+
+    // Generating a hash here to check if the product is already in cart
+    const hash = hashCodeFromObject(product, ['code', 'width', 'height', 'length']);
+
+    // If hash can not be found inside the products in cart
+    // this means that we need to add the product as a new unit
     const selectedProducts: any[] = this.productsInCart.getValue();
-    const productIndex: number = this.findProductInCart(product.id);
-    const isProductInCart = productIndex > -1;
+    const productIndex: number = this.findProductByHash(hash);
+    const isProductInCart: boolean = productIndex > -1;
 
     if (isProductInCart) {
       selectedProducts[productIndex].quantity += Number(quantity);
     } else {
-      selectedProducts.push(composeOrderUnit(product, Number(quantity)));
+      selectedProducts.push(composeOrderUnit(product, Number(quantity), hash));
     }
     setProductsInCart(this.productsInCart, selectedProducts);
-    const message = this.transloco.translate('cart success message');
-    this.snackbar.open(message, 'OK', {
+    this.snackbar.open(this.transloco.translate('cart success message'), 'OK', {
       horizontalPosition: 'end', verticalPosition: 'top', duration: 3000, panelClass: ['success-snackbar']
     });
     if (addToCartIcon) {
       this.animate(addToCartIcon, addedToCartIcon);
     }
   }
+
 
   animate(addToCartIcon, addedToCartIcon) {
     const isItemAlreadyInCart: boolean = addToCartIcon._elementRef.nativeElement.style.opacity === '0';
@@ -226,10 +250,11 @@ export class ProductPageComponent implements OnInit {
     addedToCartIcon._elementRef.nativeElement.style.transform = 'rotate(360deg)';
   }
 
-  findProductInCart(productId): number {
-    return this.productsInCart.getValue()
-      .findIndex((orderUnit) => orderUnit.product.id === productId);
+
+  findProductByHash(hash: number): number {
+    return this.productsInCart.getValue().findIndex(unit => unit.hash === hash);
   }
+
 
   changeInputValue(e, input, value) {
     e.stopPropagation();
@@ -246,6 +271,7 @@ export class ProductPageComponent implements OnInit {
     e.data = '1';
     this.onInputChange(e, input);
   }
+
 
   onInputChange(e, input) {
     e.stopPropagation();
@@ -267,6 +293,7 @@ export class ProductPageComponent implements OnInit {
       }
     }, 200);
   }
+
 
   focusInput(e, _) {
     e.stopPropagation();

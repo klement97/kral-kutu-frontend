@@ -40,12 +40,23 @@ import { clearCart, productsInCart } from 'src/app/common/const';
       tr.mat-footer-row {
           font-weight: bold;
       }
+
+      .title {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+      }
   `],
   template: `
       <ng-container *transloco="let t">
           <div style="padding: 15px; width: 100%">
               <!-- The Checkout form -->
-              <mat-card><h1>{{t('checkout')}}</h1></mat-card>
+              <mat-card class="title">
+                  <h1>{{t('checkout')}}</h1>
+                  <button mat-stroked-button routerLink="/order">
+                      <mat-icon>keyboard_backspace</mat-icon>
+                  </button>
+              </mat-card>
               <br>
               <mat-card class="mat-elevation-z2" style="padding: 16px 0">
                   <form [formGroup]="orderForm" class="vertical-form">

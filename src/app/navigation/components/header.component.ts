@@ -12,18 +12,19 @@ import { PRODUCTS_IN_CART, productsInCart } from 'src/app/common/const';
 
               <!-- BEGIN ACTIONS -->
               <div>
-                  <button mat-icon-button [matMenuTriggerFor]="menu" id="menuTrigger">
+                  <button mat-icon-button [routerLink]="'/order/checkout'" id="menuTrigger">
+<!--                  <button mat-icon-button [matMenuTriggerFor]="menu" id="menuTrigger">-->
                       <mat-icon [matBadge]="productsInCartCount" matBadgeColor="warn"
                                 [matBadgeDescription]="t('product count')">
                           shopping_cart
                       </mat-icon>
                   </button>
               </div>
-              <mat-menu #menu yPosition="below" xPosition="before" class="menu">
-                  <ng-template matMenuContent>
-                      <app-cart (click)="$event.stopPropagation()" (buttonsClicked)="closeMenu()"></app-cart>
-                  </ng-template>
-              </mat-menu>
+<!--              <mat-menu #menu yPosition="below" xPosition="before" class="menu">-->
+<!--                  <ng-template matMenuContent>-->
+<!--                      <app-cart (click)="$event.stopPropagation()" (buttonsClicked)="closeMenu()"></app-cart>-->
+<!--                  </ng-template>-->
+<!--              </mat-menu>-->
               <!-- END ACTIONS -->
 
           </mat-toolbar>

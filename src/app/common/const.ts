@@ -86,8 +86,8 @@ export function getSort(active: string, direction: 'asc' | 'desc' | '') {
   return sort + active;
 }
 
-export function composeOrderUnit(product, quantity) {
-  return {product, quantity};
+export function composeOrderUnit(product, quantity, hash) {
+  return {product, quantity, hash};
 }
 
 export function setProductsInCart(products: BehaviorSubject<any[]>, newProducts: any[]) {
@@ -98,5 +98,32 @@ export function setProductsInCart(products: BehaviorSubject<any[]>, newProducts:
 export function clearCart() {
   productsInCart.next([]);
   localStorage.setItem(PRODUCTS_IN_CART, JSON.stringify([]));
+}
+
+/**
+ * Creates a hash by taking a string and using a shift based algorithm.
+ * @param value   String that will be hashed.
+ */
+export function hashCode(value: string) {
+  let hash = 0;
+  let i;
+  let chr;
+  for (i = 0; i < value.length; i++) {
+    chr = value.charCodeAt(i);
+    // tslint:disable-next-line:no-bitwise
+    hash = ((hash << 5) - hash) + chr;
+    // tslint:disable-next-line:no-bitwise
+    hash |= 0; // Convert to 32bit integer
+  }
+  return hash;
+}
+
+export function hashCodeFromObject(obj, fields: string[]) {
+  let objString = '';
+  for (const field of fields) {
+    objString += `${obj[field]}&`;
+  }
+
+  return hashCode(objString);
 }
 
