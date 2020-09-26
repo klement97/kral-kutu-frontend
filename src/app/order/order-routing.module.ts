@@ -1,12 +1,14 @@
 import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
+import { RouterModule, Routes } from '@angular/router';
 import { ProductPageComponent } from 'src/app/order/components/product-page.component';
 import { CheckoutComponent } from 'src/app/order/components/checkout.component';
+import { PostCheckoutPageComponent } from 'src/app/order/components/post-checkout-page.component';
 
-
+// prefixed by /order
 const routes: Routes = [
   {path: '', component: ProductPageComponent, pathMatch: 'full'},
-  {path: 'checkout', component: CheckoutComponent, pathMatch: 'full'}
+  {path: 'checkout', component: CheckoutComponent, pathMatch: 'full'},
+  {path: 'post-checkout/:order_id', component: PostCheckoutPageComponent, pathMatch: 'full'}
 ];
 
 

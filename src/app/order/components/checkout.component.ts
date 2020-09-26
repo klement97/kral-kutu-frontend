@@ -3,6 +3,8 @@ import { OrderService } from 'src/app/order/services/order.service';
 import { BehaviorSubject } from 'rxjs';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { clearCart, productsInCart } from 'src/app/common/const';
+import { Router } from '@angular/router';
+import { Order } from 'src/app/order/models/order.model';
 
 
 @Component({
@@ -211,17 +213,21 @@ export class CheckoutComponent implements OnInit {
   totalQuantity = 0;
   displayedColumns = ['code', 'width', 'height', 'length', 'price', 'quantity', 'subtotal'];
 
+
   constructor(
     private orderService: OrderService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private router: Router
   ) {
   }
+
 
   ngOnInit(): void {
     this.productsInCart = productsInCart;
     this.orderForm = this.getOrderForm();
     this.calculateTotalQuantityAndPrice();
   }
+
 
   getOrderForm(): FormGroup {
     return this.fb.group({
@@ -235,6 +241,7 @@ export class CheckoutComponent implements OnInit {
     });
   }
 
+
   calculateTotalQuantityAndPrice(): void {
     this.productsInCart.subscribe(units =>
       units.forEach(unit => {
@@ -242,6 +249,7 @@ export class CheckoutComponent implements OnInit {
         this.totalPrice += unit.product.price * unit.quantity;
       }));
   }
+
 
   /**
    * Serialization process is to replace products with their respective ID
@@ -254,12 +262,15 @@ export class CheckoutComponent implements OnInit {
     return orderUnits;
   }
 
+
   submit() {
     // Replace order units with serialized ones
     this.orderForm.get('order_units').patchValue(this.getSerializedOrderUnits());
     this.orderService.createOrder(this.orderForm.value)
       .subscribe(
-        () => {
+        (order: Order) => {
+          console.log(order);
+          this.router.navigate(['order', 'post-checkout', order.id]).then();
           clearCart();
           this.orderForm = this.getOrderForm();
           this.totalQuantity = 0;

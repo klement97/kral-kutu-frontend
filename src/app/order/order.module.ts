@@ -18,10 +18,20 @@ import { MatTableModule } from '@angular/material/table';
 import { SharedModule } from 'src/app/common/shared.module';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { CheckoutButtonComponent } from 'src/app/order/components/checkout-button.component';
+import { PostCheckoutPageComponent } from 'src/app/order/components/post-checkout-page.component';
+import { ProductCategoryTabsComponent } from 'src/app/order/components/product-category-tabs.component';
+import { MatTabsModule } from '@angular/material/tabs';
 
 
 @NgModule({
-  declarations: [ProductPageComponent, ProductDetailComponent, CheckoutComponent, CheckoutButtonComponent],
+  declarations: [
+    ProductPageComponent,
+    ProductDetailComponent,
+    CheckoutComponent,
+    CheckoutButtonComponent,
+    PostCheckoutPageComponent,
+    ProductCategoryTabsComponent
+  ],
   imports: [
     SharedModule,
     CommonModule,
@@ -36,7 +46,8 @@ import { CheckoutButtonComponent } from 'src/app/order/components/checkout-butto
     MatIconModule,
     MatListModule,
     MatTableModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    MatTabsModule
   ]
 })
 export class OrderModule {}

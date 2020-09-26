@@ -12,6 +12,12 @@ export const MIN_TIME = '00:00:00.000000';
 export const MAX_TIME = '23:59:59.999999';
 
 
+export interface IDNameModel {
+  id: number;
+  name: string;
+}
+
+
 // FIXME: fix paginator here after material installation
 export function buildQueryString(paginator = null, sort = null, filter: any): string {
   const queryString = [];
@@ -38,6 +44,7 @@ export function buildQueryString(paginator = null, sort = null, filter: any): st
   return '';
 }
 
+
 function buildFilterString(_filter: { [key: string]: any }) {
   const filter = {..._filter};
   let filterString = '';
@@ -53,6 +60,7 @@ function buildFilterString(_filter: { [key: string]: any }) {
   return filterString;
 }
 
+
 function reformatDate(field_name: string, date: Date): string {
   if (field_name.includes('_before')) {
     return formatDateToString(date, MAX_TIME);
@@ -62,6 +70,7 @@ function reformatDate(field_name: string, date: Date): string {
     return formatDateToString(date);
   }
 }
+
 
 export function formatDateToString(date: Date | string, time: string = ''): string {
   if (typeof date === 'object') {
@@ -86,19 +95,23 @@ export function getSort(active: string, direction: 'asc' | 'desc' | '') {
   return sort + active;
 }
 
+
 export function composeOrderUnit(product, quantity, hash) {
   return {product, quantity, hash};
 }
+
 
 export function setProductsInCart(products: BehaviorSubject<any[]>, newProducts: any[]) {
   products.next(newProducts);
   localStorage.setItem(PRODUCTS_IN_CART, JSON.stringify(newProducts));
 }
 
+
 export function clearCart() {
   productsInCart.next([]);
   localStorage.setItem(PRODUCTS_IN_CART, JSON.stringify([]));
 }
+
 
 /**
  * Creates a hash by taking a string and using a shift based algorithm.
@@ -117,6 +130,7 @@ export function hashCode(value: string) {
   }
   return hash;
 }
+
 
 export function hashCodeFromObject(obj, fields: string[]) {
   let objString = '';

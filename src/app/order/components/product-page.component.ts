@@ -7,6 +7,7 @@ import { ProductDetailComponent } from 'src/app/order/components/product-detail.
 import {
   composeOrderUnit,
   hashCodeFromObject,
+  IDNameModel,
   positiveIntegerWithZeroRegex,
   productsInCart,
   setProductsInCart
@@ -70,6 +71,10 @@ import { Product } from 'src/app/order/models/order.model';
           <div style="margin: 30px auto; width: 85%">
               <mat-card><h1 style="margin: 0">{{t('products')}}</h1></mat-card>
           </div>
+          <ng-container *ngIf="productCategories.length > 0">
+              <app-product-category-tabs [categories]="productCategories" (categoryChange)="filterByCategory($event)">
+              </app-product-category-tabs>
+          </ng-container>
           <div class="products">
 
               <!-- CARD -->
@@ -138,7 +143,7 @@ export class ProductPageComponent implements OnInit {
 
   products: Product[];
   productsCount = 0;
-  productCategories$: Observable<any>;
+  productCategories: IDNameModel[] = [];
   leathers$: Observable<any>;
   leatherSerials$: Observable<any>;
 
@@ -152,16 +157,24 @@ export class ProductPageComponent implements OnInit {
     private bottomSheet: MatBottomSheet,
     private snackbar: MatSnackBar,
     private transloco: TranslocoService
-  ) { }
+  ) {
+    this.leathers$ = orderService.getLeathers();
+    this.leatherSerials$ = orderService.getLeatherSerials();
+  }
 
 
   ngOnInit(): void {
+    this.getProductCategories();
     this.productFilterForm = this.getProductFilterForm();
     this.getProducts();
-    this.productCategories$ = this.orderService.getProductCategories();
-    this.leathers$ = this.orderService.getLeathers();
-    this.leatherSerials$ = this.orderService.getLeatherSerials();
     this.productsInCart = productsInCart;
+  }
+
+
+  getProductCategories() {
+    this.orderService.getProductCategories().subscribe(
+      categories => this.productCategories = categories
+    );
   }
 
 
@@ -178,8 +191,16 @@ export class ProductPageComponent implements OnInit {
     this.orderService.getProducts(null, this.productFilterForm.value).subscribe(
       (res: any) => {
         this.products = res.results ? res.results : res;
-        this.productsCount = res.count ? res.count : res.length();
+        this.productsCount = res.count ? res.count : res.length;
       });
+  }
+
+
+  filterByCategory(category: IDNameModel) {
+    if (this.productFilterForm.value.category !== category.id) {
+      this.productFilterForm.patchValue({category: category.id});
+      this.getProducts();
+    }
   }
 
 
