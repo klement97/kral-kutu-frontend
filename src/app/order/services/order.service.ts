@@ -1,14 +1,19 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ORDER_URLS } from 'src/app/order/services/urls';
-import { buildQueryString, IDNameModel } from 'src/app/common/const';
-import { Observable } from 'rxjs';
+import { buildQueryString, cacheValue, getFromCache, IDNameModel } from 'src/app/common/const';
+import { Observable, of } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 
 @Injectable({
   providedIn: 'root'
 })
 export class OrderService {
+
+  localCache = {};
+  orderFormValue = {};
+
 
   constructor(
     private http: HttpClient
@@ -30,8 +35,18 @@ export class OrderService {
   }
 
 
-  getLeathers() {
-    return this.http.get(ORDER_URLS.LEATHER);
+  getLeathers(): Observable<any[]> {
+    const url = ORDER_URLS.LEATHER;
+    const cached = getFromCache(this.localCache, url);
+    if (cached) {
+      return of(cached);
+    }
+    return this.http.get<any[]>(url).pipe(
+      map((leathers) => {
+        cacheValue(this.localCache, url, leathers);
+        return leathers;
+      })
+    );
   }
 
 

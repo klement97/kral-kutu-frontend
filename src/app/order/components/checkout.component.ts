@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { OrderService } from 'src/app/order/services/order.service';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { clearCart, productsInCart } from 'src/app/common/const';
 import { Router } from '@angular/router';
@@ -92,6 +92,28 @@ import { Order } from 'src/app/order/models/order.model';
                           <mat-icon matSuffix>location_on</mat-icon>
                           <mat-hint>{{t('address hint')}}</mat-hint>
                       </mat-form-field>
+
+                      <ng-container *ngIf="leathers$ | async as leathers">
+                          <!-- Inner Leather -->
+                          <mat-form-field color="primary" appearance="outline">
+                              <mat-label>{{t('inner leather')}}</mat-label>
+                              <mat-select formControlName="inner_leather">
+                                  <mat-option *ngFor="let leather of leathers" [value]="leather.id">
+                                      {{leather.code}}
+                                  </mat-option>
+                              </mat-select>
+                          </mat-form-field>
+
+                          <!-- Outer Leather -->
+                          <mat-form-field color="primary" appearance="outline">
+                              <mat-label>{{t('outer leather')}}</mat-label>
+                              <mat-select formControlName="outer_leather">
+                                  <mat-option *ngFor="let leather of leathers" [value]="leather.id">
+                                      {{leather.code}}
+                                  </mat-option>
+                              </mat-select>
+                          </mat-form-field>
+                      </ng-container>
 
                       <button type="button" (click)="submit()" mat-raised-button color="primary">
                           {{t('submit')}}
@@ -205,9 +227,9 @@ import { Order } from 'src/app/order/models/order.model';
       </ng-container>
   `
 })
-export class CheckoutComponent implements OnInit {
-
+export class CheckoutComponent implements OnInit, OnDestroy {
   productsInCart: BehaviorSubject<any[]>;
+  leathers$: Observable<any[]>;
   orderForm: FormGroup;
   totalPrice = 0;
   totalQuantity = 0;
@@ -219,26 +241,42 @@ export class CheckoutComponent implements OnInit {
     private fb: FormBuilder,
     private router: Router
   ) {
+    this.leathers$ = orderService.getLeathers();
   }
 
 
   ngOnInit(): void {
     this.productsInCart = productsInCart;
-    this.orderForm = this.getOrderForm();
+    this.initializeOrderForm();
     this.calculateTotalQuantityAndPrice();
   }
 
 
-  getOrderForm(): FormGroup {
-    return this.fb.group({
+  ngOnDestroy(): void {
+    this.orderService.orderFormValue = this.orderForm.value;
+  }
+
+
+  initializeOrderForm() {
+    this.orderForm = this.fb.group({
       first_name: ['', [Validators.required, Validators.maxLength(50)]],
       last_name: ['', [Validators.required, Validators.maxLength(50)]],
       phone: ['', [Validators.required, Validators.maxLength(20)]],
       address: ['', [Validators.maxLength(254)]],
       order_units: [[]],
-      inner_leather: ['1'],
-      outer_leather: ['1'],
+      inner_leather: [null],
+      outer_leather: [null],
     });
+    this.backupRestoreOrderForm();
+  }
+
+
+  backupRestoreOrderForm() {
+    if (this.orderService.orderFormValue) {
+      this.orderForm.patchValue(this.orderService.orderFormValue);
+    } else {
+      this.orderService.orderFormValue = this.orderForm.value;
+    }
   }
 
 
@@ -272,7 +310,7 @@ export class CheckoutComponent implements OnInit {
           console.log(order);
           this.router.navigate(['order', 'post-checkout', order.id]).then();
           clearCart();
-          this.orderForm = this.getOrderForm();
+          this.orderForm.reset();
           this.totalQuantity = 0;
           this.totalPrice = 0;
         },
