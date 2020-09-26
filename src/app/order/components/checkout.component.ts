@@ -36,6 +36,10 @@ import { clearCart, productsInCart } from 'src/app/common/const';
       .order-review-table th, td {
           padding-right: 20px;
       }
+
+      tr.mat-footer-row {
+          font-weight: bold;
+      }
   `],
   template: `
       <ng-container *transloco="let t">
@@ -44,7 +48,7 @@ import { clearCart, productsInCart } from 'src/app/common/const';
               <mat-card><h1>{{t('checkout')}}</h1></mat-card>
               <br>
               <mat-card class="mat-elevation-z2" style="padding: 16px 0">
-                  <form [formGroup]="orderForm" class="vertical-form" (ngSubmit)="submit()">
+                  <form [formGroup]="orderForm" class="vertical-form">
                       <h2>{{t('personal details')}}</h2>
                       <!-- First Name -->
                       <mat-form-field color="primary" appearance="outline">
@@ -76,7 +80,9 @@ import { clearCart, productsInCart } from 'src/app/common/const';
                           <mat-hint>{{t('address hint')}}</mat-hint>
                       </mat-form-field>
 
-                      <button type="submit" mat-raised-button color="primary">{{t('submit')}}</button>
+                      <button type="button" (click)="submit()" mat-raised-button color="primary">
+                          {{t('submit')}}
+                      </button>
                   </form>
               </mat-card>
 
@@ -135,6 +141,25 @@ import { clearCart, productsInCart } from 'src/app/common/const';
                   <ng-container matColumnDef="code">
                       <th mat-header-cell *matHeaderCellDef>{{t('code')}}</th>
                       <td mat-cell *matCellDef="let element"> {{element.product.code}} </td>
+                      <td mat-footer-cell *matFooterCellDef colspan="5">{{t('total')}}</td>
+                  </ng-container>
+
+                  <!-- Width Column -->
+                  <ng-container matColumnDef="width">
+                      <th mat-header-cell *matHeaderCellDef>{{t('width')}}</th>
+                      <td mat-cell *matCellDef="let element"> {{element.product.width | number}}cm</td>
+                  </ng-container>
+
+                  <!-- Height Column -->
+                  <ng-container matColumnDef="height">
+                      <th mat-header-cell *matHeaderCellDef>{{t('height')}}</th>
+                      <td mat-cell *matCellDef="let element"> {{element.product.height | number}}cm</td>
+                  </ng-container>
+
+                  <!-- Length Column -->
+                  <ng-container matColumnDef="length">
+                      <th mat-header-cell *matHeaderCellDef>{{t('length')}}</th>
+                      <td mat-cell *matCellDef="let element"> {{element.product.length | number}}cm</td>
                   </ng-container>
 
                   <!-- Price Column -->
@@ -147,24 +172,7 @@ import { clearCart, productsInCart } from 'src/app/common/const';
                   <ng-container matColumnDef="quantity">
                       <th mat-header-cell *matHeaderCellDef>{{t('quantity')}}</th>
                       <td mat-cell *matCellDef="let element"> {{element.quantity | number}} </td>
-                  </ng-container>
-
-                  <!-- Width Column -->
-                  <ng-container matColumnDef="width">
-                      <th mat-header-cell *matHeaderCellDef>{{t('width')}}</th>
-                      <td mat-cell *matCellDef="let element"> {{element.product.width | number}} </td>
-                  </ng-container>
-
-                  <!-- Height Column -->
-                  <ng-container matColumnDef="height">
-                      <th mat-header-cell *matHeaderCellDef>{{t('height')}}</th>
-                      <td mat-cell *matCellDef="let element"> {{element.product.height | number}} </td>
-                  </ng-container>
-
-                  <!-- Length Column -->
-                  <ng-container matColumnDef="length">
-                      <th mat-header-cell *matHeaderCellDef>{{t('length')}}</th>
-                      <td mat-cell *matCellDef="let element"> {{element.product.length | number}} </td>
+                      <td mat-footer-cell *matFooterCellDef>{{totalQuantity | number}}</td>
                   </ng-container>
 
                   <!-- Subtotal Column -->
@@ -173,10 +181,12 @@ import { clearCart, productsInCart } from 'src/app/common/const';
                       <td mat-cell *matCellDef="let element">
                           {{(element.product.price * element.quantity) | number | prefix: '$'}}
                       </td>
+                      <td mat-footer-cell *matFooterCellDef>{{totalPrice | number | prefix : '$'}}</td>
                   </ng-container>
 
-                  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                  <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
                   <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                  <tr mat-footer-row *matFooterRowDef="['code', 'quantity', 'subtotal']; sticky: true"></tr>
               </table>
           </div>
       </ng-container>
@@ -188,7 +198,7 @@ export class CheckoutComponent implements OnInit {
   orderForm: FormGroup;
   totalPrice = 0;
   totalQuantity = 0;
-  displayedColumns = ['code', 'price', 'quantity', 'width', 'height', 'length', 'subtotal'];
+  displayedColumns = ['code', 'width', 'height', 'length', 'price', 'quantity', 'subtotal'];
 
   constructor(
     private orderService: OrderService,
@@ -204,10 +214,10 @@ export class CheckoutComponent implements OnInit {
 
   getOrderForm(): FormGroup {
     return this.fb.group({
-      first_name: ['klement', [Validators.required, Validators.maxLength(50)]],
-      last_name: ['omeri', [Validators.required, Validators.maxLength(50)]],
-      phone: ['123123', [Validators.required, Validators.maxLength(20)]],
-      address: ['tirane', [Validators.maxLength(254)]],
+      first_name: ['', [Validators.required, Validators.maxLength(50)]],
+      last_name: ['', [Validators.required, Validators.maxLength(50)]],
+      phone: ['', [Validators.required, Validators.maxLength(20)]],
+      address: ['', [Validators.maxLength(254)]],
       order_units: [[]],
       inner_leather: ['1'],
       outer_leather: ['1'],
@@ -242,6 +252,8 @@ export class CheckoutComponent implements OnInit {
           console.log('The order has been created successfully!');
           clearCart();
           this.orderForm = this.getOrderForm();
+          this.totalQuantity = 0;
+          this.totalPrice = 0;
         },
         () => {
           console.log('The order cannot been created! Please try again later.');

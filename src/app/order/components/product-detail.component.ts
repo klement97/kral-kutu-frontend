@@ -12,6 +12,7 @@ import { positiveIntegerWithZeroRegex } from 'src/app/common/const';
           align-items: center;
           top: 0;
           height: 50px;
+          width: 100%;
       }
 
       .mat-card.sticky {
@@ -19,7 +20,6 @@ import { positiveIntegerWithZeroRegex } from 'src/app/common/const';
           position: sticky;
           top: 0;
           z-index: 2;
-          width: 100%;
       }
 
       .title h3 {
@@ -65,32 +65,11 @@ import { positiveIntegerWithZeroRegex } from 'src/app/common/const';
           display: block;
           border-bottom: 1px solid gray;
       }
-
-      ::-webkit-scrollbar {
-          width: 5px;
-      }
-
-      /* Track */
-      ::-webkit-scrollbar-track {
-          box-shadow: inset 0 0 5px grey;
-          border-radius: 10px;
-      }
-
-      /* Handle */
-      ::-webkit-scrollbar-thumb {
-          background: red;
-          border-radius: 10px;
-      }
-
-      /* Handle on hover */
-      ::-webkit-scrollbar-thumb:hover {
-          background: #b30000;
-      }
   `],
   template: `
       <ng-container *transloco="let t">
           <div>
-              <mat-card class="title sticky">
+              <mat-card class="title sticky mat-elevation-z1">
                   <h3>{{t('product details')}}</h3>
                   <!-- Close button -->
                   <button mat-icon-button color="warn" (click)="closeBottomSheet()">
@@ -99,7 +78,7 @@ import { positiveIntegerWithZeroRegex } from 'src/app/common/const';
               </mat-card>
               <br>
               <!-- Image -->
-              <div class="image-wrapper mat-elevation-z2">
+              <div class="image-wrapper mat-elevation-z3">
                   <img [src]="data.product.image" alt="product-image">
               </div>
 
@@ -107,7 +86,7 @@ import { positiveIntegerWithZeroRegex } from 'src/app/common/const';
               <mat-divider></mat-divider>
               <br>
               <!-- Details list -->
-              <mat-card class="mat-elevation-z2">
+              <mat-card class="mat-elevation-z3">
                   <table>
                       <tr>
                           <th>{{t('code')}}</th>
