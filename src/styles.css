@@ -6,9 +6,23 @@ html, body {
 
 body {
     margin: 0;
+    padding: 0;
     font-family: Roboto, "Helvetica Neue", sans-serif;
 }
 
 * {
     box-sizing: border-box;
+}
+
+.no-top-padding {
+    padding-top: 0 !important;
+}
+
+.success-snackbar {
+    color: white;
+    background-color: rgb(0, 168, 28);
+}
+
+.success-snackbar .mat-simple-snackbar-action {
+    color: white;
 }

@@ -7,6 +7,10 @@
     grid-row-gap: 30px;
 }
 
+.products > h2 {
+    margin: 0;
+}
+
 .product-card {
     display: flex;
     flex-direction: column;
@@ -190,6 +194,16 @@
 .added-to-cart mat-icon {
     opacity: 0;
     transition: .8s;
+}
+
+.mat-header-cell {
+    flex-direction: column;
+    justify-content: center;
+}
+
+.mat-cell {
+    text-align: start;
+    justify-content: start;
 }
 
 @media screen and (max-width: 1000px) {

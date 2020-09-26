@@ -1,7 +1,7 @@
 {
   "add": "Shtoje",
   "add to cart": "Shtoje në shport",
-  "quantity": "sasia",
+  "quantity": "Sasia",
   "product count": "numri i produkteve",
   "checkout": "Përfundoje porosinë",
   "continue shopping": "Vazhdoje porosinë",
@@ -10,6 +10,7 @@
   "phone": "Numri i celularit",
   "phone hint": "Ky numër telefoni do të përdoret për t'ju kontaktuar.",
   "address": "Adresa",
+  "business address": "Adresa e biznesit",
   "address hint": "Kjo adres do të përdoret per t'ju dërguar produktet.",
   "code": "Kodi",
   "title": "Titulli",
@@ -20,9 +21,14 @@
   "height": "Lartësia",
   "width": "Gjerësia",
   "length": "Gjatësia",
+  "products": "Produktet",
   "selected products": "Produktet e zgjedhura",
   "total": "Total",
   "sub total": "Nëntotal",
-  "order review": "Përmledhje e porosisë",
-  "submit": "Dërgo"
+  "order review": "Përmbledhje e porosisë",
+  "submit": "Dërgo",
+  "personal details": "Detaje personale",
+  "product details": "Detaje të produktit",
+  "cart": "Shporta",
+  "cart success message": "Produkti u shtua në shportë me sukses!"
 }

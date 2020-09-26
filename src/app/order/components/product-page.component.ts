@@ -6,10 +6,14 @@ import { MatBottomSheet } from '@angular/material/bottom-sheet';
 import { ProductDetailComponent } from 'src/app/order/components/product-detail.component';
 import {
   composeOrderUnit,
+  hashCodeFromObject,
   positiveIntegerWithZeroRegex,
   productsInCart,
   setProductsInCart
 } from 'src/app/common/const';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { TranslocoService } from '@ngneat/transloco';
+import { Product } from 'src/app/order/models/order.model';
 
 
 @Component({
@@ -46,48 +50,63 @@ import {
           font-size: 10px;
           color: gray;
       }
+
+      /* Hide Up Down Buttons on Number Input */
+      /* Chrome, Safari, Edge, Opera */
+      input::-webkit-outer-spin-button,
+      input::-webkit-inner-spin-button {
+          -webkit-appearance: none;
+          margin: 0;
+      }
+
+      /* Firefox */
+      input[type=number] {
+          -moz-appearance: textfield;
+      }
   `],
   template: `
       <ng-container *transloco="let t">
-          <div>
-              <h1>Products</h1>
-              <div class="products">
+          <app-checkout-button *ngIf="productsInCart.getValue().length as length"></app-checkout-button>
+          <div style="margin: 30px auto; width: 85%">
+              <mat-card><h1 style="margin: 0">{{t('products')}}</h1></mat-card>
+          </div>
+          <div class="products">
 
-                  <!-- CARD -->
-                  <div class="product-card" *ngFor="let product of products" (click)="openProductDetails(product)">
-                      <div class="image-wrapper">
-                          <img [src]="product.image" alt="product-image">
-                      </div>
+              <!-- CARD -->
+              <div class="product-card" *ngFor="let product of products" (click)="openProductDetails(product)">
+                  <div class="image-wrapper">
+                      <img [src]="product.image" alt="product-image">
+                  </div>
 
-                      <!-- CARD CONTENT -->
-                      <div class="card-content">
-                          <h4>{{product.code}}</h4>
-                          <div class="dimensions">
-                              <div class="size" (click)="focusInput($event, width.focus())">
-                                  <input type="number" class="quantity-input" [value]="product.width | number" #width
-                                         (input)="product.width = width.value">
-                                  <img src="../../../assets/images/width-arrow.svg" alt="width-icon">
-                                  <span class="metric-hint">(cm)</span>
-                              </div>
-                              <div class="size length-dimension" (click)="focusInput($event, length.focus())">
-                                  <input type="number" class="quantity-input" [value]="product.length | number" #length
-                                         (input)="product.length = length.value">
-                                  <img src="../../../assets/images/depth-arrow.svg" alt="length-icon">
-                                  <span class="metric-hint">(cm)</span>
-                              </div>
-                              <div class="size" (click)="focusInput($event, height.focus())">
-                                  <input type="number" class="quantity-input" [value]="product.height | number" #height
-                                         (input)="product.height = height.value">
-                                  <img src="../../../assets/images/height-arrow.svg" alt="height-icon">
-                                  <span class="metric-hint">(cm)</span>
-                              </div>
+                  <!-- CARD CONTENT -->
+                  <div class="card-content">
+                      <h4>{{product.code}}</h4>
+                      <div class="dimensions">
+                          <div class="size" (click)="focusInput($event, width.focus())">
+                              <input type="number" class="quantity-input" [value]="product.width | number" #width
+                                     (input)="product.width = width.value">
+                              <img src="../../../assets/images/width-arrow.svg" alt="width-icon">
+                              <span class="metric-hint">(cm)</span>
+                          </div>
+                          <div class="size length-dimension" (click)="focusInput($event, length.focus())">
+                              <input type="number" class="quantity-input" [value]="product.length | number" #length
+                                     (input)="product.length = length.value">
+                              <img src="../../../assets/images/depth-arrow.svg" alt="length-icon">
+                              <span class="metric-hint">(cm)</span>
+                          </div>
+                          <div class="size" (click)="focusInput($event, height.focus())">
+                              <input type="number" class="quantity-input" [value]="product.height | number" #height
+                                     (input)="product.height = height.value">
+                              <img src="../../../assets/images/height-arrow.svg" alt="height-icon">
+                              <span class="metric-hint">(cm)</span>
                           </div>
                       </div>
+                  </div>
 
-                      <!-- CARD ACTIONS -->
-                      <div class="card-actions">
-                          <span class="product-price">{{product.price | prefix: '$'}}</span>
-                          <div class="quantity-input-group">
+                  <!-- CARD ACTIONS -->
+                  <div class="card-actions">
+                      <span class="product-price">{{product.price | prefix: '$'}}</span>
+                      <div class="quantity-input-group">
                               <span class="up-down-buttons">
                                   <button mat-icon-button type="button"
                                           (click)="changeInputValue($event, quantity, -1)">
@@ -99,17 +118,16 @@ import {
                                       <mat-icon color="primary">keyboard_arrow_up</mat-icon>
                                   </button>
                               </span>
-                          </div>
-                          <button mat-icon-button color="primary" type="button" class="add-to-cart"
-                                  (click)="addProductToCart($event, product, quantity.value, addToCartIcon, addedToCartIcon)">
-                              <mat-icon #addToCartIcon style="z-index: 2; position: relative;">
-                                  add_shopping_cart
-                              </mat-icon>
-                          </button>
-                          <button mat-icon-button class="added-to-cart">
-                              <mat-icon #addedToCartIcon>shopping_cart</mat-icon>
-                          </button>
                       </div>
+                      <button mat-icon-button color="primary" type="button" class="add-to-cart"
+                              (click)="addProductToCart($event, product, quantity.value, addToCartIcon, addedToCartIcon)">
+                          <mat-icon #addToCartIcon style="z-index: 2; position: relative;">
+                              add_shopping_cart
+                          </mat-icon>
+                      </button>
+                      <button mat-icon-button class="added-to-cart">
+                          <mat-icon #addedToCartIcon>shopping_cart</mat-icon>
+                      </button>
                   </div>
               </div>
           </div>
@@ -118,7 +136,7 @@ import {
 })
 export class ProductPageComponent implements OnInit {
 
-  products: any[];
+  products: Product[];
   productsCount = 0;
   productCategories$: Observable<any>;
   leathers$: Observable<any>;
@@ -127,11 +145,15 @@ export class ProductPageComponent implements OnInit {
   productFilterForm: FormGroup;
   productsInCart: BehaviorSubject<any>;
 
+
   constructor(
     private orderService: OrderService,
     private fb: FormBuilder,
-    private bottomSheet: MatBottomSheet
+    private bottomSheet: MatBottomSheet,
+    private snackbar: MatSnackBar,
+    private transloco: TranslocoService
   ) { }
+
 
   ngOnInit(): void {
     this.productFilterForm = this.getProductFilterForm();
@@ -142,12 +164,14 @@ export class ProductPageComponent implements OnInit {
     this.productsInCart = productsInCart;
   }
 
+
   getProductFilterForm(): FormGroup {
     return this.fb.group({
       title: '', price_min: null, price_max: null,
       category: null, inner_leather: null, outer_leather: null
     });
   }
+
 
   getProducts() {
     // fixme: fix paginator here
@@ -158,8 +182,9 @@ export class ProductPageComponent implements OnInit {
       });
   }
 
+
   openProductDetails(product): void {
-    this.bottomSheet.open(ProductDetailComponent, {data: {product}})
+    this.bottomSheet.open(ProductDetailComponent, {data: {product}, panelClass: 'no-top-padding'})
       .afterDismissed().subscribe(((result: { addToCart: boolean, quantity: number }) => {
       if (result?.addToCart) {
         const fakeEvent = {stopPropagation: () => {}};
@@ -168,23 +193,43 @@ export class ProductPageComponent implements OnInit {
     }));
   }
 
+
+  /**
+   * Add selected product with selected quantity to the cart.
+   * If the product is already in the cart we just increment the quantity of it.
+   * Otherwise we add a new unit to the cart.
+   * @param e                 Event, used to prevent product detail to be opened up
+   * @param product           Selected product to add to the cart
+   * @param quantity          Quantity of the product, taken from input
+   * @param addToCartIcon     Respective icon of the product, if never added to cart
+   * @param addedToCartIcon   Respective icon of the product, if already in cart
+   */
   addProductToCart(e, product, quantity: string, addToCartIcon?, addedToCartIcon?) {
     e.stopPropagation(); // prevents product detail to be opened up
-    console.log(product);
+
+    // Generating a hash here to check if the product is already in cart
+    const hash = hashCodeFromObject(product, ['code', 'width', 'height', 'length']);
+
+    // If hash can not be found inside the products in cart
+    // this means that we need to add the product as a new unit
     const selectedProducts: any[] = this.productsInCart.getValue();
-    const productIndex: number = this.findProductInCart(product.id);
-    const isProductInCart = productIndex > -1;
+    const productIndex: number = this.findProductByHash(hash);
+    const isProductInCart: boolean = productIndex > -1;
 
     if (isProductInCart) {
       selectedProducts[productIndex].quantity += Number(quantity);
     } else {
-      selectedProducts.push(composeOrderUnit(product, Number(quantity)));
+      selectedProducts.push(composeOrderUnit(product, Number(quantity), hash));
     }
     setProductsInCart(this.productsInCart, selectedProducts);
+    this.snackbar.open(this.transloco.translate('cart success message'), 'OK', {
+      horizontalPosition: 'end', verticalPosition: 'bottom', duration: 2000, panelClass: ['success-snackbar']
+    });
     if (addToCartIcon) {
       this.animate(addToCartIcon, addedToCartIcon);
     }
   }
+
 
   animate(addToCartIcon, addedToCartIcon) {
     const isItemAlreadyInCart: boolean = addToCartIcon._elementRef.nativeElement.style.opacity === '0';
@@ -205,10 +250,11 @@ export class ProductPageComponent implements OnInit {
     addedToCartIcon._elementRef.nativeElement.style.transform = 'rotate(360deg)';
   }
 
-  findProductInCart(productId): number {
-    return this.productsInCart.getValue()
-      .findIndex((orderUnit) => orderUnit.product.id === productId);
+
+  findProductByHash(hash: number): number {
+    return this.productsInCart.getValue().findIndex(unit => unit.hash === hash);
   }
+
 
   changeInputValue(e, input, value) {
     e.stopPropagation();
@@ -225,6 +271,7 @@ export class ProductPageComponent implements OnInit {
     e.data = '1';
     this.onInputChange(e, input);
   }
+
 
   onInputChange(e, input) {
     e.stopPropagation();
@@ -246,6 +293,7 @@ export class ProductPageComponent implements OnInit {
       }
     }, 200);
   }
+
 
   focusInput(e, _) {
     e.stopPropagation();
