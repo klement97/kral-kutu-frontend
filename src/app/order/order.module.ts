@@ -18,10 +18,17 @@ import { MatTableModule } from '@angular/material/table';
 import { SharedModule } from 'src/app/common/shared.module';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { CheckoutButtonComponent } from 'src/app/order/components/checkout-button.component';
+import { PostCheckoutPageComponent } from 'src/app/order/components/post-checkout-page.component';
 
 
 @NgModule({
-  declarations: [ProductPageComponent, ProductDetailComponent, CheckoutComponent, CheckoutButtonComponent],
+  declarations: [
+    ProductPageComponent,
+    ProductDetailComponent,
+    CheckoutComponent,
+    CheckoutButtonComponent,
+    PostCheckoutPageComponent
+  ],
   imports: [
     SharedModule,
     CommonModule,
