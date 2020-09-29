@@ -55,6 +55,10 @@ import { takeUntil } from 'rxjs/operators';
   template: `
       <ng-container *transloco="let t">
           <mat-list role="list">
+              <div *ngIf="totalPrice === 0" style="text-align: center">
+                  <img src="../../../assets/images/empty_cart.svg" alt="empty cart image" width="100%">
+                  <h4>{{t('empty cart message')}}</h4>
+              </div>
               <!-- Cart items -->
               <div role="listitem" *ngFor="let orderUnit of orderUnits | async" class="cart-item mat-elevation-z1">
                   <img [src]="orderUnit.product.image"
@@ -77,14 +81,14 @@ import { takeUntil } from 'rxjs/operators';
               </div>
 
               <!-- Totals -->
-              <div class="totals">
+              <div class="totals" *ngIf="totalPrice > 0">
                   <h4>{{t('total')}}:</h4>
                   <h4><b>{{totalPrice | number | prefix: '$'}}</b></h4>
               </div>
-              <mat-divider></mat-divider>
+              <mat-divider *ngIf="totalPrice > 0"></mat-divider>
 
               <!-- Continue shopping button -->
-              <div class="cart-actions">
+              <div class="cart-actions" *ngIf="totalPrice > 0">
                   <button mat-stroked-button color="primary" type="button" (click)="navigateTo(['order'])">
                       <span style="font-size:smaller;">{{t('continue shopping')}}</span>
                   </button>
