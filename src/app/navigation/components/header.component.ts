@@ -40,6 +40,7 @@ import { PRODUCTS_IN_CART, productsInCart } from 'src/app/common/const';
 
           ::ng-deep .mat-menu-panel {
               width: 280px;
+              height: 80vh;
           }
     `
   ]
