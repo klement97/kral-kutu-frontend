@@ -22,7 +22,7 @@ import { positiveIntegerWithZeroRegex } from 'src/app/common/const';
           z-index: 2;
       }
 
-      .title h3 {
+      .title h2 {
           margin: 0
       }
 
@@ -55,6 +55,8 @@ import { positiveIntegerWithZeroRegex } from 'src/app/common/const';
 
       th {
           text-align: start;
+          font-weight: 400;
+          color: #787676;
       }
 
       td {
@@ -63,14 +65,23 @@ import { positiveIntegerWithZeroRegex } from 'src/app/common/const';
 
       th, td {
           display: block;
-          border-bottom: 1px solid gray;
+          border-bottom: 1px solid rgba(192, 192, 192, 0.88)
+      }
+
+      .br-4 {
+          border-radius: 4px;
+      }
+
+      .price-radius {
+          border-top-left-radius: 4px !important;
+          border-bottom-left-radius: 4px !important;
       }
   `],
   template: `
       <ng-container *transloco="let t">
           <div>
               <mat-card class="title sticky mat-elevation-z1">
-                  <h3>{{t('product details')}}</h3>
+                  <h2>{{data.product.code}}</h2>
                   <!-- Close button -->
                   <button mat-icon-button color="warn" (click)="closeBottomSheet()">
                       <mat-icon>close</mat-icon>
@@ -82,8 +93,6 @@ import { positiveIntegerWithZeroRegex } from 'src/app/common/const';
                   <img [src]="data.product.image" alt="product-image">
               </div>
 
-              <br>
-              <mat-divider></mat-divider>
               <br>
               <!-- Details list -->
               <mat-card class="mat-elevation-z3">
@@ -116,11 +125,9 @@ import { positiveIntegerWithZeroRegex } from 'src/app/common/const';
               </mat-card>
           </div>
           <br>
-          <mat-divider></mat-divider>
-          <br>
-          <div class="card-actions">
+          <div class="card-actions br-4">
               <!-- Product Price -->
-              <span class="product-price">{{data.product.price | prefix: '$'}}</span>
+              <span class="product-price price-radius">{{data.product.price | prefix: '$'}}</span>
 
               <!-- Quantity Inputs -->
               <div class="quantity-input-group">
@@ -151,8 +158,10 @@ export class ProductDetailComponent implements OnInit {
     @Inject(MAT_BOTTOM_SHEET_DATA) public data: { product: any }
   ) { }
 
+
   ngOnInit(): void {
   }
+
 
   onInputChange(e, input) {
     const inputChar: string = e.data;
@@ -174,6 +183,7 @@ export class ProductDetailComponent implements OnInit {
     }, 200);
   }
 
+
   changeInputValue(e, input, value) {
     e.stopPropagation();
     if (!input.value) {
@@ -190,9 +200,11 @@ export class ProductDetailComponent implements OnInit {
     this.onInputChange(e, input);
   }
 
+
   addToCart(quantity: string) {
     this.bottomSheetRef.dismiss({addToCart: true, quantity: Number(quantity)});
   }
+
 
   closeBottomSheet() {
     this.bottomSheetRef.dismiss({addToCart: false, quantity: null});
