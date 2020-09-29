@@ -46,7 +46,11 @@ import { Order } from 'src/app/order/models/order.model';
       .title {
           display: flex;
           justify-content: space-between;
-          align-items: center;
+          align-items: flex-start;
+      }
+
+      .title button {
+          width: unset;
       }
   `],
   template: `
@@ -54,8 +58,8 @@ import { Order } from 'src/app/order/models/order.model';
           <div style="padding: 15px; width: 100%">
               <!-- The Checkout form -->
               <mat-card class="title">
-                  <h1>{{t('checkout')}}</h1>
-                  <button mat-stroked-button routerLink="/order">
+                  <h1>{{t('checkout title')}}</h1>
+                  <button mat-stroked-button color="primary" routerLink="/order">
                       <mat-icon>keyboard_backspace</mat-icon>
                   </button>
               </mat-card>
@@ -74,7 +78,7 @@ import { Order } from 'src/app/order/models/order.model';
                       <mat-form-field color="primary" appearance="outline">
                           <mat-label>{{t('last name')}}</mat-label>
                           <input matInput type="text" formControlName="last_name" required maxlength="50">
-                          <mat-icon matSuffix>person</mat-icon>
+                          <!--                          <mat-icon matSuffix>person</mat-icon>-->
                       </mat-form-field>
 
                       <!-- Phone -->
@@ -121,51 +125,9 @@ import { Order } from 'src/app/order/models/order.model';
                   </form>
               </mat-card>
 
-              <br><br>
+              <br>
               <mat-divider></mat-divider>
-              <br><br>
-              <!-- Selected Products in Cards -->
-              <div style="margin: 20px auto; width: 100%">
-                  <mat-card><h3>{{t('selected products')}}</h3></mat-card>
-              </div>
-              <div class="products" style="margin: 20px auto; width: 100%">
-                  <!-- Selected Products -->
-                  <div class="product-card" *ngFor="let unit of productsInCart.getValue()">
-                      <div class="image-wrapper">
-                          <img [src]="unit.product.image" alt="product-image">
-                      </div>
-
-                      <!-- CARD CONTENT -->
-                      <div class="card-content">
-                          <h4>{{unit.product.code}}</h4>
-                          <div class="dimensions">
-                              <div class="size">
-                                  <span>{{unit.product.width | number}}</span> <img
-                                      src="../../../assets/images/width-arrow.svg" alt="width-icon">
-                              </div>
-                              <div class="size length-dimension">
-                                  <span>{{unit.product.length | number}}</span> <img
-                                      src="../../../assets/images/depth-arrow.svg" alt="length-icon">
-                              </div>
-                              <div class="size">
-                                  <span>{{unit.product.height | number}}</span> <img
-                                      src="../../../assets/images/height-arrow.svg" alt="height-icon">
-                              </div>
-                          </div>
-                      </div>
-
-                      <!-- CARD ACTIONS -->
-                      <div class="price-quantity">
-                          <span>{{unit.product.price | number | prefix: '$'}}</span> <span>x</span>
-                          <span>{{unit.quantity}}</span> <span>=</span>
-                          <span>{{(unit.product.price * unit.quantity | number) | prefix: '$'}}</span>
-                      </div>
-                  </div>
-              </div>
-
-              <br><br>
-              <mat-divider></mat-divider>
-              <br><br>
+              <br>
 
               <!-- Order Review Section -->
               <mat-card class="mat-elevation-z2"><h3>{{t('order review')}}</h3></mat-card>
@@ -223,6 +185,47 @@ import { Order } from 'src/app/order/models/order.model';
                   <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
                   <tr mat-footer-row *matFooterRowDef="['code', 'quantity', 'subtotal']; sticky: true"></tr>
               </table>
+
+              <br>
+              <mat-divider></mat-divider>
+              <!-- Selected Products in Cards -->
+              <div style="margin: 20px auto; width: 100%">
+                  <mat-card><h3>{{t('selected products')}}</h3></mat-card>
+              </div>
+              <div class="products" style="margin: 20px auto; width: 100%">
+                  <!-- Selected Products -->
+                  <div class="product-card" *ngFor="let unit of productsInCart.getValue()">
+                      <div class="image-wrapper">
+                          <img [src]="unit.product.image" alt="product-image">
+                      </div>
+
+                      <!-- CARD CONTENT -->
+                      <div class="card-content">
+                          <h4>{{unit.product.code}}</h4>
+                          <div class="dimensions">
+                              <div class="size">
+                                  <span>{{unit.product.width | number}}</span> <img
+                                      src="../../../assets/images/width-arrow.svg" alt="width-icon">
+                              </div>
+                              <div class="size length-dimension">
+                                  <span>{{unit.product.length | number}}</span> <img
+                                      src="../../../assets/images/depth-arrow.svg" alt="length-icon">
+                              </div>
+                              <div class="size">
+                                  <span>{{unit.product.height | number}}</span> <img
+                                      src="../../../assets/images/height-arrow.svg" alt="height-icon">
+                              </div>
+                          </div>
+                      </div>
+
+                      <!-- CARD ACTIONS -->
+                      <div class="price-quantity" style="margin-bottom: 10px">
+                          <span>{{unit.product.price | number | prefix: '$'}}</span> <span>x</span>
+                          <span>{{unit.quantity}}</span> <span>=</span>
+                          <span>{{(unit.product.price * unit.quantity | number) | prefix: '$'}}</span>
+                      </div>
+                  </div>
+              </div>
           </div>
       </ng-container>
   `
