@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { OrderService } from 'src/app/order/services/order.service';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { clearCart, productsInCart } from 'src/app/common/const';
 import { Router } from '@angular/router';
@@ -46,7 +46,11 @@ import { Order } from 'src/app/order/models/order.model';
       .title {
           display: flex;
           justify-content: space-between;
-          align-items: center;
+          align-items: flex-start;
+      }
+
+      .title button {
+          width: unset;
       }
   `],
   template: `
@@ -54,8 +58,8 @@ import { Order } from 'src/app/order/models/order.model';
           <div style="padding: 15px; width: 100%">
               <!-- The Checkout form -->
               <mat-card class="title">
-                  <h1>{{t('checkout')}}</h1>
-                  <button mat-stroked-button routerLink="/order">
+                  <h1>{{t('checkout title')}}</h1>
+                  <button mat-stroked-button color="primary" routerLink="/order">
                       <mat-icon>keyboard_backspace</mat-icon>
                   </button>
               </mat-card>
@@ -74,7 +78,7 @@ import { Order } from 'src/app/order/models/order.model';
                       <mat-form-field color="primary" appearance="outline">
                           <mat-label>{{t('last name')}}</mat-label>
                           <input matInput type="text" formControlName="last_name" required maxlength="50">
-                          <mat-icon matSuffix>person</mat-icon>
+                          <!--                          <mat-icon matSuffix>person</mat-icon>-->
                       </mat-form-field>
 
                       <!-- Phone -->
@@ -93,57 +97,37 @@ import { Order } from 'src/app/order/models/order.model';
                           <mat-hint>{{t('address hint')}}</mat-hint>
                       </mat-form-field>
 
+                      <ng-container *ngIf="leathers$ | async as leathers">
+                          <!-- Inner Leather -->
+                          <mat-form-field color="primary" appearance="outline">
+                              <mat-label>{{t('inner leather')}}</mat-label>
+                              <mat-select formControlName="inner_leather">
+                                  <mat-option *ngFor="let leather of leathers" [value]="leather.id">
+                                      {{leather.code}}
+                                  </mat-option>
+                              </mat-select>
+                          </mat-form-field>
+
+                          <!-- Outer Leather -->
+                          <mat-form-field color="primary" appearance="outline">
+                              <mat-label>{{t('outer leather')}}</mat-label>
+                              <mat-select formControlName="outer_leather">
+                                  <mat-option *ngFor="let leather of leathers" [value]="leather.id">
+                                      {{leather.code}}
+                                  </mat-option>
+                              </mat-select>
+                          </mat-form-field>
+                      </ng-container>
+
                       <button type="button" (click)="submit()" mat-raised-button color="primary">
                           {{t('submit')}}
                       </button>
                   </form>
               </mat-card>
 
-              <br><br>
+              <br>
               <mat-divider></mat-divider>
-              <br><br>
-              <!-- Selected Products in Cards -->
-              <div style="margin: 20px auto; width: 100%">
-                  <mat-card><h3>{{t('selected products')}}</h3></mat-card>
-              </div>
-              <div class="products" style="margin: 20px auto; width: 100%">
-                  <!-- Selected Products -->
-                  <div class="product-card" *ngFor="let unit of productsInCart.getValue()">
-                      <div class="image-wrapper">
-                          <img [src]="unit.product.image" alt="product-image">
-                      </div>
-
-                      <!-- CARD CONTENT -->
-                      <div class="card-content">
-                          <h4>{{unit.product.code}}</h4>
-                          <div class="dimensions">
-                              <div class="size">
-                                  <span>{{unit.product.width | number}}</span> <img
-                                      src="../../../assets/images/width-arrow.svg" alt="width-icon">
-                              </div>
-                              <div class="size length-dimension">
-                                  <span>{{unit.product.length | number}}</span> <img
-                                      src="../../../assets/images/depth-arrow.svg" alt="length-icon">
-                              </div>
-                              <div class="size">
-                                  <span>{{unit.product.height | number}}</span> <img
-                                      src="../../../assets/images/height-arrow.svg" alt="height-icon">
-                              </div>
-                          </div>
-                      </div>
-
-                      <!-- CARD ACTIONS -->
-                      <div class="price-quantity">
-                          <span>{{unit.product.price | number | prefix: '$'}}</span> <span>x</span>
-                          <span>{{unit.quantity}}</span> <span>=</span>
-                          <span>{{(unit.product.price * unit.quantity | number) | prefix: '$'}}</span>
-                      </div>
-                  </div>
-              </div>
-
-              <br><br>
-              <mat-divider></mat-divider>
-              <br><br>
+              <br>
 
               <!-- Order Review Section -->
               <mat-card class="mat-elevation-z2"><h3>{{t('order review')}}</h3></mat-card>
@@ -201,13 +185,54 @@ import { Order } from 'src/app/order/models/order.model';
                   <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
                   <tr mat-footer-row *matFooterRowDef="['code', 'quantity', 'subtotal']; sticky: true"></tr>
               </table>
+
+              <br>
+              <mat-divider></mat-divider>
+              <!-- Selected Products in Cards -->
+              <div style="margin: 20px auto; width: 100%">
+                  <mat-card><h3>{{t('selected products')}}</h3></mat-card>
+              </div>
+              <div class="products" style="margin: 20px auto; width: 100%">
+                  <!-- Selected Products -->
+                  <div class="product-card" *ngFor="let unit of productsInCart.getValue()">
+                      <div class="image-wrapper">
+                          <img [src]="unit.product.image" alt="product-image">
+                      </div>
+
+                      <!-- CARD CONTENT -->
+                      <div class="card-content">
+                          <h4>{{unit.product.code}}</h4>
+                          <div class="dimensions">
+                              <div class="size">
+                                  <span>{{unit.product.width | number}}</span> <img
+                                      src="../../../assets/images/width-arrow.svg" alt="width-icon">
+                              </div>
+                              <div class="size length-dimension">
+                                  <span>{{unit.product.length | number}}</span> <img
+                                      src="../../../assets/images/depth-arrow.svg" alt="length-icon">
+                              </div>
+                              <div class="size">
+                                  <span>{{unit.product.height | number}}</span> <img
+                                      src="../../../assets/images/height-arrow.svg" alt="height-icon">
+                              </div>
+                          </div>
+                      </div>
+
+                      <!-- CARD ACTIONS -->
+                      <div class="price-quantity" style="margin-bottom: 10px">
+                          <span>{{unit.product.price | number | prefix: '$'}}</span> <span>x</span>
+                          <span>{{unit.quantity}}</span> <span>=</span>
+                          <span>{{(unit.product.price * unit.quantity | number) | prefix: '$'}}</span>
+                      </div>
+                  </div>
+              </div>
           </div>
       </ng-container>
   `
 })
-export class CheckoutComponent implements OnInit {
-
+export class CheckoutComponent implements OnInit, OnDestroy {
   productsInCart: BehaviorSubject<any[]>;
+  leathers$: Observable<any[]>;
   orderForm: FormGroup;
   totalPrice = 0;
   totalQuantity = 0;
@@ -219,26 +244,42 @@ export class CheckoutComponent implements OnInit {
     private fb: FormBuilder,
     private router: Router
   ) {
+    this.leathers$ = orderService.getLeathers();
   }
 
 
   ngOnInit(): void {
     this.productsInCart = productsInCart;
-    this.orderForm = this.getOrderForm();
+    this.initializeOrderForm();
     this.calculateTotalQuantityAndPrice();
   }
 
 
-  getOrderForm(): FormGroup {
-    return this.fb.group({
-      first_name: ['', [Validators.required, Validators.maxLength(50)]],
-      last_name: ['', [Validators.required, Validators.maxLength(50)]],
-      phone: ['', [Validators.required, Validators.maxLength(20)]],
-      address: ['', [Validators.maxLength(254)]],
+  ngOnDestroy(): void {
+    this.orderService.orderFormValue = this.orderForm.value;
+  }
+
+
+  initializeOrderForm() {
+    this.orderForm = this.fb.group({
+      first_name: ['klement', [Validators.required, Validators.maxLength(50)]],
+      last_name: ['omeri', [Validators.required, Validators.maxLength(50)]],
+      phone: ['12341243', [Validators.required, Validators.maxLength(20)]],
+      address: ['tirane', [Validators.maxLength(254)]],
       order_units: [[]],
-      inner_leather: ['1'],
-      outer_leather: ['1'],
+      inner_leather: [1],
+      outer_leather: [1],
     });
+    this.backupRestoreOrderForm();
+  }
+
+
+  backupRestoreOrderForm() {
+    if (this.orderService.orderFormValue) {
+      this.orderForm.patchValue(this.orderService.orderFormValue);
+    } else {
+      this.orderService.orderFormValue = this.orderForm.value;
+    }
   }
 
 
@@ -257,7 +298,12 @@ export class CheckoutComponent implements OnInit {
    */
   getSerializedOrderUnits() {
     const orderUnits = Array.from(this.productsInCart.getValue());
-    orderUnits.forEach(orderUnit => orderUnit.product = orderUnit.product.id);
+    orderUnits.forEach(orderUnit => {
+      orderUnit.width = orderUnit.product.width;
+      orderUnit.height = orderUnit.product.height;
+      orderUnit.length = orderUnit.product.length;
+      orderUnit.product = orderUnit.product.id;
+    });
 
     return orderUnits;
   }
@@ -269,10 +315,9 @@ export class CheckoutComponent implements OnInit {
     this.orderService.createOrder(this.orderForm.value)
       .subscribe(
         (order: Order) => {
-          console.log(order);
           this.router.navigate(['order', 'post-checkout', order.id]).then();
           clearCart();
-          this.orderForm = this.getOrderForm();
+          this.orderForm.reset();
           this.totalQuantity = 0;
           this.totalPrice = 0;
         },

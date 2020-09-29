@@ -141,3 +141,12 @@ export function hashCodeFromObject(obj, fields: string[]) {
   return hashCode(objString);
 }
 
+
+export function cacheValue(cache, key, value) {
+  cache[key] = value;
+}
+
+
+export function getFromCache(cache, key) {
+  return cache[key];
+}
