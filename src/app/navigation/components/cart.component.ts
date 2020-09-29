@@ -49,12 +49,13 @@ import { takeUntil } from 'rxjs/operators';
           display: flex;
           align-items: center;
           justify-content: space-around;
-          padding: 15px 10px 7px;
+          padding: 10px 0;
+          background-color: #F5F5F5;
       }
   `],
   template: `
       <ng-container *transloco="let t">
-          <mat-list role="list">
+          <mat-list role="list" style="padding: 8px 0 0">
               <div *ngIf="totalPrice === 0" style="text-align: center">
                   <img src="../../../assets/images/empty_cart.svg" alt="empty cart image" width="100%">
                   <h4>{{t('empty cart message')}}</h4>

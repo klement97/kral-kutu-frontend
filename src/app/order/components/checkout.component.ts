@@ -262,13 +262,13 @@ export class CheckoutComponent implements OnInit, OnDestroy {
 
   initializeOrderForm() {
     this.orderForm = this.fb.group({
-      first_name: ['', [Validators.required, Validators.maxLength(50)]],
-      last_name: ['', [Validators.required, Validators.maxLength(50)]],
-      phone: ['', [Validators.required, Validators.maxLength(20)]],
-      address: ['', [Validators.maxLength(254)]],
+      first_name: ['klement', [Validators.required, Validators.maxLength(50)]],
+      last_name: ['omeri', [Validators.required, Validators.maxLength(50)]],
+      phone: ['12341243', [Validators.required, Validators.maxLength(20)]],
+      address: ['tirane', [Validators.maxLength(254)]],
       order_units: [[]],
-      inner_leather: [null],
-      outer_leather: [null],
+      inner_leather: [1],
+      outer_leather: [1],
     });
     this.backupRestoreOrderForm();
   }
@@ -298,7 +298,12 @@ export class CheckoutComponent implements OnInit, OnDestroy {
    */
   getSerializedOrderUnits() {
     const orderUnits = Array.from(this.productsInCart.getValue());
-    orderUnits.forEach(orderUnit => orderUnit.product = orderUnit.product.id);
+    orderUnits.forEach(orderUnit => {
+      orderUnit.width = orderUnit.product.width;
+      orderUnit.height = orderUnit.product.height;
+      orderUnit.length = orderUnit.product.length;
+      orderUnit.product = orderUnit.product.id;
+    });
 
     return orderUnits;
   }
@@ -310,7 +315,6 @@ export class CheckoutComponent implements OnInit, OnDestroy {
     this.orderService.createOrder(this.orderForm.value)
       .subscribe(
         (order: Order) => {
-          console.log(order);
           this.router.navigate(['order', 'post-checkout', order.id]).then();
           clearCart();
           this.orderForm.reset();
