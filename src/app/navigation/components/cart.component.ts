@@ -67,8 +67,9 @@ import { takeUntil } from 'rxjs/operators';
   `],
   template: `
       <ng-container *transloco="let t">
-          <mat-list role="list" style="padding: 0; background-color: #F5F5F5;">
-              <div *ngIf="totalPrice === 0" style="text-align: center; margin-top: 8px; background-color:white;">
+          <mat-list role="list" style="padding: 0;"
+                    [ngStyle]="{'background-color': totalPrice == 0 ? 'white' : '#F5F5F5'}">
+              <div *ngIf="totalPrice === 0" style="text-align: center; margin: 8px 0 0 8px;">
                   <img src="../../../assets/images/empty_cart.svg" alt="empty cart image" width="100%">
                   <h4>{{t('empty cart message')}}</h4>
               </div>
