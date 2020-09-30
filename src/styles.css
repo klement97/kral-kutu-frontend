@@ -26,3 +26,23 @@ body {
 .success-snackbar .mat-simple-snackbar-action {
     color: white;
 }
+
+::-webkit-scrollbar,
+::-webkit-scrollbar-thumb,
+::-webkit-scrollbar-track {
+    width: 5px;
+    border: none;
+    background: transparent;
+}
+
+::-webkit-scrollbar-button,
+::-webkit-scrollbar-track-piece,
+::-webkit-scrollbar-corner,
+::-webkit-resizer {
+    display: none;
+}
+
+::-webkit-scrollbar-thumb {
+    border-radius: 8px;
+    background-color: rgba(0, 0, 0, 0.3);
+}
