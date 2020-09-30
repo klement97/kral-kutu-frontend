@@ -138,9 +138,11 @@ import {MatTableDataSource} from '@angular/material/table';
           </div>
         </div>
       </div>
+
       <mat-paginator [length]="productsCount" [pageSize]="10" #paginator
                      (page)="getProducts()"
       ></mat-paginator>
+
     </ng-container>
   `
 })
