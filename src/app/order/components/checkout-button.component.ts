@@ -29,6 +29,7 @@ import { Component, OnInit } from '@angular/core';
 
       button:hover {
           opacity: 1;
+          border-color: rgba(0, 168, 28, 1) !important;
       }
   `]
 })
