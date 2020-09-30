@@ -1,9 +1,9 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
-import {OrderService} from 'src/app/order/services/order.service';
-import {BehaviorSubject, Observable} from 'rxjs';
-import {FormBuilder, FormGroup} from '@angular/forms';
-import {MatBottomSheet} from '@angular/material/bottom-sheet';
-import {ProductDetailComponent} from 'src/app/order/components/product-detail.component';
+import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { OrderService } from 'src/app/order/services/order.service';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { FormBuilder, FormGroup } from '@angular/forms';
+import { MatBottomSheet } from '@angular/material/bottom-sheet';
+import { ProductDetailComponent } from 'src/app/order/components/product-detail.component';
 import {
   composeOrderUnit,
   hashCodeFromObject,
@@ -12,108 +12,108 @@ import {
   productsInCart,
   setProductsInCart
 } from 'src/app/common/const';
-import {MatSnackBar} from '@angular/material/snack-bar';
-import {TranslocoService} from '@ngneat/transloco';
-import {Product} from 'src/app/order/models/order.model';
-import {MatPaginator} from '@angular/material/paginator';
-import {MatTableDataSource} from '@angular/material/table';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { TranslocoService } from '@ngneat/transloco';
+import { Product } from 'src/app/order/models/order.model';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatTableDataSource } from '@angular/material/table';
 
 
 @Component({
   selector: 'app-order-page',
   styles: [`
 
-    /*
-    Even though add-to-cart and added-to-cart classes are present in common-style
-    they are still required to be here too.
-     */
-    .add-to-cart {
-      display: block;
-      position: absolute;
-      right: 5px;
-      bottom: 5px;
-      color: white;
-      transition: .4s;
-      transition-timing-function: linear;
-    }
+      /*
+      Even though add-to-cart and added-to-cart classes are present in common-style
+      they are still required to be here too.
+       */
+      .add-to-cart {
+          display: block;
+          position: absolute;
+          right: 5px;
+          bottom: 5px;
+          color: white;
+          transition: .4s;
+          transition-timing-function: linear;
+      }
 
-    .added-to-cart {
-      position: absolute;
-      right: 5px;
-      bottom: 5px;
-      z-index: 3;
-      pointer-events: none;
-      width: 40px;
-      line-height: 24px;
-      font-size: 24px;
-      color: white;
-    }
+      .added-to-cart {
+          position: absolute;
+          right: 5px;
+          bottom: 5px;
+          z-index: 3;
+          pointer-events: none;
+          width: 40px;
+          line-height: 24px;
+          font-size: 24px;
+          color: white;
+      }
 
-    .metric-hint {
-      font-size: 10px;
-      color: gray;
-    }
+      .metric-hint {
+          font-size: 10px;
+          color: gray;
+      }
 
-    /* Hide Up Down Buttons on Number Input */
-    /* Chrome, Safari, Edge, Opera */
-    input::-webkit-outer-spin-button,
-    input::-webkit-inner-spin-button {
-      -webkit-appearance: none;
-      margin: 0;
-    }
+      /* Hide Up Down Buttons on Number Input */
+      /* Chrome, Safari, Edge, Opera */
+      input::-webkit-outer-spin-button,
+      input::-webkit-inner-spin-button {
+          -webkit-appearance: none;
+          margin: 0;
+      }
 
-    /* Firefox */
-    input[type=number] {
-      -moz-appearance: textfield;
-    }
+      /* Firefox */
+      input[type=number] {
+          -moz-appearance: textfield;
+      }
   `],
   template: `
-    <ng-container *transloco="let t">
-      <app-checkout-button *ngIf="productsInCart.getValue().length as length"></app-checkout-button>
-      <div style="margin: 30px auto; width: 85%">
-        <mat-card><h1 style="margin: 0">{{t('products')}}</h1></mat-card>
-      </div>
-      <ng-container *ngIf="productCategories.length > 0">
-        <app-product-category-tabs [categories]="productCategories" (categoryChange)="filterByCategory($event)">
-        </app-product-category-tabs>
-      </ng-container>
-      <div class="products">
-
-        <!-- CARD -->
-        <div class="product-card" *ngFor="let product of products" (click)="openProductDetails(product)">
-          <div class="image-wrapper">
-            <img [src]="product.image" alt="product-image">
+      <ng-container *transloco="let t">
+          <app-checkout-button *ngIf="productsInCart.getValue().length as length"></app-checkout-button>
+          <div style="margin: 30px auto; width: 85%">
+              <mat-card><h1 style="margin: 0">{{t('products')}}</h1></mat-card>
           </div>
+          <ng-container *ngIf="productCategories.length > 0">
+              <app-product-category-tabs [categories]="productCategories" (categoryChange)="filterByCategory($event)">
+              </app-product-category-tabs>
+          </ng-container>
+          <div class="products">
 
-          <!-- CARD CONTENT -->
-          <div class="card-content">
-            <h4>{{product.code}}</h4>
-            <div class="dimensions">
-              <div class="size" (click)="focusInput($event, width.focus())">
-                <input type="number" class="quantity-input" [value]="product.width | number" #width
-                       (input)="product.width = width.value">
-                <img src="../../../assets/images/width-arrow.svg" alt="width-icon">
-                <span class="metric-hint">(cm)</span>
-              </div>
-              <div class="size length-dimension" (click)="focusInput($event, length.focus())">
-                <input type="number" class="quantity-input" [value]="product.length | number" #length
-                       (input)="product.length = length.value">
-                <img src="../../../assets/images/depth-arrow.svg" alt="length-icon">
-                <span class="metric-hint">(cm)</span>
-              </div>
-              <div class="size" (click)="focusInput($event, height.focus())">
-                <input type="number" class="quantity-input" [value]="product.height | number" #height
-                       (input)="product.height = height.value">
-                <img src="../../../assets/images/height-arrow.svg" alt="height-icon">
-                <span class="metric-hint">(cm)</span>
-              </div>
-            </div>
-          </div>
+              <!-- CARD -->
+              <div class="product-card" *ngFor="let product of products" (click)="openProductDetails(product)">
+                  <div class="image-wrapper">
+                      <img [src]="product.image" alt="product-image">
+                  </div>
 
-          <!-- CARD ACTIONS -->
-          <div class="card-actions">
-            <span class="product-price">{{product.price | prefix: '$'}}</span>
-            <div class="quantity-input-group">
+                  <!-- CARD CONTENT -->
+                  <div class="card-content">
+                      <h4>{{product.code}}</h4>
+                      <div class="dimensions">
+                          <div class="size" (click)="focusInput($event, width.focus())">
+                              <input type="number" class="quantity-input" [value]="product.width | number" #width
+                                     (input)="product.width = width.value">
+                              <img src="../../../assets/images/width-arrow.svg" alt="width-icon">
+                              <span class="metric-hint">(cm)</span>
+                          </div>
+                          <div class="size length-dimension" (click)="focusInput($event, length.focus())">
+                              <input type="number" class="quantity-input" [value]="product.length | number" #length
+                                     (input)="product.length = length.value">
+                              <img src="../../../assets/images/depth-arrow.svg" alt="length-icon">
+                              <span class="metric-hint">(cm)</span>
+                          </div>
+                          <div class="size" (click)="focusInput($event, height.focus())">
+                              <input type="number" class="quantity-input" [value]="product.height | number" #height
+                                     (input)="product.height = height.value">
+                              <img src="../../../assets/images/height-arrow.svg" alt="height-icon">
+                              <span class="metric-hint">(cm)</span>
+                          </div>
+                      </div>
+                  </div>
+
+                  <!-- CARD ACTIONS -->
+                  <div class="card-actions">
+                      <span class="product-price">{{product.price | prefix: '$'}}</span>
+                      <div class="quantity-input-group">
                               <span class="up-down-buttons">
                                   <button mat-icon-button type="button"
                                           (click)="changeInputValue($event, quantity, -1)">
@@ -125,28 +125,26 @@ import {MatTableDataSource} from '@angular/material/table';
                                       <mat-icon color="primary">keyboard_arrow_up</mat-icon>
                                   </button>
                               </span>
-            </div>
-            <button mat-icon-button color="primary" type="button" class="add-to-cart"
-                    (click)="addProductToCart($event, product, quantity.value, addToCartIcon, addedToCartIcon)">
-              <mat-icon #addToCartIcon style="z-index: 2; position: relative;">
-                add_shopping_cart
-              </mat-icon>
-            </button>
-            <button mat-icon-button class="added-to-cart">
-              <mat-icon #addedToCartIcon>shopping_cart</mat-icon>
-            </button>
+                      </div>
+                      <button mat-icon-button color="primary" type="button" class="add-to-cart"
+                              (click)="addProductToCart($event, product, quantity.value, addToCartIcon, addedToCartIcon)">
+                          <mat-icon #addToCartIcon style="z-index: 2; position: relative;">
+                              add_shopping_cart
+                          </mat-icon>
+                      </button>
+                      <button mat-icon-button class="added-to-cart">
+                          <mat-icon #addedToCartIcon>shopping_cart</mat-icon>
+                      </button>
+                  </div>
+              </div>
           </div>
-        </div>
-      </div>
+          <mat-paginator [length]="productsCount" [pageSize]="2" #paginator (page)="getProducts()"></mat-paginator>
 
-      <mat-paginator [length]="productsCount" [pageSize]="10" #paginator
-                     (page)="getProducts()"
-      ></mat-paginator>
-
-    </ng-container>
+      </ng-container>
   `
 })
-export class ProductPageComponent implements OnInit {
+export class ProductPageComponent implements OnInit, AfterViewInit {
+  @ViewChild(MatPaginator) paginator: MatPaginator;
 
   products: Product[];
   productsCount = 0;
@@ -156,7 +154,6 @@ export class ProductPageComponent implements OnInit {
 
   productFilterForm: FormGroup;
   productsInCart: BehaviorSubject<any>;
-  @ViewChild('paginator') paginator: MatPaginator;
 
 
   constructor(
@@ -174,8 +171,12 @@ export class ProductPageComponent implements OnInit {
   ngOnInit(): void {
     this.getProductCategories();
     this.productFilterForm = this.getProductFilterForm();
-    this.getProducts();
     this.productsInCart = productsInCart;
+  }
+
+
+  ngAfterViewInit() {
+    this.getProducts();
   }
 
 
@@ -195,7 +196,6 @@ export class ProductPageComponent implements OnInit {
 
 
   getProducts() {
-    // fixme: fix paginator here
     this.orderService.getProducts(this.paginator, this.productFilterForm.value).subscribe(
       (res: any) => {
         this.products = res.results ? res.results : res;
