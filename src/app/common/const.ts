@@ -22,7 +22,7 @@ export interface IDNameModel {
 export function buildQueryString(paginator = null, sort = null, filter: any): string {
   const queryString = [];
   const page_size: number = paginator?.rows ? paginator.rows : 10;
-  let page: number = paginator?.getPage() ? paginator.getPage() : 0;
+  let page: number = paginator?.pageIndex ? paginator?.pageIndex : 0;
   page++;  // mat-paginator starts indexing from zero
 
   if (page) {

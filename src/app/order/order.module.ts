@@ -22,6 +22,7 @@ import { PostCheckoutPageComponent } from 'src/app/order/components/post-checkou
 import { ProductCategoryTabsComponent } from 'src/app/order/components/product-category-tabs.component';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatSelectModule } from '@angular/material/select';
+import {MatPaginatorModule} from '@angular/material/paginator';
 
 
 @NgModule({
@@ -49,7 +50,8 @@ import { MatSelectModule } from '@angular/material/select';
     MatTableModule,
     MatSnackBarModule,
     MatTabsModule,
-    MatSelectModule
+    MatSelectModule,
+    MatPaginatorModule
   ]
 })
 export class OrderModule {}
