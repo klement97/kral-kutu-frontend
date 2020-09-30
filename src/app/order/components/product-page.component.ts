@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { OrderService } from 'src/app/order/services/order.service';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { FormBuilder, FormGroup } from '@angular/forms';
@@ -15,6 +15,8 @@ import {
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslocoService } from '@ngneat/transloco';
 import { Product } from 'src/app/order/models/order.model';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatTableDataSource } from '@angular/material/table';
 
 
 @Component({
@@ -136,10 +138,13 @@ import { Product } from 'src/app/order/models/order.model';
                   </div>
               </div>
           </div>
+          <mat-paginator [length]="productsCount" [pageSize]="10" #paginator (page)="getProducts()"></mat-paginator>
+
       </ng-container>
   `
 })
-export class ProductPageComponent implements OnInit {
+export class ProductPageComponent implements OnInit, AfterViewInit {
+  @ViewChild(MatPaginator) paginator: MatPaginator;
 
   products: Product[];
   productsCount = 0;
@@ -166,8 +171,12 @@ export class ProductPageComponent implements OnInit {
   ngOnInit(): void {
     this.getProductCategories();
     this.productFilterForm = this.getProductFilterForm();
-    this.getProducts();
     this.productsInCart = productsInCart;
+  }
+
+
+  ngAfterViewInit() {
+    this.getProducts();
   }
 
 
@@ -187,8 +196,7 @@ export class ProductPageComponent implements OnInit {
 
 
   getProducts() {
-    // fixme: fix paginator here
-    this.orderService.getProducts(null, this.productFilterForm.value).subscribe(
+    this.orderService.getProducts(this.paginator, this.productFilterForm.value).subscribe(
       (res: any) => {
         this.products = res.results ? res.results : res;
         this.productsCount = res.count ? res.count : res.length;
@@ -208,7 +216,10 @@ export class ProductPageComponent implements OnInit {
     this.bottomSheet.open(ProductDetailComponent, {data: {product}, panelClass: 'no-top-padding'})
       .afterDismissed().subscribe(((result: { addToCart: boolean, quantity: number }) => {
       if (result?.addToCart) {
-        const fakeEvent = {stopPropagation: () => {}};
+        const fakeEvent = {
+          stopPropagation: () => {
+          }
+        };
         this.addProductToCart(fakeEvent, product, result.quantity.toString());
       }
     }));

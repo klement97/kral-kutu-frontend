@@ -12,6 +12,17 @@ import { takeUntil } from 'rxjs/operators';
   styles: [`
       .cart-item {
           position: relative;
+          margin: 5px 0;
+          border-radius: 4px;
+          background-color: white;
+      }
+
+      .cart-item:first-child {
+          margin-top: 0;
+      }
+
+      .cart-item:last-child {
+          margin-bottom: 0;
       }
 
       .cart-item button {
@@ -43,6 +54,7 @@ import { takeUntil } from 'rxjs/operators';
           justify-content: space-between;
           align-items: center;
           padding: 15px 25px 0 10px;
+          background-color: white;
       }
 
       .cart-actions {
@@ -55,8 +67,9 @@ import { takeUntil } from 'rxjs/operators';
   `],
   template: `
       <ng-container *transloco="let t">
-          <mat-list role="list" style="padding: 8px 0 0">
-              <div *ngIf="totalPrice === 0" style="text-align: center">
+          <mat-list role="list" style="padding: 0;"
+                    [ngStyle]="{'background-color': totalPrice == 0 ? 'white' : '#F5F5F5'}">
+              <div *ngIf="totalPrice === 0" style="text-align: center; margin: 8px 0 0 8px;">
                   <img src="../../../assets/images/empty_cart.svg" alt="empty cart image" width="100%">
                   <h4>{{t('empty cart message')}}</h4>
               </div>

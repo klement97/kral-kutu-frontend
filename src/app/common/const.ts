@@ -1,5 +1,6 @@
 import { formatDate } from '@angular/common';
 import { BehaviorSubject } from 'rxjs';
+import { MatPaginator } from '@angular/material/paginator';
 
 
 export const productsInCart = new BehaviorSubject([]);
@@ -18,18 +19,17 @@ export interface IDNameModel {
 }
 
 
-// FIXME: fix paginator here after material installation
-export function buildQueryString(paginator = null, sort = null, filter: any): string {
+export function buildQueryString(paginator: MatPaginator = null, sort = null, filter: any): string {
   const queryString = [];
-  const page_size: number = paginator?.rows ? paginator.rows : 10;
-  let page: number = paginator?.getPage() ? paginator.getPage() : 0;
+  const pageSize: number = paginator?.pageSize ? paginator.pageSize : 10;
+  let page: number = paginator?.pageIndex ? paginator?.pageIndex : 0;
   page++;  // mat-paginator starts indexing from zero
 
   if (page) {
     queryString.push(`page=${page}`);
   }
-  if (page_size) {
-    queryString.push(`page_size=${page_size}`);
+  if (pageSize) {
+    queryString.push(`page_size=${pageSize}`);
   }
   if (sort) {
     const ordering = sort ? getSort(sort.active, sort.direction) : '-id';

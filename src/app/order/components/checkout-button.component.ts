@@ -17,10 +17,10 @@ import { Component, OnInit } from '@angular/core';
   styles: [`
       button {
           background-color: white;
-          border-color: rgba(0, 168, 28, 0.88);
+          border-color: rgba(0, 168, 28, 0.1) !important;
           color: rgba(0, 168, 28, 0.88);
           position: fixed;
-          bottom: 100px;
+          bottom: 155px;
           right: 5px;
           opacity: 0.5;
           transition: all .2s ease-in-out;
@@ -29,6 +29,7 @@ import { Component, OnInit } from '@angular/core';
 
       button:hover {
           opacity: 1;
+          border-color: rgba(0, 168, 28, 1) !important;
       }
   `]
 })
