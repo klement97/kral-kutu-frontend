@@ -82,7 +82,7 @@ import { MatTableDataSource } from '@angular/material/table';
               <!-- CARD -->
               <div class="product-card" *ngFor="let product of products" (click)="openProductDetails(product)">
                   <div class="image-wrapper">
-                      <img [src]="product.image" alt="product-image">
+                      <img [src]="'/assets/fixtures/TB01020.jpg'" alt="product-image">
                   </div>
 
                   <!-- CARD CONTENT -->
