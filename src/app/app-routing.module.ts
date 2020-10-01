@@ -5,7 +5,7 @@ import { NotFoundComponent } from 'src/app/navigation/components/not-found.compo
 
 
 const routes: Routes = [
-  {path: '', component: NavigationComponent, pathMatch: 'full'},
+  {path: '', redirectTo: 'order', pathMatch: 'full'},
   {
     path: 'order',
     loadChildren: () => import('src/app/order/order.module').then(m => m.OrderModule)
