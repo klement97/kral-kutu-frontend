@@ -116,7 +116,7 @@ import { positiveIntegerWithZeroRegex } from 'src/app/common/const';
                               -{{inner_leather.code}}</td>
                           <td *ngIf="data.product.outer_leather as outer_leather">{{outer_leather.serial.name}}
                               -{{outer_leather.code}}</td>
-                          <td *ngIf="data.product.price as price">{{price | prefix: '$'}}</td>
+                          <td *ngIf="data.product.price as price">{{price | prefix: '€'}}</td>
                           <td *ngIf="data.product.height as height">{{height}}cm</td>
                           <td *ngIf="data.product.width as width">{{width}}cm</td>
                           <td *ngIf="data.product.length as length">{{length}}cm</td>
@@ -127,7 +127,7 @@ import { positiveIntegerWithZeroRegex } from 'src/app/common/const';
           <br>
           <div class="card-actions br-4">
               <!-- Product Price -->
-              <span class="product-price price-radius">{{data.product.price | prefix: '$'}}</span>
+              <span class="product-price price-radius">{{data.product.price | prefix: '€'}}</span>
 
               <!-- Quantity Inputs -->
               <div class="quantity-input-group">

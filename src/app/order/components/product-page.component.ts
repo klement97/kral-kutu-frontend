@@ -87,32 +87,33 @@ import { MatTableDataSource } from '@angular/material/table';
 
                   <!-- CARD CONTENT -->
                   <div class="card-content">
-                      <h4>{{product.code}}</h4>
-                      <div class="dimensions">
-                          <div class="size" (click)="focusInput($event, width.focus())">
-                              <input type="number" class="quantity-input" [value]="product.width | number" #width
-                                     (input)="product.width = width.value">
-                              <img src="../../../assets/images/width-arrow.svg" alt="width-icon">
-                              <span class="metric-hint">(cm)</span>
-                          </div>
-                          <div class="size length-dimension" (click)="focusInput($event, length.focus())">
-                              <input type="number" class="quantity-input" [value]="product.length | number" #length
-                                     (input)="product.length = length.value">
-                              <img src="../../../assets/images/depth-arrow.svg" alt="length-icon">
-                              <span class="metric-hint">(cm)</span>
-                          </div>
-                          <div class="size" (click)="focusInput($event, height.focus())">
-                              <input type="number" class="quantity-input" [value]="product.height | number" #height
-                                     (input)="product.height = height.value">
-                              <img src="../../../assets/images/height-arrow.svg" alt="height-icon">
-                              <span class="metric-hint">(cm)</span>
-                          </div>
-                      </div>
+                      <textarea></textarea>
+<!--                      <h4>{{product.code}}</h4>-->
+<!--                      <div class="dimensions">-->
+<!--                          <div class="size" (click)="focusInput($event, width.focus())">-->
+<!--                              <input type="number" class="quantity-input" [value]="product.width | number" #width-->
+<!--                                     (input)="product.width = width.value">-->
+<!--                              <img src="../../../assets/images/width-arrow.svg" alt="width-icon">-->
+<!--                              <span class="metric-hint">(cm)</span>-->
+<!--                          </div>-->
+<!--                          <div class="size length-dimension" (click)="focusInput($event, length.focus())">-->
+<!--                              <input type="number" class="quantity-input" [value]="product.length | number" #length-->
+<!--                                     (input)="product.length = length.value">-->
+<!--                              <img src="../../../assets/images/depth-arrow.svg" alt="length-icon">-->
+<!--                              <span class="metric-hint">(cm)</span>-->
+<!--                          </div>-->
+<!--                          <div class="size" (click)="focusInput($event, height.focus())">-->
+<!--                              <input type="number" class="quantity-input" [value]="product.height | number" #height-->
+<!--                                     (input)="product.height = height.value">-->
+<!--                              <img src="../../../assets/images/height-arrow.svg" alt="height-icon">-->
+<!--                              <span class="metric-hint">(cm)</span>-->
+<!--                          </div>-->
+<!--                      </div>-->
                   </div>
 
                   <!-- CARD ACTIONS -->
                   <div class="card-actions">
-                      <span class="product-price">{{product.price | prefix: '$'}}</span>
+                      <span class="product-price">{{product.price | prefix: '€'}}</span>
                       <div class="quantity-input-group">
                               <span class="up-down-buttons">
                                   <button mat-icon-button type="button"

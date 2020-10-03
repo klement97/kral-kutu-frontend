@@ -162,7 +162,7 @@ import { Order } from 'src/app/order/models/order.model';
                   <!-- Price Column -->
                   <ng-container matColumnDef="price">
                       <th mat-header-cell *matHeaderCellDef>{{t('price')}}</th>
-                      <td mat-cell *matCellDef="let element"> {{element.product.price | number | prefix: '$'}} </td>
+                      <td mat-cell *matCellDef="let element"> {{element.product.price | number | prefix: '€'}} </td>
                   </ng-container>
 
                   <!-- Quantity Column -->
@@ -176,7 +176,7 @@ import { Order } from 'src/app/order/models/order.model';
                   <ng-container matColumnDef="subtotal">
                       <th mat-header-cell *matHeaderCellDef>{{t('sub total')}}</th>
                       <td mat-cell *matCellDef="let element">
-                          {{(element.product.price * element.quantity) | number | prefix: '$'}}
+                          {{(element.product.price * element.quantity) | number | prefix: '€'}}
                       </td>
                       <td mat-footer-cell *matFooterCellDef>{{totalPrice | number | prefix : '$'}}</td>
                   </ng-container>
@@ -220,9 +220,9 @@ import { Order } from 'src/app/order/models/order.model';
 
                       <!-- CARD ACTIONS -->
                       <div class="price-quantity" style="margin-bottom: 10px">
-                          <span>{{unit.product.price | number | prefix: '$'}}</span> <span>x</span>
+                          <span>{{unit.product.price | number | prefix: '€'}}</span> <span>x</span>
                           <span>{{unit.quantity}}</span> <span>=</span>
-                          <span>{{(unit.product.price * unit.quantity | number) | prefix: '$'}}</span>
+                          <span>{{(unit.product.price * unit.quantity | number) | prefix: '€'}}</span>
                       </div>
                   </div>
               </div>
