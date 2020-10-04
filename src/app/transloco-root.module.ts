@@ -37,6 +37,7 @@ export function preloadUser(userService: UserService, transloco: TranslocoServic
   };
 }
 
+
 export const preLoad = {
   provide: APP_INITIALIZER,
   multi: true,
@@ -44,15 +45,18 @@ export const preLoad = {
   deps: [UserService, TranslocoService]
 };
 
+
 @Injectable({providedIn: 'root'})
 export class TranslocoHttpLoader implements TranslocoLoader {
   constructor(private http: HttpClient) {
   }
 
+
   getTranslation(lang: string) {
     return this.http.get<Translation>(`/assets/i18n/${lang}.json`);
   }
 }
+
 
 @NgModule({
   exports: [TranslocoModule],
@@ -61,9 +65,7 @@ export class TranslocoHttpLoader implements TranslocoLoader {
       provide: TRANSLOCO_CONFIG,
       useValue: translocoConfig({
         availableLangs: ['en', 'sq', 'tr'],
-        defaultLang: 'en',
-        // Remove this option if your application doesn't support changing language in runtime.
-        reRenderOnLangChange: true,
+        defaultLang: 'sq',
         prodMode: environment.production,
       })
     },

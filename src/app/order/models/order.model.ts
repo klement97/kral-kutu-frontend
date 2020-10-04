@@ -4,21 +4,32 @@ export interface Order {
   last_name: string;
   phone: string;
   address: string;
-  order_units: any;
+  products: any[];
 }
 
 
 export interface Product {
   id: number;
   code: string;
-  title: string;
-  description: string;
   image: string;
-  category: any;
-  inner_leather: any;
-  outer_leather: any;
+  category: { id: number, name: string };
   price: string;
-  height: string;
-  width: string;
-  length: string;
+  properties: any;
+}
+
+
+export interface TableProduct extends Product {
+  properties: {
+    width: string;
+    height: string;
+    length: string;
+    code: string
+  };
+}
+
+
+export interface AccessoryProduct extends Product {
+  properties: {
+    code: string
+  };
 }

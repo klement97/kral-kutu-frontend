@@ -1,6 +1,7 @@
 import { formatDate } from '@angular/common';
 import { BehaviorSubject } from 'rxjs';
 import { MatPaginator } from '@angular/material/paginator';
+import { Product } from 'src/app/order/models/order.model';
 
 
 export const productsInCart = new BehaviorSubject([]);
@@ -132,13 +133,16 @@ export function hashCode(value: string) {
 }
 
 
-export function hashCodeFromObject(obj, fields: string[]) {
-  let objString = '';
+export function hashCodeFromProduct(product: Product, fields: string[] = ['code', 'width', 'height', 'length']) {
+  let productString = product.category.name.toLowerCase();
   for (const field of fields) {
-    objString += `${obj[field]}&`;
+    if (typeof product.properties[field] !== 'undefined') {
+      productString += `&${product.properties[field]}`;
+    }
   }
+  console.log(productString);
 
-  return hashCode(objString);
+  return hashCode(productString);
 }
 
 

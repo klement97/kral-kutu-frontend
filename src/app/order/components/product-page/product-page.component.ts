@@ -3,10 +3,10 @@ import { OrderService } from 'src/app/order/services/order.service';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatBottomSheet } from '@angular/material/bottom-sheet';
-import { ProductDetailComponent } from 'src/app/order/components/product-detail.component';
+import { ProductDetailComponent } from 'src/app/order/components/product-page/product-detail.component';
 import {
   composeOrderUnit,
-  hashCodeFromObject,
+  hashCodeFromProduct,
   IDNameModel,
   positiveIntegerWithZeroRegex,
   productsInCart,
@@ -16,13 +16,11 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslocoService } from '@ngneat/transloco';
 import { Product } from 'src/app/order/models/order.model';
 import { MatPaginator } from '@angular/material/paginator';
-import { MatTableDataSource } from '@angular/material/table';
 
 
 @Component({
   selector: 'app-order-page',
   styles: [`
-
       /*
       Even though add-to-cart and added-to-cart classes are present in common-style
       they are still required to be here too.
@@ -48,24 +46,6 @@ import { MatTableDataSource } from '@angular/material/table';
           font-size: 24px;
           color: white;
       }
-
-      .metric-hint {
-          font-size: 10px;
-          color: gray;
-      }
-
-      /* Hide Up Down Buttons on Number Input */
-      /* Chrome, Safari, Edge, Opera */
-      input::-webkit-outer-spin-button,
-      input::-webkit-inner-spin-button {
-          -webkit-appearance: none;
-          margin: 0;
-      }
-
-      /* Firefox */
-      input[type=number] {
-          -moz-appearance: textfield;
-      }
   `],
   template: `
       <ng-container *transloco="let t">
@@ -80,55 +60,33 @@ import { MatTableDataSource } from '@angular/material/table';
           <div class="products">
 
               <!-- CARD -->
-              <div class="product-card" *ngFor="let product of products" (click)="openProductDetails(product)">
-                  <div class="image-wrapper">
+              <div class="product-card" *ngFor="let product of products">
+                  <div class="image-wrapper" (click)="openProductDetails(product)">
                       <img [src]="product.image" alt="product-image">
                   </div>
 
                   <!-- CARD CONTENT -->
-                  <div class="card-content">
-                      <textarea></textarea>
-<!--                      <h4>{{product.code}}</h4>-->
-<!--                      <div class="dimensions">-->
-<!--                          <div class="size" (click)="focusInput($event, width.focus())">-->
-<!--                              <input type="number" class="quantity-input" [value]="product.width | number" #width-->
-<!--                                     (input)="product.width = width.value">-->
-<!--                              <img src="../../../assets/images/width-arrow.svg" alt="width-icon">-->
-<!--                              <span class="metric-hint">(cm)</span>-->
-<!--                          </div>-->
-<!--                          <div class="size length-dimension" (click)="focusInput($event, length.focus())">-->
-<!--                              <input type="number" class="quantity-input" [value]="product.length | number" #length-->
-<!--                                     (input)="product.length = length.value">-->
-<!--                              <img src="../../../assets/images/depth-arrow.svg" alt="length-icon">-->
-<!--                              <span class="metric-hint">(cm)</span>-->
-<!--                          </div>-->
-<!--                          <div class="size" (click)="focusInput($event, height.focus())">-->
-<!--                              <input type="number" class="quantity-input" [value]="product.height | number" #height-->
-<!--                                     (input)="product.height = height.value">-->
-<!--                              <img src="../../../assets/images/height-arrow.svg" alt="height-icon">-->
-<!--                              <span class="metric-hint">(cm)</span>-->
-<!--                          </div>-->
-<!--                      </div>-->
-                  </div>
+                  <ng-container [ngSwitch]="product.category.name.toLowerCase()">
+                      <app-table-content *ngSwitchCase="'tabaka'" [product]="product"></app-table-content>
+                      <app-accessory-content *ngSwitchCase="'aksesor'" [product]="product"></app-accessory-content>
+                  </ng-container>
 
                   <!-- CARD ACTIONS -->
                   <div class="card-actions">
-                      <span class="product-price">{{product.price | prefix: '€'}}</span>
+                      <span class="product-price">{{product.price | number | prefix: '€'}}</span>
                       <div class="quantity-input-group">
-                              <span class="up-down-buttons">
-                                  <button mat-icon-button type="button"
-                                          (click)="changeInputValue($event, quantity, -1)">
-                                      <mat-icon color="primary">keyboard_arrow_down</mat-icon>
-                                  </button>
-                                  <input type="text" [value]="'1'" (click)="$event.stopPropagation()"
-                                         (input)="onInputChange($event, quantity)" #quantity class="quantity-input">
-                                  <button mat-icon-button type="button" (click)="changeInputValue($event, quantity, 1)">
-                                      <mat-icon color="primary">keyboard_arrow_up</mat-icon>
-                                  </button>
-                              </span>
+                          <button mat-icon-button type="button"
+                                  (click)="changeInputValue($event, quantity, -1)">
+                              <mat-icon color="primary">-</mat-icon>
+                          </button>
+                          <input type="text" [value]="'1'" (click)="$event.stopPropagation()"
+                                 (input)="onInputChange($event, quantity)" #quantity class="quantity-input">
+                          <button mat-icon-button type="button" (click)="changeInputValue($event, quantity, 1)">
+                              <mat-icon color="primary">+</mat-icon>
+                          </button>
                       </div>
                       <button mat-icon-button color="primary" type="button" class="add-to-cart"
-                              (click)="addProductToCart($event, product, quantity.value, addToCartIcon, addedToCartIcon)">
+                              (click)="addProductToCart(product, quantity.value, addToCartIcon, addedToCartIcon)">
                           <mat-icon #addToCartIcon style="z-index: 2; position: relative;">
                               add_shopping_cart
                           </mat-icon>
@@ -217,11 +175,7 @@ export class ProductPageComponent implements OnInit, AfterViewInit {
     this.bottomSheet.open(ProductDetailComponent, {data: {product}, panelClass: 'no-top-padding'})
       .afterDismissed().subscribe(((result: { addToCart: boolean, quantity: number }) => {
       if (result?.addToCart) {
-        const fakeEvent = {
-          stopPropagation: () => {
-          }
-        };
-        this.addProductToCart(fakeEvent, product, result.quantity.toString());
+        this.addProductToCart(product, result.quantity.toString());
       }
     }));
   }
@@ -237,11 +191,9 @@ export class ProductPageComponent implements OnInit, AfterViewInit {
    * @param addToCartIcon     Respective icon of the product, if never added to cart
    * @param addedToCartIcon   Respective icon of the product, if already in cart
    */
-  addProductToCart(e, product, quantity: string, addToCartIcon?, addedToCartIcon?) {
-    e.stopPropagation(); // prevents product detail to be opened up
-
+  addProductToCart(product, quantity: string, addToCartIcon?, addedToCartIcon?) {
     // Generating a hash here to check if the product is already in cart
-    const hash = hashCodeFromObject(product, ['code', 'width', 'height', 'length']);
+    const hash = hashCodeFromProduct(product);
 
     // If hash can not be found inside the products in cart
     // this means that we need to add the product as a new unit
@@ -255,12 +207,24 @@ export class ProductPageComponent implements OnInit, AfterViewInit {
       selectedProducts.push(composeOrderUnit(product, Number(quantity), hash));
     }
     setProductsInCart(this.productsInCart, selectedProducts);
+    console.log(this.productsInCart.getValue());
     this.snackbar.open(this.transloco.translate('cart success message'), 'OK', {
       horizontalPosition: 'end', verticalPosition: 'bottom', duration: 2000, panelClass: ['success-snackbar']
     });
     if (addToCartIcon) {
       this.animate(addToCartIcon, addedToCartIcon);
     }
+  }
+
+
+  codeInput(product: Product, codeValue: string) {
+    product.properties.code = codeValue;
+    console.log(product);
+  }
+
+
+  dimensionInput(product: Product, dimensions: { width, height, length }) {
+    console.log(product, dimensions);
   }
 
 
@@ -325,11 +289,6 @@ export class ProductPageComponent implements OnInit, AfterViewInit {
         input.value = '10000';
       }
     }, 200);
-  }
-
-
-  focusInput(e, _) {
-    e.stopPropagation();
   }
 
 }

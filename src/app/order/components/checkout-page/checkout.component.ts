@@ -205,15 +205,15 @@ import { Order } from 'src/app/order/models/order.model';
                           <div class="dimensions">
                               <div class="size">
                                   <span>{{unit.product.width | number}}</span> <img
-                                      src="../../../assets/images/width-arrow.svg" alt="width-icon">
+                                      src="../../../../assets/images/width-arrow.svg" alt="width-icon">
                               </div>
                               <div class="size length-dimension">
                                   <span>{{unit.product.length | number}}</span> <img
-                                      src="../../../assets/images/depth-arrow.svg" alt="length-icon">
+                                      src="../../../../assets/images/depth-arrow.svg" alt="length-icon">
                               </div>
                               <div class="size">
                                   <span>{{unit.product.height | number}}</span> <img
-                                      src="../../../assets/images/height-arrow.svg" alt="height-icon">
+                                      src="../../../../assets/images/height-arrow.svg" alt="height-icon">
                               </div>
                           </div>
                       </div>
@@ -266,7 +266,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
       last_name: ['omeri', [Validators.required, Validators.maxLength(50)]],
       phone: ['12341243', [Validators.required, Validators.maxLength(20)]],
       address: ['tirane', [Validators.maxLength(254)]],
-      order_units: [[]],
+      products: [[]],
       inner_leather: [1],
       outer_leather: [1],
     });
@@ -296,7 +296,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
    * Serialization process is to replace products with their respective ID
    * instead of a product object.
    */
-  getSerializedOrderUnits() {
+  getSerializedProducts() {
     const orderUnits = Array.from(this.productsInCart.getValue());
     orderUnits.forEach(orderUnit => {
       orderUnit.width = orderUnit.product.width;
@@ -310,8 +310,8 @@ export class CheckoutComponent implements OnInit, OnDestroy {
 
 
   submit() {
-    // Replace order units with serialized ones
-    this.orderForm.get('order_units').patchValue(this.getSerializedOrderUnits());
+    // Replace products with serialized ones
+    this.orderForm.get('products').patchValue(this.getSerializedProducts());
     this.orderService.createOrder(this.orderForm.value)
       .subscribe(
         (order: Order) => {
