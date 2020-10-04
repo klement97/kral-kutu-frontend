@@ -25,6 +25,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { TableContentComponent } from 'src/app/order/components/product-page/table-content.component';
 import { AccessoryContentComponent } from 'src/app/order/components/product-page/accessory-content.component';
+import { OrderReviewTableComponent } from 'src/app/order/components/checkout-page/order-review-table.component';
 
 
 @NgModule({
@@ -36,7 +37,8 @@ import { AccessoryContentComponent } from 'src/app/order/components/product-page
     PostCheckoutPageComponent,
     ProductCategoryTabsComponent,
     TableContentComponent,
-    AccessoryContentComponent
+    AccessoryContentComponent,
+    OrderReviewTableComponent
   ],
   imports: [
     SharedModule,

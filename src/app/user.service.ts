@@ -12,10 +12,11 @@ export class UserService {
   constructor(private http: HttpClient) {
   }
 
+
   ipLookUp(): Observable<any> {
-    // if (environment.production) {
-    return this.http.get('http://ip-api.com/json');
-    // }
-    // return of({});
+    if (environment.production) {
+      return this.http.get('http://ip-api.com/json');
+    }
+    return of({});
   }
 }

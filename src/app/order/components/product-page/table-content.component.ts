@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
-import { TableProduct } from 'src/app/order/models/order.model';
+import { TableProduct } from 'src/app/order/order.model';
 
 
 @Component({

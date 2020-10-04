@@ -8,9 +8,15 @@ export interface Order {
 }
 
 
+export interface OrderUnit {
+  product: any;
+  hash: number;
+  quantity: number;
+}
+
+
 export interface Product {
   id: number;
-  code: string;
   image: string;
   category: { id: number, name: string };
   price: string;

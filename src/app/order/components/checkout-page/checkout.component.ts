@@ -4,7 +4,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { clearCart, productsInCart } from 'src/app/common/const';
 import { Router } from '@angular/router';
-import { Order } from 'src/app/order/models/order.model';
+import { Order, OrderUnit } from 'src/app/order/order.model';
 
 
 @Component({
@@ -132,60 +132,7 @@ import { Order } from 'src/app/order/models/order.model';
               <!-- Order Review Section -->
               <mat-card class="mat-elevation-z2"><h3>{{t('order review')}}</h3></mat-card>
               <br>
-              <table mat-table [dataSource]="productsInCart.getValue()"
-                     class="mat-elevation-z3" style="width: 100%;">
-                  <!-- Code Column -->
-                  <ng-container matColumnDef="code">
-                      <th mat-header-cell *matHeaderCellDef>{{t('code')}}</th>
-                      <td mat-cell *matCellDef="let element"> {{element.product.code}} </td>
-                      <td mat-footer-cell *matFooterCellDef colspan="5">{{t('total')}}</td>
-                  </ng-container>
-
-                  <!-- Width Column -->
-                  <ng-container matColumnDef="width">
-                      <th mat-header-cell *matHeaderCellDef>{{t('width')}}</th>
-                      <td mat-cell *matCellDef="let element"> {{element.product.width | number}}cm</td>
-                  </ng-container>
-
-                  <!-- Height Column -->
-                  <ng-container matColumnDef="height">
-                      <th mat-header-cell *matHeaderCellDef>{{t('height')}}</th>
-                      <td mat-cell *matCellDef="let element"> {{element.product.height | number}}cm</td>
-                  </ng-container>
-
-                  <!-- Length Column -->
-                  <ng-container matColumnDef="length">
-                      <th mat-header-cell *matHeaderCellDef>{{t('length')}}</th>
-                      <td mat-cell *matCellDef="let element"> {{element.product.length | number}}cm</td>
-                  </ng-container>
-
-                  <!-- Price Column -->
-                  <ng-container matColumnDef="price">
-                      <th mat-header-cell *matHeaderCellDef>{{t('price')}}</th>
-                      <td mat-cell *matCellDef="let element"> {{element.product.price | number | prefix: '€'}} </td>
-                  </ng-container>
-
-                  <!-- Quantity Column -->
-                  <ng-container matColumnDef="quantity">
-                      <th mat-header-cell *matHeaderCellDef>{{t('quantity')}}</th>
-                      <td mat-cell *matCellDef="let element"> {{element.quantity | number}} </td>
-                      <td mat-footer-cell *matFooterCellDef>{{totalQuantity | number}}</td>
-                  </ng-container>
-
-                  <!-- Subtotal Column -->
-                  <ng-container matColumnDef="subtotal">
-                      <th mat-header-cell *matHeaderCellDef>{{t('sub total')}}</th>
-                      <td mat-cell *matCellDef="let element">
-                          {{(element.product.price * element.quantity) | number | prefix: '€'}}
-                      </td>
-                      <td mat-footer-cell *matFooterCellDef>{{totalPrice | number | prefix : '$'}}</td>
-                  </ng-container>
-
-                  <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
-                  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-                  <tr mat-footer-row *matFooterRowDef="['code', 'quantity', 'subtotal']; sticky: true"></tr>
-              </table>
-
+              <app-order-review-table [orderUnits]="productsInCart"></app-order-review-table>
               <br>
               <mat-divider></mat-divider>
               <!-- Selected Products in Cards -->
@@ -201,18 +148,18 @@ import { Order } from 'src/app/order/models/order.model';
 
                       <!-- CARD CONTENT -->
                       <div class="card-content">
-                          <h4>{{unit.product.code}}</h4>
+                          <h4>{{unit.product.properties.code}}</h4>
                           <div class="dimensions">
                               <div class="size">
-                                  <span>{{unit.product.width | number}}</span> <img
+                                  <span>{{unit.product.properties.width | number}}</span> <img
                                       src="../../../../assets/images/width-arrow.svg" alt="width-icon">
                               </div>
                               <div class="size length-dimension">
-                                  <span>{{unit.product.length | number}}</span> <img
+                                  <span>{{unit.product.properties.length | number}}</span> <img
                                       src="../../../../assets/images/depth-arrow.svg" alt="length-icon">
                               </div>
                               <div class="size">
-                                  <span>{{unit.product.height | number}}</span> <img
+                                  <span>{{unit.product.properties.height | number}}</span> <img
                                       src="../../../../assets/images/height-arrow.svg" alt="height-icon">
                               </div>
                           </div>
@@ -231,12 +178,9 @@ import { Order } from 'src/app/order/models/order.model';
   `
 })
 export class CheckoutComponent implements OnInit, OnDestroy {
-  productsInCart: BehaviorSubject<any[]>;
+  productsInCart: BehaviorSubject<OrderUnit[]>;
   leathers$: Observable<any[]>;
   orderForm: FormGroup;
-  totalPrice = 0;
-  totalQuantity = 0;
-  displayedColumns = ['code', 'width', 'height', 'length', 'price', 'quantity', 'subtotal'];
 
 
   constructor(
@@ -251,7 +195,6 @@ export class CheckoutComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.productsInCart = productsInCart;
     this.initializeOrderForm();
-    this.calculateTotalQuantityAndPrice();
   }
 
 
@@ -283,15 +226,6 @@ export class CheckoutComponent implements OnInit, OnDestroy {
   }
 
 
-  calculateTotalQuantityAndPrice(): void {
-    this.productsInCart.subscribe(units =>
-      units.forEach(unit => {
-        this.totalQuantity += unit.quantity;
-        this.totalPrice += unit.product.price * unit.quantity;
-      }));
-  }
-
-
   /**
    * Serialization process is to replace products with their respective ID
    * instead of a product object.
@@ -299,9 +233,9 @@ export class CheckoutComponent implements OnInit, OnDestroy {
   getSerializedProducts() {
     const orderUnits = Array.from(this.productsInCart.getValue());
     orderUnits.forEach(orderUnit => {
-      orderUnit.width = orderUnit.product.width;
-      orderUnit.height = orderUnit.product.height;
-      orderUnit.length = orderUnit.product.length;
+      Object.keys(orderUnit.product.properties).forEach(key => {
+        orderUnit[key] = orderUnit.product.properties[key];
+      });
       orderUnit.product = orderUnit.product.id;
     });
 
@@ -318,8 +252,6 @@ export class CheckoutComponent implements OnInit, OnDestroy {
           this.router.navigate(['order', 'post-checkout', order.id]).then();
           clearCart();
           this.orderForm.reset();
-          this.totalQuantity = 0;
-          this.totalPrice = 0;
         },
         () => {
         });

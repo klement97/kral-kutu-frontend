@@ -14,7 +14,7 @@ import {
 } from 'src/app/common/const';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslocoService } from '@ngneat/transloco';
-import { Product } from 'src/app/order/models/order.model';
+import { Product } from 'src/app/order/order.model';
 import { MatPaginator } from '@angular/material/paginator';
 
 
