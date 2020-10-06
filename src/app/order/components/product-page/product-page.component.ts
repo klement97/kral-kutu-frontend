@@ -1,11 +1,12 @@
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { OrderService } from 'src/app/order/services/order.service';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatBottomSheet } from '@angular/material/bottom-sheet';
 import { ProductDetailComponent } from 'src/app/order/components/product-page/product-detail.component';
 import {
-  composeOrderUnit, FIRST_CATEGORY_TO_FILTER,
+  composeOrderUnit,
+  FIRST_CATEGORY_TO_FILTER,
   hashCodeFromProduct,
   IDNameModel,
   positiveIntegerWithZeroRegex,
@@ -16,6 +17,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslocoService } from '@ngneat/transloco';
 import { Product } from 'src/app/order/order.model';
 import { MatPaginator } from '@angular/material/paginator';
+import { distinctUntilChanged, takeUntil } from 'rxjs/operators';
 
 
 @Component({
@@ -50,11 +52,22 @@ import { MatPaginator } from '@angular/material/paginator';
   template: `
       <ng-container *transloco="let t">
           <app-checkout-button *ngIf="productsInCart.getValue().length as length"></app-checkout-button>
-          <div style="margin: 30px auto; width: 85%">
-              <mat-card><h1 style="margin: 0">{{t('products')}}</h1></mat-card>
+          <div style="margin: 30px auto; width: 90%">
+              <mat-card>
+                  <h1 style="margin: 0 10px 0 0; display: inline-block">{{t('products')}}</h1>
+                  <mat-form-field appearance="outline" color="primary">
+                      <input type="search" matInput (input)="searchCode$.next(code.value)" #code
+                             [placeholder]="t('search') + '...'">
+                      <!--                      <mat-icon matPrefix>search</mat-icon>-->
+                      <button mat-icon-button matSuffix (click)="code.value = ''">
+                          <mat-icon>close</mat-icon>
+                      </button>
+                  </mat-form-field>
+              </mat-card>
           </div>
           <ng-container *ngIf="productCategories.length > 0">
-              <app-product-category-tabs [categories]="productCategories" (categoryChange)="filterByCategory($event)">
+              <app-product-category-tabs [categories]="productCategories"
+                                         (categoryChange)="filterByCategory($event)">
               </app-product-category-tabs>
           </ng-container>
           <div class="products">
@@ -97,11 +110,16 @@ import { MatPaginator } from '@angular/material/paginator';
                   </div>
               </div>
           </div>
-          <mat-paginator [length]="productsCount" [pageSize]="10" #paginator (page)="getProducts()"></mat-paginator>
+          <mat-paginator #paginator
+                         [length]="productsCount"
+                         [pageSize]="12"
+                         [pageSizeOptions]="[12, 21, 30]"
+                         (page)="getProducts()">
+          </mat-paginator>
       </ng-container>
   `
 })
-export class ProductPageComponent implements OnInit, AfterViewInit {
+export class ProductPageComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
   products: Product[];
@@ -112,6 +130,8 @@ export class ProductPageComponent implements OnInit, AfterViewInit {
 
   productFilterForm: FormGroup;
   productsInCart: BehaviorSubject<any>;
+  searchCode$ = new BehaviorSubject<string>(null);
+  uns$ = new Subject();
 
 
   constructor(
@@ -135,6 +155,25 @@ export class ProductPageComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit() {
     this.getProducts();
+    this.searchCode();
+  }
+
+
+  ngOnDestroy() {
+    this.uns$.next();
+    this.uns$.complete();
+  }
+
+
+  searchCode() {
+    this.searchCode$.pipe(takeUntil(this.uns$), distinctUntilChanged())
+      .subscribe((code) => {
+        if (code && code !== '') {
+          this.filterByCode(code, null);
+        } else if (code === '') {
+          this.filterByCode('', this.productFilterForm.value.category);
+        }
+      });
   }
 
 
@@ -146,18 +185,15 @@ export class ProductPageComponent implements OnInit, AfterViewInit {
 
 
   getProductFilterForm(): FormGroup {
-    return this.fb.group({
-      title: '', price_min: null, price_max: null,
-      category: FIRST_CATEGORY_TO_FILTER.id, inner_leather: null, outer_leather: null
-    });
+    return this.fb.group({code: '', category: FIRST_CATEGORY_TO_FILTER.id});
   }
 
 
   getProducts() {
     this.orderService.getProducts(this.paginator, this.productFilterForm.value).subscribe(
-      (res: any) => {
-        this.products = res.results ? res.results : res;
-        this.productsCount = res.count ? res.count : res.length;
+      res => {
+        this.products = res.results;
+        this.productsCount = res.count;
       });
   }
 
@@ -171,8 +207,16 @@ export class ProductPageComponent implements OnInit, AfterViewInit {
   }
 
 
+  filterByCode(code, category) {
+    this.paginator.pageIndex = 0;
+    this.orderService.getProductsByCode(this.paginator, {code, category}).subscribe(
+      response => this.products = response.results
+    );
+  }
+
+
   openProductDetails(product): void {
-    this.bottomSheet.open(ProductDetailComponent, {data: {product}, panelClass: 'no-top-padding'})
+    this.bottomSheet.open(ProductDetailComponent, {data: product, panelClass: 'no-top-padding'})
       .afterDismissed().subscribe(((result: { addToCart: boolean, quantity: number }) => {
       if (result?.addToCart) {
         this.addProductToCart(product, result.quantity.toString());

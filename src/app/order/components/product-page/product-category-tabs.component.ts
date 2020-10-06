@@ -8,7 +8,6 @@ import { FIRST_CATEGORY_TO_FILTER, IDNameModel } from 'src/app/common/const';
   template: `
       <ng-container *transloco="let t">
           <nav mat-tab-nav-bar color="primary">
-              <!-- Specific categories tabs -->
               <a mat-tab-link *ngFor="let category of categories"
                  (click)="tabChanged(category)"
                  [active]="activeCategoryID == category.id">

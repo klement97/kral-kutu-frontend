@@ -82,7 +82,7 @@ import { Product } from 'src/app/order/order.model';
       <ng-container *transloco="let t">
           <div>
               <mat-card class="title sticky mat-elevation-z1">
-                  <h2>{{data.product.properties.code}}</h2>
+                  <h2>{{product.properties.code}}</h2>
                   <!-- Close button -->
                   <button mat-icon-button color="warn" (click)="closeBottomSheet()">
                       <mat-icon>close</mat-icon>
@@ -91,7 +91,7 @@ import { Product } from 'src/app/order/order.model';
               <br>
               <!-- Image -->
               <div class="image-wrapper mat-elevation-z3">
-                  <img [src]="data.product.image" [alt]="data.product.image | imageAlt">
+                  <img [src]="product.image" [alt]="product.image | imageAlt">
               </div>
 
               <br>
@@ -99,20 +99,20 @@ import { Product } from 'src/app/order/order.model';
               <mat-card class="mat-elevation-z3">
                   <table>
                       <tr>
-                          <th *ngIf="data.product">{{t('code')}}</th>
-                          <th *ngIf="data.product.price as price">{{t('price')}}</th>
-                          <th *ngIf="data.product.properties.weight">{{t('weight')}}</th>
-                          <th *ngIf="data.product.properties.height">{{t('height')}}</th>
-                          <th *ngIf="data.product.properties.width">{{t('width')}}</th>
-                          <th *ngIf="data.product.properties.length">{{t('length')}}</th>
+                          <th *ngIf="product">{{t('code')}}</th>
+                          <th *ngIf="product.price as price">{{t('price')}}</th>
+                          <th *ngIf="product.properties.weight">{{t('weight')}}</th>
+                          <th *ngIf="product.properties.height">{{t('height')}}</th>
+                          <th *ngIf="product.properties.width">{{t('width')}}</th>
+                          <th *ngIf="product.properties.length">{{t('length')}}</th>
                       </tr>
                       <tr>
-                          <td *ngIf="data.product.properties.code">{{data.product.properties.code}}</td>
-                          <td *ngIf="data.product.price as price">{{price | number | prefix: '€'}}</td>
-                          <th *ngIf="data.product.properties.weight as weight">{{weight | number}}</th>
-                          <td *ngIf="data.product.properties.height as height">{{height | number}}cm</td>
-                          <td *ngIf="data.product.properties.width as width">{{width | number}}cm</td>
-                          <td *ngIf="data.product.properties.length as length">{{length | number}}cm</td>
+                          <td *ngIf="product.properties.code">{{product.properties.code}}</td>
+                          <td *ngIf="product.price as price">{{price | number | prefix: '€'}}</td>
+                          <th *ngIf="product.properties.weight as weight">{{weight | number}}</th>
+                          <td *ngIf="product.properties.height as height">{{height | number}}cm</td>
+                          <td *ngIf="product.properties.width as width">{{width | number}}cm</td>
+                          <td *ngIf="product.properties.length as length">{{length | number}}cm</td>
                       </tr>
                   </table>
               </mat-card>
@@ -120,7 +120,7 @@ import { Product } from 'src/app/order/order.model';
           <br>
           <div class="card-actions br-4">
               <!-- Product Price -->
-              <span class="product-price price-radius">{{data.product.price | number | prefix: '€'}}</span>
+              <span class="product-price price-radius">{{product.price | number | prefix: '€'}}</span>
 
               <!-- Quantity Inputs -->
               <div class="quantity-input-group">
@@ -148,7 +148,7 @@ export class ProductDetailComponent implements OnInit {
 
   constructor(
     private bottomSheetRef: MatBottomSheetRef<ProductDetailComponent>,
-    @Inject(MAT_BOTTOM_SHEET_DATA) public data: { product: Product }
+    @Inject(MAT_BOTTOM_SHEET_DATA) public product: Product
   ) { }
 
 

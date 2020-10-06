@@ -4,6 +4,7 @@ import { ORDER_URLS } from 'src/app/order/services/urls';
 import { buildQueryString, cacheValue, getFromCache, IDNameModel } from 'src/app/common/const';
 import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { Product } from 'src/app/order/order.model';
 
 
 @Injectable({
@@ -25,8 +26,13 @@ export class OrderService {
   }
 
 
-  getProducts(paginator, filter) {
-    return this.http.get(`${ORDER_URLS.PRODUCT}${buildQueryString(paginator, null, filter)}`);
+  getProducts(paginator, filter): Observable<{ count: number, results: Product[] }> {
+    return this.http.get<{ count: number, results: Product[] }>(`${ORDER_URLS.PRODUCT}${buildQueryString(paginator, null, filter)}`);
+  }
+
+
+  getProductsByCode(paginator, filter): Observable<{ count: number, results: Product[] }> {
+    return this.http.get<{ count: number, results: Product[] }>(`${ORDER_URLS.PRODUCT}${buildQueryString(paginator, null, filter)}`);
   }
 
 
