@@ -98,7 +98,6 @@ import { MatPaginator } from '@angular/material/paginator';
               </div>
           </div>
           <mat-paginator [length]="productsCount" [pageSize]="10" #paginator (page)="getProducts()"></mat-paginator>
-
       </ng-container>
   `
 })
@@ -166,6 +165,7 @@ export class ProductPageComponent implements OnInit, AfterViewInit {
   filterByCategory(category: IDNameModel) {
     if (this.productFilterForm.value.category !== category.id) {
       this.productFilterForm.patchValue({category: category.id});
+      this.paginator.pageIndex = 0;
       this.getProducts();
     }
   }
@@ -185,7 +185,6 @@ export class ProductPageComponent implements OnInit, AfterViewInit {
    * Add selected product with selected quantity to the cart.
    * If the product is already in the cart we just increment the quantity of it.
    * Otherwise we add a new unit to the cart.
-   * @param e                 Event, used to prevent product detail to be opened up
    * @param product           Selected product to add to the cart
    * @param quantity          Quantity of the product, taken from input
    * @param addToCartIcon     Respective icon of the product, if never added to cart
@@ -214,17 +213,6 @@ export class ProductPageComponent implements OnInit, AfterViewInit {
     if (addToCartIcon) {
       this.animate(addToCartIcon, addedToCartIcon);
     }
-  }
-
-
-  codeInput(product: Product, codeValue: string) {
-    product.properties.code = codeValue;
-    console.log(product);
-  }
-
-
-  dimensionInput(product: Product, dimensions: { width, height, length }) {
-    console.log(product, dimensions);
   }
 
 
