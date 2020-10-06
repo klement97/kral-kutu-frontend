@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
-import { NavigationComponent } from 'src/app/navigation/components/navigation.component';
+import { RouterModule, Routes } from '@angular/router';
 import { NotFoundComponent } from 'src/app/navigation/components/not-found.component';
 
 
