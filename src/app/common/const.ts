@@ -13,6 +13,8 @@ export const PRODUCTS_IN_CART = 'kralKutuCartProducts';
 export const MIN_TIME = '00:00:00.000000';
 export const MAX_TIME = '23:59:59.999999';
 
+export const FIRST_CATEGORY_TO_FILTER = {id: 5, name: 'Accessory'};
+
 
 export interface IDNameModel {
   id: number;

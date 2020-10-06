@@ -5,7 +5,7 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatBottomSheet } from '@angular/material/bottom-sheet';
 import { ProductDetailComponent } from 'src/app/order/components/product-page/product-detail.component';
 import {
-  composeOrderUnit,
+  composeOrderUnit, FIRST_CATEGORY_TO_FILTER,
   hashCodeFromProduct,
   IDNameModel,
   positiveIntegerWithZeroRegex,
@@ -148,7 +148,7 @@ export class ProductPageComponent implements OnInit, AfterViewInit {
   getProductFilterForm(): FormGroup {
     return this.fb.group({
       title: '', price_min: null, price_max: null,
-      category: null, inner_leather: null, outer_leather: null
+      category: FIRST_CATEGORY_TO_FILTER.id, inner_leather: null, outer_leather: null
     });
   }
 
