@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { OrderService } from 'src/app/order/services/order.service';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { clearCart, productsInCart } from 'src/app/common/const';
+import { clearCart, positiveIntegerWithZeroRegex, productsInCart } from 'src/app/common/const';
 import { Router } from '@angular/router';
 import { Order, OrderUnit } from 'src/app/order/order.model';
 
@@ -52,10 +52,23 @@ import { Order, OrderUnit } from 'src/app/order/order.model';
       .title button {
           width: unset;
       }
+
+      /* Hide Up Down Buttons on Number Input */
+      /* Chrome, Safari, Edge, Opera */
+      input::-webkit-outer-spin-button,
+      input::-webkit-inner-spin-button {
+          -webkit-appearance: none;
+          margin: 0;
+      }
+
+      /* Firefox */
+      input[type=number] {
+          -moz-appearance: textfield;
+      }
   `],
   template: `
       <ng-container *transloco="let t">
-          <div style="padding: 15px; width: 100%">
+          <div style="padding: 15px; width: 100%; margin: 50px auto 0 auto">
               <!-- The Checkout form -->
               <mat-card class="title">
                   <h1>{{t('checkout title')}}</h1>
@@ -66,6 +79,29 @@ import { Order, OrderUnit } from 'src/app/order/order.model';
               <br>
               <mat-card class="mat-elevation-z2" style="padding: 16px 0">
                   <form [formGroup]="orderForm" class="vertical-form">
+                      <h2>{{t('leathers')}}</h2>
+                      <ng-container *ngIf="leathers$ | async as leathers">
+                          <!-- Inner Leather -->
+                          <mat-form-field color="primary" appearance="outline">
+                              <mat-label>{{t('inner leather')}}</mat-label>
+                              <mat-select formControlName="inner_leather">
+                                  <mat-option *ngFor="let leather of leathers" [value]="leather.id">
+                                      {{leather.code}}
+                                  </mat-option>
+                              </mat-select>
+                          </mat-form-field>
+
+                          <!-- Outer Leather -->
+                          <mat-form-field color="primary" appearance="outline">
+                              <mat-label>{{t('outer leather')}}</mat-label>
+                              <mat-select formControlName="outer_leather">
+                                  <mat-option *ngFor="let leather of leathers" [value]="leather.id">
+                                      {{leather.code}}
+                                  </mat-option>
+                              </mat-select>
+                          </mat-form-field>
+                      </ng-container>
+
                       <h2>{{t('personal details')}}</h2>
                       <!-- First Name -->
                       <mat-form-field color="primary" appearance="outline">
@@ -96,28 +132,6 @@ import { Order, OrderUnit } from 'src/app/order/order.model';
                           <mat-icon matSuffix>location_on</mat-icon>
                           <mat-hint>{{t('address hint')}}</mat-hint>
                       </mat-form-field>
-
-                      <ng-container *ngIf="leathers$ | async as leathers">
-                          <!-- Inner Leather -->
-                          <mat-form-field color="primary" appearance="outline">
-                              <mat-label>{{t('inner leather')}}</mat-label>
-                              <mat-select formControlName="inner_leather">
-                                  <mat-option *ngFor="let leather of leathers" [value]="leather.id">
-                                      {{leather.code}}
-                                  </mat-option>
-                              </mat-select>
-                          </mat-form-field>
-
-                          <!-- Outer Leather -->
-                          <mat-form-field color="primary" appearance="outline">
-                              <mat-label>{{t('outer leather')}}</mat-label>
-                              <mat-select formControlName="outer_leather">
-                                  <mat-option *ngFor="let leather of leathers" [value]="leather.id">
-                                      {{leather.code}}
-                                  </mat-option>
-                              </mat-select>
-                          </mat-form-field>
-                      </ng-container>
 
                       <button type="button" (click)="submit()" mat-raised-button color="primary">
                           {{t('submit')}}
@@ -168,7 +182,9 @@ import { Order, OrderUnit } from 'src/app/order/order.model';
                       <!-- CARD ACTIONS -->
                       <div class="price-quantity" style="margin-bottom: 10px">
                           <span>{{unit.product.price | number | prefix: '€'}}</span> <span>x</span>
-                          <span>{{unit.quantity}}</span> <span>=</span>
+                          <input type="number" [value]="unit.quantity" class="quantity-input"
+                                 (input)="changeAmount(unit, quantity, $event)" #quantity>
+                          <span>=</span>
                           <span>{{(unit.product.price * unit.quantity | number) | prefix: '€'}}</span>
                       </div>
                   </div>
@@ -210,8 +226,8 @@ export class CheckoutComponent implements OnInit, OnDestroy {
       phone: ['12341243', [Validators.required, Validators.maxLength(20)]],
       address: ['tirane', [Validators.maxLength(254)]],
       products: [[]],
-      inner_leather: [1],
-      outer_leather: [1],
+      inner_leather: [1, [Validators.required]],
+      outer_leather: [1, [Validators.required]],
     });
     this.backupRestoreOrderForm();
   }
@@ -223,6 +239,35 @@ export class CheckoutComponent implements OnInit, OnDestroy {
     } else {
       this.orderService.orderFormValue = this.orderForm.value;
     }
+  }
+
+
+  changeAmount(unit: OrderUnit, input, event) {
+    if (this.validateInput(input, event)) {
+      unit.quantity = +input.value;
+    }
+  }
+
+
+  validateInput(input, event) {
+    const inputChar: string = event.data;
+    // setting a timeout to let the user understand the changes
+    if (!input.value || input.value === '0') {
+      input.value = '1';
+      return false;
+    }
+    if (inputChar && !positiveIntegerWithZeroRegex.test(inputChar)) {
+      const inputValueArray: string[] = input.value.split('');
+      inputValueArray.splice(input.value.indexOf(inputChar), 1);
+      input.value = inputValueArray.join('');
+      return false;
+    }
+    if (Number(input.value) > 10_000) {
+      input.value = '10000';
+      return false;
+    }
+
+    return true;
   }
 
 

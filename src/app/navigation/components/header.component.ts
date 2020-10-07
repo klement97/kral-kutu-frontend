@@ -35,7 +35,7 @@ import { PRODUCTS_IN_CART, productsInCart } from 'src/app/common/const';
       <ng-container *transloco="let t">
           <!-- BEGIN TOOLBAR -->
           <mat-toolbar class="header">
-              <span routerLink="/" style="cursor: pointer">Italgold</span> <span class="spacer"></span>
+              <span routerLink="/" style="cursor: pointer">ITALGOLD</span> <span class="spacer"></span>
 
               <!-- BEGIN ACTIONS -->
               <div>

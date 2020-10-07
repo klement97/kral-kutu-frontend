@@ -52,13 +52,12 @@ import { distinctUntilChanged, takeUntil } from 'rxjs/operators';
   template: `
       <ng-container *transloco="let t">
           <app-checkout-button *ngIf="productsInCart.getValue().length as length"></app-checkout-button>
-          <div style="margin: 30px auto; width: 90%">
+          <div style="margin: 70px auto 30px auto; width: 90%">
               <mat-card>
                   <h1 style="margin: 0 10px 0 0; display: inline-block">{{t('products')}}</h1>
                   <mat-form-field appearance="outline" color="primary">
                       <input type="search" matInput (input)="searchCode$.next(code.value)" #code
                              [placeholder]="t('search') + '...'">
-                      <!--                      <mat-icon matPrefix>search</mat-icon>-->
                       <button mat-icon-button matSuffix (click)="code.value = ''">
                           <mat-icon>close</mat-icon>
                       </button>

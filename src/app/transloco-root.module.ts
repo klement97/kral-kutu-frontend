@@ -18,11 +18,11 @@ const countryCodeLanguageMapping = {
   tr: 'tr'
 };
 
-const getActiveLanguageFromCountryCode = (countryCode: string = 'en') => {
+const getActiveLanguageFromCountryCode = (countryCode: string = 'sq') => {
   if (countryCodeLanguageMapping[countryCode.toLowerCase()]) {
     return countryCodeLanguageMapping[countryCode.toLowerCase()];
   }
-  return 'en';
+  return 'sq';
 };
 
 
@@ -66,6 +66,8 @@ export class TranslocoHttpLoader implements TranslocoLoader {
       useValue: translocoConfig({
         availableLangs: ['en', 'sq', 'tr'],
         defaultLang: 'sq',
+        fallbackLang: 'sq',
+        failedRetries: 3,
         prodMode: environment.production,
       })
     },
