@@ -156,3 +156,8 @@ export function cacheValue(cache, key, value) {
 export function getFromCache(cache, key) {
   return cache[key];
 }
+
+
+export function fromEntries<T>(entries: [keyof T, T[keyof T]][]): T {
+  return entries.reduce((acc, [key, value]) => ({...acc, [key]: value}), {} as T);
+}

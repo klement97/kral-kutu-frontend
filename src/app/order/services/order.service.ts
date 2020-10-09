@@ -4,7 +4,7 @@ import { ORDER_URLS } from 'src/app/order/services/urls';
 import { buildQueryString, cacheValue, getFromCache, IDNameModel } from 'src/app/common/const';
 import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { Product } from 'src/app/order/order.model';
+import { Leather, LeatherSerial, Product } from 'src/app/order/order.model';
 
 
 @Injectable({
@@ -41,13 +41,13 @@ export class OrderService {
   }
 
 
-  getLeathers(): Observable<any[]> {
+  getLeathers(): Observable<Leather[]> {
     const url = ORDER_URLS.LEATHER;
     const cached = getFromCache(this.localCache, url);
     if (cached) {
       return of(cached);
     }
-    return this.http.get<any[]>(url).pipe(
+    return this.http.get<Leather[]>(url).pipe(
       map((leathers) => {
         cacheValue(this.localCache, url, leathers);
         return leathers;
@@ -56,8 +56,8 @@ export class OrderService {
   }
 
 
-  getLeatherSerials() {
-    return this.http.get(ORDER_URLS.LEATHER_SERIAL);
+  getLeatherSerials(): Observable<LeatherSerial[]> {
+    return this.http.get<LeatherSerial[]>(ORDER_URLS.LEATHER_SERIAL);
   }
 
 

@@ -69,6 +69,7 @@ export class TranslocoHttpLoader implements TranslocoLoader {
         fallbackLang: 'sq',
         failedRetries: 3,
         prodMode: environment.production,
+        reRenderOnLangChange: true
       })
     },
     {provide: TRANSLOCO_LOADER, useClass: TranslocoHttpLoader}

@@ -56,10 +56,15 @@ import { distinctUntilChanged, takeUntil } from 'rxjs/operators';
               <mat-card>
                   <h1 style="margin: 0 10px 0 0; display: inline-block">{{t('products')}}</h1>
                   <mat-form-field appearance="outline" color="primary">
-                      <input type="search" matInput (input)="searchCode$.next(code.value)" #code
+                      <input #code
+                             matInput
+                             autocapitalize="off"
+                             autocomplete="off"
+                             type="search"
+                             (input)="searchCode$.next(code.value)"
                              [placeholder]="t('search') + '...'">
-                      <button mat-icon-button matSuffix (click)="code.value = ''">
-                          <mat-icon>close</mat-icon>
+                      <button mat-icon-button matPrefix (click)="code.value = ''">
+                          <mat-icon>search</mat-icon>
                       </button>
                   </mat-form-field>
               </mat-card>

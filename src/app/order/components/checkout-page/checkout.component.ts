@@ -1,10 +1,14 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { OrderService } from 'src/app/order/services/order.service';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Subject } from 'rxjs';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { clearCart, positiveIntegerWithZeroRegex, productsInCart } from 'src/app/common/const';
+import { clearCart, fromEntries, positiveIntegerWithZeroRegex, productsInCart } from 'src/app/common/const';
 import { Router } from '@angular/router';
-import { Order, OrderUnit } from 'src/app/order/order.model';
+import { LeatherSelectResult, LeatherSerial, Order, OrderUnit } from 'src/app/order/order.model';
+import { MatBottomSheet } from '@angular/material/bottom-sheet';
+import { LeatherSelectComponent } from 'src/app/order/components/checkout-page/leather-select.component';
+import { takeUntil } from 'rxjs/operators';
+import { TranslocoService } from '@ngneat/transloco';
 
 
 @Component({
@@ -65,11 +69,14 @@ import { Order, OrderUnit } from 'src/app/order/order.model';
       input[type=number] {
           -moz-appearance: textfield;
       }
+
+      .cursor-pointer {
+          cursor: pointer;
+      }
   `],
   template: `
       <ng-container *transloco="let t">
           <div style="padding: 15px; width: 100%; margin: 50px auto 0 auto">
-              <!-- The Checkout form -->
               <mat-card class="title">
                   <h1>{{t('checkout title')}}</h1>
                   <button mat-stroked-button color="primary" routerLink="/order">
@@ -77,28 +84,25 @@ import { Order, OrderUnit } from 'src/app/order/order.model';
                   </button>
               </mat-card>
               <br>
+              <!-- The Checkout form -->
               <mat-card class="mat-elevation-z2" style="padding: 16px 0">
                   <form [formGroup]="orderForm" class="vertical-form">
                       <h2>{{t('leathers')}}</h2>
-                      <ng-container *ngIf="leathers$ | async as leathers">
+                      <ng-container>
                           <!-- Inner Leather -->
-                          <mat-form-field color="primary" appearance="outline">
-                              <mat-label>{{t('inner leather')}}</mat-label>
-                              <mat-select formControlName="inner_leather">
-                                  <mat-option *ngFor="let leather of leathers" [value]="leather.id">
-                                      {{leather.code}}
-                                  </mat-option>
-                              </mat-select>
+                          <mat-form-field color="primary" appearance="outline" class="cursor-pointer">
+                              <mat-label>{{t('inner_leather')}}</mat-label>
+                              <input type="text" matInput (click)="openLeatherSelection('inner_leather')"
+                                     class="cursor-pointer"
+                                     readonly formControlName="inner_leather_str">
                           </mat-form-field>
 
                           <!-- Outer Leather -->
-                          <mat-form-field color="primary" appearance="outline">
-                              <mat-label>{{t('outer leather')}}</mat-label>
-                              <mat-select formControlName="outer_leather">
-                                  <mat-option *ngFor="let leather of leathers" [value]="leather.id">
-                                      {{leather.code}}
-                                  </mat-option>
-                              </mat-select>
+                          <mat-form-field color="primary" appearance="outline" class="cursor-pointer">
+                              <mat-label>{{t('outer_leather')}}</mat-label>
+                              <input type="text" matInput (click)="openLeatherSelection('outer_leather')"
+                                     class="cursor-pointer"
+                                     readonly formControlName="outer_leather_str">
                           </mat-form-field>
                       </ng-container>
 
@@ -195,39 +199,52 @@ import { Order, OrderUnit } from 'src/app/order/order.model';
 })
 export class CheckoutComponent implements OnInit, OnDestroy {
   productsInCart: BehaviorSubject<OrderUnit[]>;
-  leathers$: Observable<any[]>;
+  leathersSerials: LeatherSerial[];
   orderForm: FormGroup;
+  uns$ = new Subject();
 
 
   constructor(
     private orderService: OrderService,
     private fb: FormBuilder,
-    private router: Router
+    private router: Router,
+    private bottomSheet: MatBottomSheet
   ) {
-    this.leathers$ = orderService.getLeathers();
   }
 
 
   ngOnInit(): void {
     this.productsInCart = productsInCart;
     this.initializeOrderForm();
+    this.getLeathers();
   }
 
 
   ngOnDestroy(): void {
     this.orderService.orderFormValue = this.orderForm.value;
+    this.uns$.next();
+    this.uns$.complete();
+  }
+
+
+  getLeathers() {
+    this.orderService.getLeatherSerials().subscribe((leathersSerials) => {
+      this.leathersSerials = leathersSerials;
+    });
   }
 
 
   initializeOrderForm() {
     this.orderForm = this.fb.group({
-      first_name: ['klement', [Validators.required, Validators.maxLength(50)]],
-      last_name: ['omeri', [Validators.required, Validators.maxLength(50)]],
-      phone: ['12341243', [Validators.required, Validators.maxLength(20)]],
-      address: ['tirane', [Validators.maxLength(254)]],
-      products: [[]],
-      inner_leather: [1, [Validators.required]],
-      outer_leather: [1, [Validators.required]],
+      first_name: ['', [Validators.required, Validators.maxLength(50)]],
+      last_name: ['', [Validators.required, Validators.maxLength(50)]],
+      phone: ['', [Validators.required, Validators.maxLength(20)]],
+      address: ['', [Validators.maxLength(254)]],
+      products: [[], [Validators.required]],
+      inner_leather: [null, [Validators.required]],
+      inner_leather_str: '',
+      outer_leather: [null, [Validators.required]],
+      outer_leather_str: '',
     });
     this.backupRestoreOrderForm();
   }
@@ -268,6 +285,23 @@ export class CheckoutComponent implements OnInit, OnDestroy {
     }
 
     return true;
+  }
+
+
+  openLeatherSelection(identifier: 'inner_leather' | 'outer_leather') {
+    const data = {leathersSerials: this.leathersSerials, identifier};
+
+    this.bottomSheet.open(LeatherSelectComponent, {data}).afterDismissed()
+      .pipe(takeUntil(this.uns$))
+      .subscribe((result: LeatherSelectResult | undefined) => {
+        if (result?.leather?.id) {
+          const formValues = fromEntries([
+            [identifier, result.leather.code],
+            [`${identifier}_str`, `${result.leatherSerial.name} ${result.leather.code}`]
+          ]);
+          this.orderForm.patchValue(formValues);
+        }
+      });
   }
 
 

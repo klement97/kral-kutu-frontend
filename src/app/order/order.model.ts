@@ -1,3 +1,6 @@
+import { IDNameModel } from 'src/app/common/const';
+
+
 export interface Order {
   id: number;
   first_name: string;
@@ -38,4 +41,25 @@ export interface AccessoryProduct extends Product {
   properties: {
     code: string
   };
+}
+
+
+export interface Leather {
+  id: number;
+  code: string;
+  image: string;
+  serial: LeatherSerial;
+}
+
+
+export interface LeatherSerial {
+  id: number;
+  name: string;
+  leathers?: Leather[];
+}
+
+
+export interface LeatherSelectResult {
+  leather: Leather;
+  leatherSerial: LeatherSerial;
 }

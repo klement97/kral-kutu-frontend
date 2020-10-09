@@ -26,6 +26,9 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { TableContentComponent } from 'src/app/order/components/product-page/table-content.component';
 import { AccessoryContentComponent } from 'src/app/order/components/product-page/accessory-content.component';
 import { OrderReviewTableComponent } from 'src/app/order/components/checkout-page/order-review-table.component';
+import { LeatherSelectComponent } from 'src/app/order/components/checkout-page/leather-select.component';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { SelectButtonComponent } from 'src/app/order/components/checkout-page/select-button.component';
 
 
 @NgModule({
@@ -38,7 +41,9 @@ import { OrderReviewTableComponent } from 'src/app/order/components/checkout-pag
     ProductCategoryTabsComponent,
     TableContentComponent,
     AccessoryContentComponent,
-    OrderReviewTableComponent
+    OrderReviewTableComponent,
+    LeatherSelectComponent,
+    SelectButtonComponent
   ],
   imports: [
     SharedModule,
@@ -57,7 +62,8 @@ import { OrderReviewTableComponent } from 'src/app/order/components/checkout-pag
     MatSnackBarModule,
     MatTabsModule,
     MatSelectModule,
-    MatPaginatorModule
+    MatPaginatorModule,
+    MatExpansionModule
   ]
 })
 export class OrderModule {}
