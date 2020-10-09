@@ -4,11 +4,38 @@ import { PRODUCTS_IN_CART, productsInCart } from 'src/app/common/const';
 
 @Component({
   selector: 'app-header',
+  styles: [
+    `.spacer {
+        display: flex;
+        flex: 1 1 auto;
+    }
+
+    ::ng-deep .mat-menu-panel {
+        width: 280px;
+        max-height: 80vh !important;
+    }
+
+    ::ng-deep .mat-menu-content:not(:empty) {
+        padding: 0 !important;
+    }
+
+    .header {
+        height: 50px;
+        background-color: rgb(50, 50, 50);
+        color: white;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 9999;
+    }
+    `
+  ],
   template: `
       <ng-container *transloco="let t">
           <!-- BEGIN TOOLBAR -->
-          <mat-toolbar style="height: 50px; background-color: rgb(50, 50, 50); color: white">
-              <span routerLink="/" style="cursor: pointer">Italgold</span> <span class="spacer"></span>
+          <mat-toolbar class="header">
+              <span routerLink="/" style="cursor: pointer">ITALGOLD</span> <span class="spacer"></span>
 
               <!-- BEGIN ACTIONS -->
               <div>
@@ -30,24 +57,7 @@ import { PRODUCTS_IN_CART, productsInCart } from 'src/app/common/const';
           </mat-toolbar>
           <!-- END TOOLBAR -->
       </ng-container>
-  `,
-  styles: [
-      `
-          .spacer {
-              display: flex;
-              flex: 1 1 auto;
-          }
-
-          ::ng-deep .mat-menu-panel {
-              width: 280px;
-              max-height: 80vh !important;
-          }
-
-          ::ng-deep .mat-menu-content:not(:empty) {
-              padding: 0 !important;
-          }
-    `
-  ]
+  `
 })
 export class HeaderComponent implements OnInit {
   productsInCartCount = '0';

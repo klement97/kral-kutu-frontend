@@ -1,6 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_BOTTOM_SHEET_DATA, MatBottomSheetRef } from '@angular/material/bottom-sheet';
 import { positiveIntegerWithZeroRegex } from 'src/app/common/const';
+import { Product } from 'src/app/order/order.model';
 
 
 @Component({
@@ -81,7 +82,7 @@ import { positiveIntegerWithZeroRegex } from 'src/app/common/const';
       <ng-container *transloco="let t">
           <div>
               <mat-card class="title sticky mat-elevation-z1">
-                  <h2>{{data.product.code}}</h2>
+                  <h2>{{product.properties.code}}</h2>
                   <!-- Close button -->
                   <button mat-icon-button color="warn" (click)="closeBottomSheet()">
                       <mat-icon>close</mat-icon>
@@ -90,7 +91,7 @@ import { positiveIntegerWithZeroRegex } from 'src/app/common/const';
               <br>
               <!-- Image -->
               <div class="image-wrapper mat-elevation-z3">
-                  <img [src]="data.product.image" alt="product-image">
+                  <img [src]="product.image" [alt]="product.image | imageAlt">
               </div>
 
               <br>
@@ -98,28 +99,20 @@ import { positiveIntegerWithZeroRegex } from 'src/app/common/const';
               <mat-card class="mat-elevation-z3">
                   <table>
                       <tr>
-                          <th>{{t('code')}}</th>
-                          <th *ngIf="data.product.title as title">{{t('title')}}</th>
-                          <th *ngIf="data.product.description as description">{{t('description')}}</th>
-                          <th *ngIf="data.product.inner_leather as inner_leather">{{t('inner leather')}}</th>
-                          <th *ngIf="data.product.outer_leather as outer_leather">{{t('outer leather')}}</th>
-                          <th *ngIf="data.product.price as price">{{t('price')}}</th>
-                          <th *ngIf="data.product.height as height">{{t('height')}}</th>
-                          <th *ngIf="data.product.width as width">{{t('width')}}</th>
-                          <th *ngIf="data.product.length as length">{{t('length')}}</th>
+                          <th *ngIf="product">{{t('code')}}</th>
+                          <th *ngIf="product.price as price">{{t('price')}}</th>
+                          <th *ngIf="product.properties.weight">{{t('weight')}}</th>
+                          <th *ngIf="product.properties.height">{{t('height')}}</th>
+                          <th *ngIf="product.properties.width">{{t('width')}}</th>
+                          <th *ngIf="product.properties.length">{{t('length')}}</th>
                       </tr>
                       <tr>
-                          <td>{{data.product.code}}</td>
-                          <td *ngIf="data.product.title as title">{{title}}</td>
-                          <td *ngIf="data.product.description as description">{{description}}</td>
-                          <td *ngIf="data.product.inner_leather as inner_leather">{{inner_leather.serial.name}}
-                              -{{inner_leather.code}}</td>
-                          <td *ngIf="data.product.outer_leather as outer_leather">{{outer_leather.serial.name}}
-                              -{{outer_leather.code}}</td>
-                          <td *ngIf="data.product.price as price">{{price | prefix: '$'}}</td>
-                          <td *ngIf="data.product.height as height">{{height}}cm</td>
-                          <td *ngIf="data.product.width as width">{{width}}cm</td>
-                          <td *ngIf="data.product.length as length">{{length}}cm</td>
+                          <td *ngIf="product.properties.code">{{product.properties.code}}</td>
+                          <td *ngIf="product.price as price">{{price | number | prefix: '€'}}</td>
+                          <th *ngIf="product.properties.weight as weight">{{weight | number}}</th>
+                          <td *ngIf="product.properties.height as height">{{height | number}}cm</td>
+                          <td *ngIf="product.properties.width as width">{{width | number}}cm</td>
+                          <td *ngIf="product.properties.length as length">{{length | number}}cm</td>
                       </tr>
                   </table>
               </mat-card>
@@ -127,18 +120,18 @@ import { positiveIntegerWithZeroRegex } from 'src/app/common/const';
           <br>
           <div class="card-actions br-4">
               <!-- Product Price -->
-              <span class="product-price price-radius">{{data.product.price | prefix: '$'}}</span>
+              <span class="product-price price-radius">{{product.price | number | prefix: '€'}}</span>
 
               <!-- Quantity Inputs -->
               <div class="quantity-input-group">
                     <span class="up-down-buttons">
                       <button mat-icon-button (click)="changeInputValue($event, quantity, -1)">
-                          <mat-icon color="primary">keyboard_arrow_down</mat-icon>
+                          <mat-icon color="primary">-</mat-icon>
                       </button>
                       <input type="text" [value]="1" (click)="$event.stopPropagation()"
                              (input)="onInputChange($event, quantity)" #quantity class="quantity-input">
                       <button mat-icon-button (click)="changeInputValue($event, quantity, 1)">
-                          <mat-icon color="primary">keyboard_arrow_up</mat-icon>
+                          <mat-icon color="primary">+</mat-icon>
                       </button>
               </span>
               </div>
@@ -155,7 +148,7 @@ export class ProductDetailComponent implements OnInit {
 
   constructor(
     private bottomSheetRef: MatBottomSheetRef<ProductDetailComponent>,
-    @Inject(MAT_BOTTOM_SHEET_DATA) public data: { product: any }
+    @Inject(MAT_BOTTOM_SHEET_DATA) public product: Product
   ) { }
 
 

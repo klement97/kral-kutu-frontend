@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { IDNameModel } from 'src/app/common/const';
+import { FIRST_CATEGORY_TO_FILTER, IDNameModel } from 'src/app/common/const';
 
 
 @Component({
@@ -8,15 +8,9 @@ import { IDNameModel } from 'src/app/common/const';
   template: `
       <ng-container *transloco="let t">
           <nav mat-tab-nav-bar color="primary">
-
-              <!-- All categories tab -->
-              <a mat-tab-link [active]="activeCategoryID === null"
-                 (click)="tabChanged({id: null, name: ''})">{{t('all')}}</a>
-
-              <!-- Specific categories tabs -->
               <a mat-tab-link *ngFor="let category of categories"
                  (click)="tabChanged(category)"
-                 [active]="activeCategoryID === category.id">
+                 [active]="activeCategoryID == category.id">
                   {{category.name}}
               </a>
           </nav>
@@ -24,7 +18,7 @@ import { IDNameModel } from 'src/app/common/const';
   `
 })
 export class ProductCategoryTabsComponent implements OnInit {
-  activeCategoryID = null;
+  activeCategoryID: number = FIRST_CATEGORY_TO_FILTER.id;
 
   @Input() categories: IDNameModel[];
   @Output() categoryChange = new EventEmitter<IDNameModel>();

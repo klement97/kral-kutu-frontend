@@ -1,6 +1,7 @@
 import { formatDate } from '@angular/common';
 import { BehaviorSubject } from 'rxjs';
 import { MatPaginator } from '@angular/material/paginator';
+import { Product } from 'src/app/order/order.model';
 
 
 export const productsInCart = new BehaviorSubject([]);
@@ -11,6 +12,8 @@ export const positiveIntegerWithZeroRegex = new RegExp('^\\d+$');
 export const PRODUCTS_IN_CART = 'kralKutuCartProducts';
 export const MIN_TIME = '00:00:00.000000';
 export const MAX_TIME = '23:59:59.999999';
+
+export const FIRST_CATEGORY_TO_FILTER = {id: 5, name: 'Accessory'};
 
 
 export interface IDNameModel {
@@ -132,13 +135,16 @@ export function hashCode(value: string) {
 }
 
 
-export function hashCodeFromObject(obj, fields: string[]) {
-  let objString = '';
+export function hashCodeFromProduct(product: Product, fields: string[] = ['code', 'width', 'height', 'length']) {
+  let productString = product.category.name.toLowerCase();
   for (const field of fields) {
-    objString += `${obj[field]}&`;
+    if (typeof product.properties[field] !== 'undefined') {
+      productString += `&${product.properties[field]}`;
+    }
   }
+  console.log(productString);
 
-  return hashCode(objString);
+  return hashCode(productString);
 }
 
 
@@ -149,4 +155,9 @@ export function cacheValue(cache, key, value) {
 
 export function getFromCache(cache, key) {
   return cache[key];
+}
+
+
+export function fromEntries<T>(entries: [keyof T, T[keyof T]][]): T {
+  return entries.reduce((acc, [key, value]) => ({...acc, [key]: value}), {} as T);
 }

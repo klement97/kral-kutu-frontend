@@ -4,6 +4,7 @@ import { ORDER_URLS } from 'src/app/order/services/urls';
 import { buildQueryString, cacheValue, getFromCache, IDNameModel } from 'src/app/common/const';
 import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { Leather, LeatherSerial, Product } from 'src/app/order/order.model';
 
 
 @Injectable({
@@ -25,9 +26,13 @@ export class OrderService {
   }
 
 
-  getProducts(paginator, filter) {
-    return of(this.http.get('assets/fixtures/products.json'))
-    // return this.http.get(`${ORDER_URLS.PRODUCT}${buildQueryString(paginator, null, filter)}`);
+  getProducts(paginator, filter): Observable<{ count: number, results: Product[] }> {
+    return this.http.get<{ count: number, results: Product[] }>(`${ORDER_URLS.PRODUCT}${buildQueryString(paginator, null, filter)}`);
+  }
+
+
+  getProductsByCode(paginator, filter): Observable<{ count: number, results: Product[] }> {
+    return this.http.get<{ count: number, results: Product[] }>(`${ORDER_URLS.PRODUCT}${buildQueryString(paginator, null, filter)}`);
   }
 
 
@@ -36,13 +41,13 @@ export class OrderService {
   }
 
 
-  getLeathers(): Observable<any[]> {
+  getLeathers(): Observable<Leather[]> {
     const url = ORDER_URLS.LEATHER;
     const cached = getFromCache(this.localCache, url);
     if (cached) {
       return of(cached);
     }
-    return this.http.get<any[]>(url).pipe(
+    return this.http.get<Leather[]>(url).pipe(
       map((leathers) => {
         cacheValue(this.localCache, url, leathers);
         return leathers;
@@ -51,8 +56,8 @@ export class OrderService {
   }
 
 
-  getLeatherSerials() {
-    return this.http.get(ORDER_URLS.LEATHER_SERIAL);
+  getLeatherSerials(): Observable<LeatherSerial[]> {
+    return this.http.get<LeatherSerial[]>(ORDER_URLS.LEATHER_SERIAL);
   }
 
 

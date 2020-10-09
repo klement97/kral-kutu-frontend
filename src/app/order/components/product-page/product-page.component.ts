@@ -1,12 +1,13 @@
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { OrderService } from 'src/app/order/services/order.service';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatBottomSheet } from '@angular/material/bottom-sheet';
-import { ProductDetailComponent } from 'src/app/order/components/product-detail.component';
+import { ProductDetailComponent } from 'src/app/order/components/product-page/product-detail.component';
 import {
   composeOrderUnit,
-  hashCodeFromObject,
+  FIRST_CATEGORY_TO_FILTER,
+  hashCodeFromProduct,
   IDNameModel,
   positiveIntegerWithZeroRegex,
   productsInCart,
@@ -14,15 +15,14 @@ import {
 } from 'src/app/common/const';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslocoService } from '@ngneat/transloco';
-import { Product } from 'src/app/order/models/order.model';
+import { Product } from 'src/app/order/order.model';
 import { MatPaginator } from '@angular/material/paginator';
-import { MatTableDataSource } from '@angular/material/table';
+import { distinctUntilChanged, takeUntil } from 'rxjs/operators';
 
 
 @Component({
   selector: 'app-order-page',
   styles: [`
-
       /*
       Even though add-to-cart and added-to-cart classes are present in common-style
       they are still required to be here too.
@@ -48,86 +48,62 @@ import { MatTableDataSource } from '@angular/material/table';
           font-size: 24px;
           color: white;
       }
-
-      .metric-hint {
-          font-size: 10px;
-          color: gray;
-      }
-
-      /* Hide Up Down Buttons on Number Input */
-      /* Chrome, Safari, Edge, Opera */
-      input::-webkit-outer-spin-button,
-      input::-webkit-inner-spin-button {
-          -webkit-appearance: none;
-          margin: 0;
-      }
-
-      /* Firefox */
-      input[type=number] {
-          -moz-appearance: textfield;
-      }
   `],
   template: `
       <ng-container *transloco="let t">
           <app-checkout-button *ngIf="productsInCart.getValue().length as length"></app-checkout-button>
-          <div style="margin: 30px auto; width: 85%">
-              <mat-card><h1 style="margin: 0">{{t('products')}}</h1></mat-card>
+          <div style="margin: 70px auto 30px auto; width: 90%">
+              <mat-card>
+                  <h1 style="margin: 0 10px 0 0; display: inline-block">{{t('products')}}</h1>
+                  <mat-form-field appearance="outline" color="primary">
+                      <input #code
+                             matInput
+                             autocapitalize="off"
+                             autocomplete="off"
+                             type="search"
+                             (input)="searchCode$.next(code.value)"
+                             [placeholder]="t('search') + '...'">
+                      <button mat-icon-button matPrefix (click)="code.value = ''">
+                          <mat-icon>search</mat-icon>
+                      </button>
+                  </mat-form-field>
+              </mat-card>
           </div>
           <ng-container *ngIf="productCategories.length > 0">
-              <app-product-category-tabs [categories]="productCategories" (categoryChange)="filterByCategory($event)">
+              <app-product-category-tabs [categories]="productCategories"
+                                         (categoryChange)="filterByCategory($event)">
               </app-product-category-tabs>
           </ng-container>
           <div class="products">
 
               <!-- CARD -->
-              <div class="product-card" *ngFor="let product of products" (click)="openProductDetails(product)">
-                  <div class="image-wrapper">
-                      <img [src]="'/assets/fixtures/TB01020.jpg'" alt="product-image">
+              <div class="product-card" *ngFor="let product of products">
+                  <div class="image-wrapper" (click)="openProductDetails(product)">
+                      <img [src]="product.image" alt="product-image">
                   </div>
 
                   <!-- CARD CONTENT -->
-                  <div class="card-content">
-                      <h4>{{product.code}}</h4>
-                      <div class="dimensions">
-                          <div class="size" (click)="focusInput($event, width.focus())">
-                              <input type="number" class="quantity-input" [value]="product.width | number" #width
-                                     (input)="product.width = width.value">
-                              <img src="../../../assets/images/width-arrow.svg" alt="width-icon">
-                              <span class="metric-hint">(cm)</span>
-                          </div>
-                          <div class="size length-dimension" (click)="focusInput($event, length.focus())">
-                              <input type="number" class="quantity-input" [value]="product.length | number" #length
-                                     (input)="product.length = length.value">
-                              <img src="../../../assets/images/depth-arrow.svg" alt="length-icon">
-                              <span class="metric-hint">(cm)</span>
-                          </div>
-                          <div class="size" (click)="focusInput($event, height.focus())">
-                              <input type="number" class="quantity-input" [value]="product.height | number" #height
-                                     (input)="product.height = height.value">
-                              <img src="../../../assets/images/height-arrow.svg" alt="height-icon">
-                              <span class="metric-hint">(cm)</span>
-                          </div>
-                      </div>
-                  </div>
+                  <ng-container [ngSwitch]="product.category.name.toLowerCase()">
+                      <app-table-content *ngSwitchCase="'tabaka'" [product]="product"></app-table-content>
+                      <app-accessory-content *ngSwitchCase="'aksesor'" [product]="product"></app-accessory-content>
+                  </ng-container>
 
                   <!-- CARD ACTIONS -->
                   <div class="card-actions">
-                      <span class="product-price">{{product.price | prefix: '$'}}</span>
+                      <span class="product-price">{{product.price | number | prefix: '€'}}</span>
                       <div class="quantity-input-group">
-                              <span class="up-down-buttons">
-                                  <button mat-icon-button type="button"
-                                          (click)="changeInputValue($event, quantity, -1)">
-                                      <mat-icon color="primary">keyboard_arrow_down</mat-icon>
-                                  </button>
-                                  <input type="text" [value]="'1'" (click)="$event.stopPropagation()"
-                                         (input)="onInputChange($event, quantity)" #quantity class="quantity-input">
-                                  <button mat-icon-button type="button" (click)="changeInputValue($event, quantity, 1)">
-                                      <mat-icon color="primary">keyboard_arrow_up</mat-icon>
-                                  </button>
-                              </span>
+                          <button mat-icon-button type="button"
+                                  (click)="changeInputValue($event, quantity, -1)">
+                              <mat-icon color="primary">-</mat-icon>
+                          </button>
+                          <input type="text" [value]="'1'" (click)="$event.stopPropagation()"
+                                 (input)="onInputChange($event, quantity)" #quantity class="quantity-input">
+                          <button mat-icon-button type="button" (click)="changeInputValue($event, quantity, 1)">
+                              <mat-icon color="primary">+</mat-icon>
+                          </button>
                       </div>
                       <button mat-icon-button color="primary" type="button" class="add-to-cart"
-                              (click)="addProductToCart($event, product, quantity.value, addToCartIcon, addedToCartIcon)">
+                              (click)="addProductToCart(product, quantity.value, addToCartIcon, addedToCartIcon)">
                           <mat-icon #addToCartIcon style="z-index: 2; position: relative;">
                               add_shopping_cart
                           </mat-icon>
@@ -138,12 +114,16 @@ import { MatTableDataSource } from '@angular/material/table';
                   </div>
               </div>
           </div>
-          <mat-paginator [length]="productsCount" [pageSize]="10" #paginator (page)="getProducts()"></mat-paginator>
-
+          <mat-paginator #paginator
+                         [length]="productsCount"
+                         [pageSize]="12"
+                         [pageSizeOptions]="[12, 21, 30]"
+                         (page)="getProducts()">
+          </mat-paginator>
       </ng-container>
   `
 })
-export class ProductPageComponent implements OnInit, AfterViewInit {
+export class ProductPageComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
   products: Product[];
@@ -154,6 +134,8 @@ export class ProductPageComponent implements OnInit, AfterViewInit {
 
   productFilterForm: FormGroup;
   productsInCart: BehaviorSubject<any>;
+  searchCode$ = new BehaviorSubject<string>(null);
+  uns$ = new Subject();
 
 
   constructor(
@@ -177,6 +159,25 @@ export class ProductPageComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit() {
     this.getProducts();
+    this.searchCode();
+  }
+
+
+  ngOnDestroy() {
+    this.uns$.next();
+    this.uns$.complete();
+  }
+
+
+  searchCode() {
+    this.searchCode$.pipe(takeUntil(this.uns$), distinctUntilChanged())
+      .subscribe((code) => {
+        if (code && code !== '') {
+          this.filterByCode(code, null);
+        } else if (code === '') {
+          this.filterByCode('', this.productFilterForm.value.category);
+        }
+      });
   }
 
 
@@ -188,18 +189,15 @@ export class ProductPageComponent implements OnInit, AfterViewInit {
 
 
   getProductFilterForm(): FormGroup {
-    return this.fb.group({
-      title: '', price_min: null, price_max: null,
-      category: null, inner_leather: null, outer_leather: null
-    });
+    return this.fb.group({code: '', category: FIRST_CATEGORY_TO_FILTER.id});
   }
 
 
   getProducts() {
     this.orderService.getProducts(this.paginator, this.productFilterForm.value).subscribe(
-      (res: any) => {
-        this.products = res.results ? res.results : res;
-        this.productsCount = res.count ? res.count : res.length;
+      res => {
+        this.products = res.results;
+        this.productsCount = res.count;
       });
   }
 
@@ -207,20 +205,25 @@ export class ProductPageComponent implements OnInit, AfterViewInit {
   filterByCategory(category: IDNameModel) {
     if (this.productFilterForm.value.category !== category.id) {
       this.productFilterForm.patchValue({category: category.id});
+      this.paginator.pageIndex = 0;
       this.getProducts();
     }
   }
 
 
+  filterByCode(code, category) {
+    this.paginator.pageIndex = 0;
+    this.orderService.getProductsByCode(this.paginator, {code, category}).subscribe(
+      response => this.products = response.results
+    );
+  }
+
+
   openProductDetails(product): void {
-    this.bottomSheet.open(ProductDetailComponent, {data: {product}, panelClass: 'no-top-padding'})
+    this.bottomSheet.open(ProductDetailComponent, {data: product, panelClass: 'no-top-padding'})
       .afterDismissed().subscribe(((result: { addToCart: boolean, quantity: number }) => {
       if (result?.addToCart) {
-        const fakeEvent = {
-          stopPropagation: () => {
-          }
-        };
-        this.addProductToCart(fakeEvent, product, result.quantity.toString());
+        this.addProductToCart(product, result.quantity.toString());
       }
     }));
   }
@@ -230,17 +233,14 @@ export class ProductPageComponent implements OnInit, AfterViewInit {
    * Add selected product with selected quantity to the cart.
    * If the product is already in the cart we just increment the quantity of it.
    * Otherwise we add a new unit to the cart.
-   * @param e                 Event, used to prevent product detail to be opened up
    * @param product           Selected product to add to the cart
    * @param quantity          Quantity of the product, taken from input
    * @param addToCartIcon     Respective icon of the product, if never added to cart
    * @param addedToCartIcon   Respective icon of the product, if already in cart
    */
-  addProductToCart(e, product, quantity: string, addToCartIcon?, addedToCartIcon?) {
-    e.stopPropagation(); // prevents product detail to be opened up
-
+  addProductToCart(product, quantity: string, addToCartIcon?, addedToCartIcon?) {
     // Generating a hash here to check if the product is already in cart
-    const hash = hashCodeFromObject(product, ['code', 'width', 'height', 'length']);
+    const hash = hashCodeFromProduct(product);
 
     // If hash can not be found inside the products in cart
     // this means that we need to add the product as a new unit
@@ -254,6 +254,7 @@ export class ProductPageComponent implements OnInit, AfterViewInit {
       selectedProducts.push(composeOrderUnit(product, Number(quantity), hash));
     }
     setProductsInCart(this.productsInCart, selectedProducts);
+    console.log(this.productsInCart.getValue());
     this.snackbar.open(this.transloco.translate('cart success message'), 'OK', {
       horizontalPosition: 'end', verticalPosition: 'bottom', duration: 2000, panelClass: ['success-snackbar']
     });
@@ -324,11 +325,6 @@ export class ProductPageComponent implements OnInit, AfterViewInit {
         input.value = '10000';
       }
     }, 200);
-  }
-
-
-  focusInput(e, _) {
-    e.stopPropagation();
   }
 
 }

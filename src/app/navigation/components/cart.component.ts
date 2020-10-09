@@ -3,7 +3,7 @@ import { OrderService } from 'src/app/order/services/order.service';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { productsInCart, setProductsInCart } from 'src/app/common/const';
 import { Router } from '@angular/router';
-import { Product } from 'src/app/order/models/order.model';
+import { Product } from 'src/app/order/order.model';
 import { takeUntil } from 'rxjs/operators';
 
 
@@ -77,15 +77,15 @@ import { takeUntil } from 'rxjs/operators';
               <div role="listitem" *ngFor="let orderUnit of orderUnits | async" class="cart-item mat-elevation-z1">
                   <img [src]="orderUnit.product.image"
                        [alt]="orderUnit.product.image | imageAlt"
-                       width="70px" height="70px" class="cart-item-image">
+                       width="80px" height="70px" class="cart-item-image">
                   <span style="display: inline-flex; flex-direction: column">
-                      <span style="color: grey"><b>{{orderUnit.product.code}}</b></span>
+                      <span *ngIf="orderUnit.product.properties.code as code" style="color: grey"><b>{{code}}</b></span>
                       <span style="color: #474747">
-                          {{orderUnit.product.price | number | prefix: '$'}}
+                          {{orderUnit.product.price | number | prefix: '€'}}
                           x
                           {{orderUnit.quantity | number}}
                           =
-                          {{(orderUnit.product.price * orderUnit.quantity) | number | prefix: '$' }}
+                          {{(orderUnit.product.price * orderUnit.quantity) | number | prefix: '€' }}
                       </span>
                   </span>
                   <!-- Remove cart item button -->
@@ -97,7 +97,7 @@ import { takeUntil } from 'rxjs/operators';
               <!-- Totals -->
               <div class="totals" *ngIf="totalPrice > 0">
                   <h4>{{t('total')}}:</h4>
-                  <h4><b>{{totalPrice | number | prefix: '$'}}</b></h4>
+                  <h4><b>{{totalPrice | number | prefix: '€'}}</b></h4>
               </div>
               <mat-divider *ngIf="totalPrice > 0"></mat-divider>
 
