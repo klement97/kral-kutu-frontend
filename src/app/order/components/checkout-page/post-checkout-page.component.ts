@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { OrderService } from 'src/app/order/services/order.service';
 import { ActivatedRoute } from '@angular/router';
+import { Order } from 'src/app/order/order.model';
 
 
 @Component({
@@ -9,12 +10,19 @@ import { ActivatedRoute } from '@angular/router';
       <p>
           post-checkout-page works!
       </p>
+      <p>
+          Order ID: {{orderID}}
+      </p>
+      <pre>
+          {{order}}
+      </pre>
   `,
   styles: []
 })
 export class PostCheckoutPageComponent implements OnInit {
 
   orderID: number;
+  order: Order;
 
 
   constructor(
@@ -29,6 +37,8 @@ export class PostCheckoutPageComponent implements OnInit {
   }
 
 
-  getOrder() {}
+  getOrder() {
+    this.orderService.getOrder(this.orderID).subscribe((order) => this.order = order);
+  }
 
 }
