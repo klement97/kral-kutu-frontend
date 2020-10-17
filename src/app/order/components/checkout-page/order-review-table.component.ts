@@ -1,6 +1,7 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { OrderUnit } from 'src/app/order/order.model';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 
 @Component({
@@ -69,8 +70,9 @@ import { BehaviorSubject } from 'rxjs';
       </ng-container>
   `
 })
-export class OrderReviewTableComponent implements OnInit {
+export class OrderReviewTableComponent implements OnInit, OnDestroy {
   @Input() orderUnits: BehaviorSubject<OrderUnit[]>;
+  uns$ = new Subject();
   totalPrice = 0;
   totalQuantity = 0;
   displayedColumns = ['code', 'width', 'height', 'length', 'price', 'quantity', 'subtotal'];
@@ -84,16 +86,25 @@ export class OrderReviewTableComponent implements OnInit {
   }
 
 
+  ngOnDestroy() {
+    this.uns$.next();
+    this.uns$.complete();
+  }
+
+
   calculateTotalQuantityAndPrice(): void {
-    this.orderUnits.subscribe(units => {
-        this.totalPrice = 0;
-        this.totalQuantity = 0;
-        units.forEach(unit => {
-          this.totalQuantity += Number(unit.quantity);
-          this.totalPrice += Number(unit.product.price) * Number(unit.quantity);
-        });
-      }
-    );
+    this.orderUnits
+      .pipe(takeUntil(this.uns$))
+      .subscribe(units => {
+          console.log(this.orderUnits, this.totalPrice, this.totalQuantity);
+          this.totalPrice = 0;
+          this.totalQuantity = 0;
+          units.forEach(unit => {
+            this.totalQuantity += Number(unit.quantity);
+            this.totalPrice += Number(unit.product.price) * Number(unit.quantity);
+          });
+        }
+      );
   }
 
 }
