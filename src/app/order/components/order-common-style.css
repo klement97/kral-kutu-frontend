@@ -1,3 +1,8 @@
+.align-center {
+    display: flex;
+    align-items: center;
+}
+
 .products {
     width: 85%;
     margin: 30px auto;
@@ -117,6 +122,10 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+}
+
+.quantity-input-group .material-icons {
+    font-size: 20px;
 }
 
 .quantity-input {

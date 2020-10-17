@@ -292,7 +292,17 @@ export class CheckoutComponent implements OnInit, OnDestroy {
     const newQuantity = +input.value + value;
     if (newQuantity && newQuantity >= 1 && newQuantity <= 1000) {
       unit.quantity = newQuantity;
+      this.triggerValueChange();
     }
+  }
+
+
+  /**
+   * In cases like changing quantity of a unit, the subscribers doesn't receive any information on that.
+   * We are triggering a value change to let each subscriber do their actions based on that.
+   */
+  triggerValueChange() {
+    this.productsInCart.next(this.productsInCart.getValue());
   }
 
 
