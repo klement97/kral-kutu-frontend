@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { OrderService } from 'src/app/order/services/order.service';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { clearCart, fromEntries, positiveIntegerWithZeroRegex, productsInCart } from 'src/app/common/const';
+import { clearCart, fromEntries, productsInCart } from 'src/app/common/const';
 import { Router } from '@angular/router';
 import { LeatherSelectResult, LeatherSerial, OrderUnit } from 'src/app/order/order.model';
 import { MatBottomSheet } from '@angular/material/bottom-sheet';
@@ -54,6 +54,19 @@ import { takeUntil } from 'rxjs/operators';
 
       .title button {
           width: unset;
+      }
+
+      .input-group {
+          display: flex;
+          align-items: center;
+      }
+
+      .input-group > button {
+          width: unset;
+      }
+
+      .input-group .material-icons {
+          font-size: 21px;
       }
 
       /* Hide Up Down Buttons on Number Input */
@@ -188,8 +201,21 @@ import { takeUntil } from 'rxjs/operators';
                           <!-- CARD ACTIONS -->
                           <div class="price-quantity" style="margin-bottom: 10px">
                               <span>{{unit.product.price | number | prefix: '€'}}</span> <span>x</span>
-                              <input type="number" [value]="unit.quantity" class="quantity-input"
-                                     (input)="changeAmount(unit, quantity, $event)" #quantity>
+                              <span class="input-group">
+                                  <button mat-icon-button type="button" color="primary"
+                                          (click)="increaseDecreaseQuantity(unit, quantity, -1)">
+                                      <mat-icon>remove</mat-icon>
+                                  </button>
+                                  <input type="number"
+                                         [value]="unit.quantity"
+                                         class="quantity-input"
+                                         disabled
+                                         #quantity>
+                                  <button mat-icon-button type="button" color="primary"
+                                          (click)="increaseDecreaseQuantity(unit, quantity, 1)">
+                                      <mat-icon>add</mat-icon>
+                                  </button>
+                              </span>
                               <span>=</span>
                               <span>{{(unit.product.price * unit.quantity | number) | prefix: '€'}}</span>
                           </div>
@@ -262,32 +288,11 @@ export class CheckoutComponent implements OnInit, OnDestroy {
   }
 
 
-  changeAmount(unit: OrderUnit, input, event) {
-    if (this.validateInput(input, event)) {
-      unit.quantity = +input.value;
+  increaseDecreaseQuantity(unit: OrderUnit, input: HTMLInputElement, value: -1 | 1) {
+    const newQuantity = +input.value + value;
+    if (newQuantity && newQuantity >= 1 && newQuantity <= 1000) {
+      unit.quantity = newQuantity;
     }
-  }
-
-
-  validateInput(input, event) {
-    const inputChar: string = event.data;
-    // setting a timeout to let the user understand the changes
-    if (!input.value || input.value === '0') {
-      input.value = '1';
-      return false;
-    }
-    if (inputChar && !positiveIntegerWithZeroRegex.test(inputChar)) {
-      const inputValueArray: string[] = input.value.split('');
-      inputValueArray.splice(input.value.indexOf(inputChar), 1);
-      input.value = inputValueArray.join('');
-      return false;
-    }
-    if (Number(input.value) > 10_000) {
-      input.value = '10000';
-      return false;
-    }
-
-    return true;
   }
 
 
