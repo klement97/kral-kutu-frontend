@@ -53,23 +53,21 @@ import { ActivatedRoute, Router } from '@angular/router';
   template: `
       <ng-container *transloco="let t">
           <app-checkout-button *ngIf="productsInCart.getValue().length as length"></app-checkout-button>
-          <div style="margin: 70px auto 30px auto; width: 90%">
-              <mat-card>
-                  <h1 style="margin: 0 10px 0 0; display: inline-block">{{t('products')}}</h1>
-                  <mat-form-field appearance="outline" color="primary">
-                      <input #code
-                             matInput
-                             autocapitalize="off"
-                             autocomplete="off"
-                             type="search"
-                             (input)="searchCode$.next(code.value)"
-                             [placeholder]="t('search') + '...'">
-                      <button mat-icon-button matPrefix (click)="code.value = ''">
-                          <mat-icon>search</mat-icon>
-                      </button>
-                  </mat-form-field>
-              </mat-card>
-          </div>
+          <mat-card>
+              <h1 style="margin: 0 10px 0 0; display: inline-block">{{t('products')}}</h1>
+              <mat-form-field appearance="outline" color="primary" id="header">
+                  <input #code
+                         matInput
+                         autocapitalize="off"
+                         autocomplete="off"
+                         type="search"
+                         (input)="searchCode$.next(code.value)"
+                         [placeholder]="t('search') + '...'">
+                  <button mat-icon-button matPrefix (click)="code.value = ''">
+                      <mat-icon>search</mat-icon>
+                  </button>
+              </mat-form-field>
+          </mat-card>
           <ng-container *ngIf="productCategories.length > 0">
               <app-product-category-tabs [categories]="productCategories"></app-product-category-tabs>
           </ng-container>
@@ -223,6 +221,7 @@ export class ProductPageComponent implements OnInit, AfterViewInit, OnDestroy {
       res => {
         this.products = res.results;
         this.productsCount = res.count;
+        document.getElementById('header').scrollIntoView(true);
       });
   }
 
