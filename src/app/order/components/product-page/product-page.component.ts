@@ -55,7 +55,7 @@ import { ActivatedRoute, Router } from '@angular/router';
           <app-checkout-button *ngIf="productsInCart.getValue().length as length"></app-checkout-button>
           <mat-card>
               <h1 style="margin: 0 10px 0 0; display: inline-block">{{t('products')}}</h1>
-              <mat-form-field appearance="outline" color="primary" id="header">
+              <mat-form-field appearance="outline" color="primary">
                   <input #code
                          matInput
                          autocapitalize="off"
@@ -68,54 +68,60 @@ import { ActivatedRoute, Router } from '@angular/router';
                   </button>
               </mat-form-field>
           </mat-card>
+          <div id="navigator"></div>
           <ng-container *ngIf="productCategories.length > 0">
               <app-product-category-tabs [categories]="productCategories"></app-product-category-tabs>
           </ng-container>
-          <div class="products">
+          <div class="products-container">
+              <div class="products">
 
-              <!-- CARD -->
-              <div class="product-card" *ngFor="let product of products">
-                  <div class="image-wrapper" (click)="openProductDetails(product)">
-                      <img [src]="product.image" alt="product-image">
-                  </div>
+                  <!-- CARD -->
+                  <div class="product-card" *ngFor="let product of products">
+                      <div class="image-wrapper" (click)="openProductDetails(product)">
+                          <img [src]="product.image" alt="product-image">
+                      </div>
 
-                  <!-- CARD CONTENT -->
-                  <ng-container [ngSwitch]="product.category.name.toLowerCase()">
-                      <app-table-content *ngSwitchCase="'tabaka'" [product]="product"></app-table-content>
-                      <app-accessory-content *ngSwitchCase="'aksesor'" [product]="product"></app-accessory-content>
-                  </ng-container>
+                      <!-- CARD CONTENT -->
+                      <ng-container [ngSwitch]="product.category.name.toLowerCase()">
+                          <app-table-content *ngSwitchCase="'tabaka'" [product]="product"></app-table-content>
+                          <app-accessory-content *ngSwitchCase="'aksesor'" [product]="product"></app-accessory-content>
+                      </ng-container>
 
-                  <!-- CARD ACTIONS -->
-                  <div class="card-actions">
-                      <span class="product-price">{{product.price | number | prefix: '€'}}</span>
-                      <div class="quantity-input-group align-center">
-                          <button mat-icon-button type="button" (click)="changeInputValue($event, quantity, -1)">
-                              <mat-icon color="primary">remove</mat-icon>
+                      <!-- CARD ACTIONS -->
+                      <div class="card-actions">
+                          <span class="product-price">{{product.price | number | prefix: '€'}}</span>
+                          <div class="quantity-input-group align-center">
+                              <button mat-icon-button type="button" (click)="changeInputValue($event, quantity, -1)">
+                                  <mat-icon color="primary">remove</mat-icon>
+                              </button>
+                              <input type="text" [value]="'1'" (click)="$event.stopPropagation()"
+                                     (input)="onInputChange($event, quantity)" #quantity class="quantity-input">
+                              <button mat-icon-button type="button" (click)="changeInputValue($event, quantity, 1)">
+                                  <mat-icon color="primary">add</mat-icon>
+                              </button>
+                          </div>
+                          <button mat-icon-button color="primary" type="button" class="add-to-cart"
+                                  (click)="addProductToCart(product, quantity.value, addToCartIcon, addedToCartIcon)">
+                              <mat-icon #addToCartIcon style="z-index: 2; position: relative;">
+                                  add_shopping_cart
+                              </mat-icon>
                           </button>
-                          <input type="text" [value]="'1'" (click)="$event.stopPropagation()"
-                                 (input)="onInputChange($event, quantity)" #quantity class="quantity-input">
-                          <button mat-icon-button type="button" (click)="changeInputValue($event, quantity, 1)">
-                              <mat-icon color="primary">add</mat-icon>
+                          <button mat-icon-button class="added-to-cart">
+                              <mat-icon #addedToCartIcon>shopping_cart</mat-icon>
                           </button>
                       </div>
-                      <button mat-icon-button color="primary" type="button" class="add-to-cart"
-                              (click)="addProductToCart(product, quantity.value, addToCartIcon, addedToCartIcon)">
-                          <mat-icon #addToCartIcon style="z-index: 2; position: relative;">
-                              add_shopping_cart
-                          </mat-icon>
-                      </button>
-                      <button mat-icon-button class="added-to-cart">
-                          <mat-icon #addedToCartIcon>shopping_cart</mat-icon>
-                      </button>
                   </div>
               </div>
+              <mat-card style="padding: 0; margin: 15px 0 0 0;">
+                  <mat-paginator #paginator
+                                 showFirstLastButtons
+                                 [length]="productsCount"
+                                 [pageSize]="12"
+                                 [pageSizeOptions]="[12, 21, 30]"
+                                 (page)="getProducts()">
+                  </mat-paginator>
+              </mat-card>
           </div>
-          <mat-paginator #paginator
-                         [length]="productsCount"
-                         [pageSize]="12"
-                         [pageSizeOptions]="[12, 21, 30]"
-                         (page)="getProducts()">
-          </mat-paginator>
       </ng-container>
   `
 })
@@ -221,7 +227,7 @@ export class ProductPageComponent implements OnInit, AfterViewInit, OnDestroy {
       res => {
         this.products = res.results;
         this.productsCount = res.count;
-        document.getElementById('header').scrollIntoView(true);
+        document.getElementById('navigator').scrollIntoView(true);
       });
   }
 
