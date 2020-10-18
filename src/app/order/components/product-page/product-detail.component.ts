@@ -126,12 +126,12 @@ import { Product } from 'src/app/order/order.model';
               <div class="quantity-input-group">
                     <span class="up-down-buttons">
                       <button mat-icon-button (click)="changeInputValue($event, quantity, -1)">
-                          <mat-icon color="primary">-</mat-icon>
+                          <mat-icon color="primary">remove</mat-icon>
                       </button>
                       <input type="text" [value]="1" (click)="$event.stopPropagation()"
                              (input)="onInputChange($event, quantity)" #quantity class="quantity-input">
                       <button mat-icon-button (click)="changeInputValue($event, quantity, 1)">
-                          <mat-icon color="primary">+</mat-icon>
+                          <mat-icon color="primary">add</mat-icon>
                       </button>
               </span>
               </div>
