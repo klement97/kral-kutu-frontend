@@ -78,12 +78,14 @@ import { ActivatedRoute, Router } from '@angular/router';
                   <!-- CARD -->
                   <div class="product-card" *ngFor="let product of products">
                       <div class="image-wrapper" (click)="openProductDetails(product)">
-                          <img [src]="product.image" alt="product-image">
+                          <img [src]="product.image" [alt]="product.image | imageAlt">
                       </div>
 
                       <!-- CARD CONTENT -->
                       <ng-container [ngSwitch]="product.category.name.toLowerCase()">
                           <app-table-content *ngSwitchCase="'tabaka'" [product]="product"></app-table-content>
+                          <app-table-content *ngSwitchCase="'tabaka premium'" [product]="product"></app-table-content>
+                          <app-table-content *ngSwitchCase="'tabaka shërbimi'" [product]="product"></app-table-content>
                           <app-accessory-content *ngSwitchCase="'aksesor'" [product]="product"></app-accessory-content>
                       </ng-container>
 
@@ -177,7 +179,6 @@ export class ProductPageComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private watchCategory() {
     this.productFilterForm.get('category').valueChanges.subscribe(category => {
-      console.log('Filter form changed: ', category);
       const queryParam = {category};
       this.router.navigate([''], {queryParams: {...queryParam}, replaceUrl: true}).then();
     });
@@ -186,7 +187,6 @@ export class ProductPageComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private watchQueryParams() {
     this.route.queryParams.subscribe((params: { category: string }) => {
-      console.log('Query params changed: ', params);
       if (params.category) {
         this.filterByCategory({id: +params.category, name: ''});
       }
@@ -284,7 +284,6 @@ export class ProductPageComponent implements OnInit, AfterViewInit, OnDestroy {
       selectedProducts.push(composeOrderUnit(product, Number(quantity), hash));
     }
     setProductsInCart(this.productsInCart, selectedProducts);
-    console.log(this.productsInCart.getValue());
     this.snackbar.open(this.transloco.translate('cart success message'), 'OK', {
       horizontalPosition: 'end', verticalPosition: 'bottom', duration: 2000, panelClass: ['success-snackbar']
     });

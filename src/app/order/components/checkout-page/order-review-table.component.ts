@@ -26,18 +26,18 @@ import { takeUntil } from 'rxjs/operators';
                           *matCellDef="let element">{{element | ifNotNull: 'product.properties.width' : '' : 'cm'}}</td>
                   </ng-container>
 
-                  <!-- Height Column -->
-                  <ng-container matColumnDef="height">
-                      <th mat-header-cell *matHeaderCellDef>{{t('height')}}</th>
-                      <td mat-cell
-                          *matCellDef="let element">{{element | ifNotNull: 'product.properties.height' : '' : 'cm'}}</td>
-                  </ng-container>
-
                   <!-- Length Column -->
                   <ng-container matColumnDef="length">
                       <th mat-header-cell *matHeaderCellDef>{{t('length')}}</th>
                       <td mat-cell
                           *matCellDef="let element">{{element | ifNotNull: 'product.properties.length' : '' : 'cm'}}</td>
+                  </ng-container>
+
+                  <!-- Height Column -->
+                  <ng-container matColumnDef="height">
+                      <th mat-header-cell *matHeaderCellDef>{{t('height')}}</th>
+                      <td mat-cell
+                          *matCellDef="let element">{{element | ifNotNull: 'product.properties.height' : '' : 'cm'}}</td>
                   </ng-container>
 
                   <!-- Price Column -->
@@ -75,7 +75,7 @@ export class OrderReviewTableComponent implements OnInit, OnDestroy {
   uns$ = new Subject();
   totalPrice = 0;
   totalQuantity = 0;
-  displayedColumns = ['code', 'width', 'height', 'length', 'price', 'quantity', 'subtotal'];
+  displayedColumns = ['code', 'width', 'length', 'height', 'price', 'quantity', 'subtotal'];
 
 
   constructor() { }
@@ -96,7 +96,6 @@ export class OrderReviewTableComponent implements OnInit, OnDestroy {
     this.orderUnits
       .pipe(takeUntil(this.uns$))
       .subscribe(units => {
-          console.log(this.orderUnits, this.totalPrice, this.totalQuantity);
           this.totalPrice = 0;
           this.totalQuantity = 0;
           units.forEach(unit => {

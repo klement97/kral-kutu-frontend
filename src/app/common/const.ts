@@ -100,7 +100,7 @@ export function getSort(active: string, direction: 'asc' | 'desc' | '') {
 
 
 export function composeOrderUnit(product, quantity, hash) {
-  return {product, quantity, hash};
+  return {product: {...product}, quantity, hash};
 }
 
 
@@ -142,7 +142,6 @@ export function hashCodeFromProduct(product: Product, fields: string[] = ['code'
       productString += `&${product.properties[field]}`;
     }
   }
-  console.log(productString);
 
   return hashCode(productString);
 }

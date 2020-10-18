@@ -88,7 +88,7 @@ import { takeUntil } from 'rxjs/operators';
   `],
   template: `
       <ng-container *transloco="let t">
-          <div style="padding: 15px; width: 100%; margin: 50px auto 0 auto">
+          <div style="padding: 15px; width: 100%; margin: 0 auto">
               <mat-card class="title">
                   <h1>{{t('checkout title')}}</h1>
                   <button mat-stroked-button color="primary" routerLink="/order" queryParamsHandling="preserve">
@@ -176,7 +176,7 @@ import { takeUntil } from 'rxjs/operators';
                   <div class="product-card" *ngFor="let unit of productsInCart | async">
                       <ng-container *ngIf="unit?.product?.properties">
                           <div class="image-wrapper">
-                              <img [src]="unit.product.image" alt="product-image">
+                              <img [src]="unit.product.image" [alt]="unit.product.image | imageAlt">
                           </div>
 
                           <!-- CARD CONTENT -->
@@ -185,15 +185,18 @@ import { takeUntil } from 'rxjs/operators';
                               <div class="dimensions">
                                   <div class="size">
                                       <span>{{unit.product.properties.width | number}}</span> <img
-                                          src="../../../../assets/images/width-arrow.svg" alt="width-icon">
+                                          src="../../../../assets/images/width-arrow.svg"
+                                          [alt]="'width-icon' | imageAlt">
                                   </div>
                                   <div class="size length-dimension">
                                       <span>{{unit.product.properties.length | number}}</span> <img
-                                          src="../../../../assets/images/depth-arrow.svg" alt="length-icon">
+                                          src="../../../../assets/images/depth-arrow.svg"
+                                          [alt]="'length-icon' | imageAlt">
                                   </div>
                                   <div class="size">
                                       <span>{{unit.product.properties.height | number}}</span> <img
-                                          src="../../../../assets/images/height-arrow.svg" alt="height-icon">
+                                          src="../../../../assets/images/height-arrow.svg"
+                                          [alt]="'height-icon' | imageAlt">
                                   </div>
                               </div>
                           </div>
