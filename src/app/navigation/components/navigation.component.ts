@@ -5,7 +5,7 @@ import { Component, OnInit } from '@angular/core';
   selector: 'app-navigation',
   template: `
       <p>Landing page comes here</p>
-      <a routerLink="/order">Go to order page</a>
+      <a routerLink="/order" queryParamsHandling="preserve">Go to order page</a>
   `,
   styles: [
       `

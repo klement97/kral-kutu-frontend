@@ -170,7 +170,7 @@ export class CartComponent implements OnInit, OnDestroy {
 
   navigateTo(commands: string[]) {
     this.buttonsClicked.emit(true);
-    this.router.navigate(commands).then();
+    this.router.navigate(commands, {queryParamsHandling: 'preserve'}).then();
   }
 
 }

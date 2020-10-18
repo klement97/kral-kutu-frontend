@@ -18,6 +18,7 @@ import { TranslocoService } from '@ngneat/transloco';
 import { Product } from 'src/app/order/order.model';
 import { MatPaginator } from '@angular/material/paginator';
 import { distinctUntilChanged, takeUntil } from 'rxjs/operators';
+import { ActivatedRoute, Router } from '@angular/router';
 
 
 @Component({
@@ -70,9 +71,7 @@ import { distinctUntilChanged, takeUntil } from 'rxjs/operators';
               </mat-card>
           </div>
           <ng-container *ngIf="productCategories.length > 0">
-              <app-product-category-tabs [categories]="productCategories"
-                                         (categoryChange)="filterByCategory($event)">
-              </app-product-category-tabs>
+              <app-product-category-tabs [categories]="productCategories"></app-product-category-tabs>
           </ng-container>
           <div class="products">
 
@@ -142,7 +141,9 @@ export class ProductPageComponent implements OnInit, AfterViewInit, OnDestroy {
     private fb: FormBuilder,
     private bottomSheet: MatBottomSheet,
     private snackbar: MatSnackBar,
-    private transloco: TranslocoService
+    private transloco: TranslocoService,
+    private route: ActivatedRoute,
+    private router: Router
   ) {
     this.leathers$ = orderService.getLeathers();
     this.leatherSerials$ = orderService.getLeatherSerials();
@@ -159,12 +160,33 @@ export class ProductPageComponent implements OnInit, AfterViewInit, OnDestroy {
   ngAfterViewInit() {
     this.getProducts();
     this.searchCode();
+    this.watchQueryParams();
+    this.watchCategory();
   }
 
 
   ngOnDestroy() {
     this.uns$.next();
     this.uns$.complete();
+  }
+
+
+  private watchCategory() {
+    this.productFilterForm.get('category').valueChanges.subscribe(category => {
+      console.log('Filter form changed: ', category);
+      const queryParam = {category};
+      this.router.navigate([''], {queryParams: {...queryParam}, replaceUrl: true}).then();
+    });
+  }
+
+
+  private watchQueryParams() {
+    this.route.queryParams.subscribe((params: { category: string }) => {
+      console.log('Query params changed: ', params);
+      if (params.category) {
+        this.filterByCategory({id: +params.category, name: ''});
+      }
+    });
   }
 
 
@@ -188,7 +210,11 @@ export class ProductPageComponent implements OnInit, AfterViewInit, OnDestroy {
 
 
   getProductFilterForm(): FormGroup {
-    return this.fb.group({code: '', category: FIRST_CATEGORY_TO_FILTER.id});
+    let category = +this.route.snapshot.queryParamMap.get('category');
+    if (!category) {
+      category = FIRST_CATEGORY_TO_FILTER.id;
+    }
+    return this.fb.group({code: '', category});
   }
 
 
@@ -203,7 +229,7 @@ export class ProductPageComponent implements OnInit, AfterViewInit, OnDestroy {
 
   filterByCategory(category: IDNameModel) {
     if (this.productFilterForm.value.category !== category.id) {
-      this.productFilterForm.patchValue({category: category.id});
+      this.productFilterForm.get('category').patchValue(category.id);
       this.paginator.pageIndex = 0;
       this.getProducts();
     }

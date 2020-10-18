@@ -91,7 +91,7 @@ import { takeUntil } from 'rxjs/operators';
           <div style="padding: 15px; width: 100%; margin: 50px auto 0 auto">
               <mat-card class="title">
                   <h1>{{t('checkout title')}}</h1>
-                  <button mat-stroked-button color="primary" routerLink="/order">
+                  <button mat-stroked-button color="primary" routerLink="/order" queryParamsHandling="preserve">
                       <mat-icon>keyboard_backspace</mat-icon>
                   </button>
               </mat-card>
@@ -359,7 +359,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
     clearCart();
     this.orderService.orderFormValue = null;
     this.initializeOrderForm();
-    this.router.navigate(['order', 'post-checkout', ''], {}).then();
+    this.router.navigate(['order', 'post-checkout', ''], {queryParamsHandling: 'preserve'}).then();
   }
 
 
