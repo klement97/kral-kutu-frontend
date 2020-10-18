@@ -18,6 +18,7 @@ import { TranslocoService } from '@ngneat/transloco';
 import { Product } from 'src/app/order/order.model';
 import { MatPaginator } from '@angular/material/paginator';
 import { distinctUntilChanged, takeUntil } from 'rxjs/operators';
+import { ActivatedRoute, Router } from '@angular/router';
 
 
 @Component({
@@ -52,74 +53,77 @@ import { distinctUntilChanged, takeUntil } from 'rxjs/operators';
   template: `
       <ng-container *transloco="let t">
           <app-checkout-button *ngIf="productsInCart.getValue().length as length"></app-checkout-button>
-          <div style="margin: 70px auto 30px auto; width: 90%">
-              <mat-card>
-                  <h1 style="margin: 0 10px 0 0; display: inline-block">{{t('products')}}</h1>
-                  <mat-form-field appearance="outline" color="primary">
-                      <input #code
-                             matInput
-                             autocapitalize="off"
-                             autocomplete="off"
-                             type="search"
-                             (input)="searchCode$.next(code.value)"
-                             [placeholder]="t('search') + '...'">
-                      <button mat-icon-button matPrefix (click)="code.value = ''">
-                          <mat-icon>search</mat-icon>
-                      </button>
-                  </mat-form-field>
-              </mat-card>
-          </div>
+          <mat-card>
+              <h1 style="margin: 0 10px 0 0; display: inline-block">{{t('products')}}</h1>
+              <mat-form-field appearance="outline" color="primary">
+                  <input #code
+                         matInput
+                         autocapitalize="off"
+                         autocomplete="off"
+                         type="search"
+                         (input)="searchCode$.next(code.value)"
+                         [placeholder]="t('search') + '...'">
+                  <button mat-icon-button matPrefix (click)="code.value = ''">
+                      <mat-icon>search</mat-icon>
+                  </button>
+              </mat-form-field>
+          </mat-card>
+          <div id="navigator"></div>
           <ng-container *ngIf="productCategories.length > 0">
-              <app-product-category-tabs [categories]="productCategories"
-                                         (categoryChange)="filterByCategory($event)">
-              </app-product-category-tabs>
+              <app-product-category-tabs [categories]="productCategories"></app-product-category-tabs>
           </ng-container>
-          <div class="products">
+          <div class="products-container">
+              <div class="products">
 
-              <!-- CARD -->
-              <div class="product-card" *ngFor="let product of products">
-                  <div class="image-wrapper" (click)="openProductDetails(product)">
-                      <img [src]="product.image" alt="product-image">
-                  </div>
+                  <!-- CARD -->
+                  <div class="product-card" *ngFor="let product of products">
+                      <div class="image-wrapper" (click)="openProductDetails(product)">
+                          <img [src]="product.image" [alt]="product.image | imageAlt">
+                      </div>
 
-                  <!-- CARD CONTENT -->
-                  <ng-container [ngSwitch]="product.category.name.toLowerCase()">
-                      <app-table-content *ngSwitchCase="'tabaka'" [product]="product"></app-table-content>
-                      <app-accessory-content *ngSwitchCase="'aksesor'" [product]="product"></app-accessory-content>
-                  </ng-container>
+                      <!-- CARD CONTENT -->
+                      <ng-container [ngSwitch]="product.category.name.toLowerCase()">
+                          <app-table-content *ngSwitchCase="'tabaka'" [product]="product"></app-table-content>
+                          <app-table-content *ngSwitchCase="'tabaka premium'" [product]="product"></app-table-content>
+                          <app-table-content *ngSwitchCase="'tabaka shërbimi'" [product]="product"></app-table-content>
+                          <app-accessory-content *ngSwitchCase="'aksesor'" [product]="product"></app-accessory-content>
+                      </ng-container>
 
-                  <!-- CARD ACTIONS -->
-                  <div class="card-actions">
-                      <span class="product-price">{{product.price | number | prefix: '€'}}</span>
-                      <div class="quantity-input-group">
-                          <button mat-icon-button type="button"
-                                  (click)="changeInputValue($event, quantity, -1)">
-                              <mat-icon color="primary">-</mat-icon>
+                      <!-- CARD ACTIONS -->
+                      <div class="card-actions">
+                          <span class="product-price">{{product.price | number | prefix: '€'}}</span>
+                          <div class="quantity-input-group align-center">
+                              <button mat-icon-button type="button" (click)="changeInputValue($event, quantity, -1)">
+                                  <mat-icon color="primary">remove</mat-icon>
+                              </button>
+                              <input type="text" [value]="'1'" (click)="$event.stopPropagation()"
+                                     (input)="onInputChange($event, quantity)" #quantity class="quantity-input">
+                              <button mat-icon-button type="button" (click)="changeInputValue($event, quantity, 1)">
+                                  <mat-icon color="primary">add</mat-icon>
+                              </button>
+                          </div>
+                          <button mat-icon-button color="primary" type="button" class="add-to-cart"
+                                  (click)="addProductToCart(product, quantity.value, addToCartIcon, addedToCartIcon)">
+                              <mat-icon #addToCartIcon style="z-index: 2; position: relative;">
+                                  add_shopping_cart
+                              </mat-icon>
                           </button>
-                          <input type="text" [value]="'1'" (click)="$event.stopPropagation()"
-                                 (input)="onInputChange($event, quantity)" #quantity class="quantity-input">
-                          <button mat-icon-button type="button" (click)="changeInputValue($event, quantity, 1)">
-                              <mat-icon color="primary">+</mat-icon>
+                          <button mat-icon-button class="added-to-cart">
+                              <mat-icon #addedToCartIcon>shopping_cart</mat-icon>
                           </button>
                       </div>
-                      <button mat-icon-button color="primary" type="button" class="add-to-cart"
-                              (click)="addProductToCart(product, quantity.value, addToCartIcon, addedToCartIcon)">
-                          <mat-icon #addToCartIcon style="z-index: 2; position: relative;">
-                              add_shopping_cart
-                          </mat-icon>
-                      </button>
-                      <button mat-icon-button class="added-to-cart">
-                          <mat-icon #addedToCartIcon>shopping_cart</mat-icon>
-                      </button>
                   </div>
               </div>
+              <mat-card style="padding: 0; margin: 15px 0 0 0;">
+                  <mat-paginator #paginator
+                                 showFirstLastButtons
+                                 [length]="productsCount"
+                                 [pageSize]="12"
+                                 [pageSizeOptions]="[12, 21, 30]"
+                                 (page)="getProducts()">
+                  </mat-paginator>
+              </mat-card>
           </div>
-          <mat-paginator #paginator
-                         [length]="productsCount"
-                         [pageSize]="12"
-                         [pageSizeOptions]="[12, 21, 30]"
-                         (page)="getProducts()">
-          </mat-paginator>
       </ng-container>
   `
 })
@@ -143,7 +147,9 @@ export class ProductPageComponent implements OnInit, AfterViewInit, OnDestroy {
     private fb: FormBuilder,
     private bottomSheet: MatBottomSheet,
     private snackbar: MatSnackBar,
-    private transloco: TranslocoService
+    private transloco: TranslocoService,
+    private route: ActivatedRoute,
+    private router: Router
   ) {
     this.leathers$ = orderService.getLeathers();
     this.leatherSerials$ = orderService.getLeatherSerials();
@@ -160,12 +166,31 @@ export class ProductPageComponent implements OnInit, AfterViewInit, OnDestroy {
   ngAfterViewInit() {
     this.getProducts();
     this.searchCode();
+    this.watchQueryParams();
+    this.watchCategory();
   }
 
 
   ngOnDestroy() {
     this.uns$.next();
     this.uns$.complete();
+  }
+
+
+  private watchCategory() {
+    this.productFilterForm.get('category').valueChanges.subscribe(category => {
+      const queryParam = {category};
+      this.router.navigate([''], {queryParams: {...queryParam}, replaceUrl: true}).then();
+    });
+  }
+
+
+  private watchQueryParams() {
+    this.route.queryParams.subscribe((params: { category: string }) => {
+      if (params.category) {
+        this.filterByCategory({id: +params.category, name: ''});
+      }
+    });
   }
 
 
@@ -189,7 +214,11 @@ export class ProductPageComponent implements OnInit, AfterViewInit, OnDestroy {
 
 
   getProductFilterForm(): FormGroup {
-    return this.fb.group({code: '', category: FIRST_CATEGORY_TO_FILTER.id});
+    let category = +this.route.snapshot.queryParamMap.get('category');
+    if (!category) {
+      category = FIRST_CATEGORY_TO_FILTER.id;
+    }
+    return this.fb.group({code: '', category});
   }
 
 
@@ -198,13 +227,14 @@ export class ProductPageComponent implements OnInit, AfterViewInit, OnDestroy {
       res => {
         this.products = res.results;
         this.productsCount = res.count;
+        document.getElementById('navigator').scrollIntoView(true);
       });
   }
 
 
   filterByCategory(category: IDNameModel) {
     if (this.productFilterForm.value.category !== category.id) {
-      this.productFilterForm.patchValue({category: category.id});
+      this.productFilterForm.get('category').patchValue(category.id);
       this.paginator.pageIndex = 0;
       this.getProducts();
     }
@@ -254,7 +284,6 @@ export class ProductPageComponent implements OnInit, AfterViewInit, OnDestroy {
       selectedProducts.push(composeOrderUnit(product, Number(quantity), hash));
     }
     setProductsInCart(this.productsInCart, selectedProducts);
-    console.log(this.productsInCart.getValue());
     this.snackbar.open(this.transloco.translate('cart success message'), 'OK', {
       horizontalPosition: 'end', verticalPosition: 'bottom', duration: 2000, panelClass: ['success-snackbar']
     });

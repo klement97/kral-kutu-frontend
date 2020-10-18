@@ -1,6 +1,14 @@
-.products {
-    width: 85%;
+.align-center {
+    display: flex;
+    align-items: center;
+}
+
+.products-container {
+    width: 90%;
     margin: 30px auto;
+}
+
+.products {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     grid-column-gap: 30px;
@@ -117,6 +125,10 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+}
+
+.quantity-input-group .material-icons {
+    font-size: 20px;
 }
 
 .quantity-input {

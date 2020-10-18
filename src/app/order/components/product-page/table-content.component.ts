@@ -68,21 +68,21 @@ import { TableProduct } from 'src/app/order/order.model';
               <div class="size" (click)="width.focus()">
                   <input type="number" class="quantity-input" [value]="props.width | number" #width
                          (input)="props.width = width.value">
-                  <img src="../../../../assets/images/width-arrow.svg" alt="width-icon">
+                  <img src="../../../../assets/images/width-arrow.svg" [alt]="'width-icon' | imageAlt">
                   <span class="metric-hint">(cm)</span>
               </div>
               <!-- Length Input -->
               <div class="size length-dimension" (click)="length.focus()">
                   <input type="number" class="quantity-input" [value]="props.length | number" #length
                          (input)="props.length = length.value">
-                  <img src="../../../../assets/images/depth-arrow.svg" alt="length-icon">
+                  <img src="../../../../assets/images/depth-arrow.svg" [alt]="'length-icon' | imageAlt">
                   <span class="metric-hint">(cm)</span>
               </div>
               <!-- Height Input -->
               <div class="size" (click)="height.focus()">
                   <input type="number" class="quantity-input" [value]="props.height | number" #height
                          (input)="props.height = height.value">
-                  <img src="../../../../assets/images/height-arrow.svg" alt="height-icon">
+                  <img src="../../../../assets/images/height-arrow.svg" [alt]="'height-icon' | imageAlt">
                   <span class="metric-hint">(cm)</span>
               </div>
           </div>

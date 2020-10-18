@@ -38,11 +38,44 @@ import { Leather, LeatherSerial } from 'src/app/order/order.model';
           border: 4px solid rgba(27, 163, 30, 0.6);
           transform: scale(1.15);
       }
+
+      .leather-code {
+          position: absolute;
+          height: 20px;
+          width: 100%;
+          bottom: 0;
+          right: 0;
+          background-color: rgba(0, 0, 0, 0.3);
+          color: white;
+          font-weight: 500;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+      }
+
+      .title {
+          display: flex;
+          justify-content: space-between;
+          align-items: baseline;
+          width: 100%;
+          height: 50px;
+          padding: 7px;
+      }
+
+      .mat-card.sticky {
+          position: -webkit-sticky; /* Safari */
+          position: sticky;
+          top: 0;
+          z-index: 2;
+      }
   `],
   template: `
       <ng-container *transloco="let t">
-          <mat-card style="width: 100%"><h3>{{t(data.identifier)}}</h3></mat-card>
-          <br>
+          <mat-card class="title sticky">
+              <h3>{{t(data.identifier)}}</h3>
+              <button mat-stroked-button color="primary" (click)="dismiss()">{{t('select')}}</button>
+          </mat-card>
+          <div style="height: 10px"></div>
           <mat-accordion>
               <mat-expansion-panel *ngFor="let leathersSerial of data.leathersSerials">
                   <mat-expansion-panel-header>
@@ -54,11 +87,11 @@ import { Leather, LeatherSerial } from 'src/app/order/order.model';
                          *ngFor="let leather of leathersSerial.leathers"
                          (click)="selectLeather(leather, leathersSerial)">
                           <img [src]="leather.image" [alt]="leather.image | imageAlt" width="150px">
+                          <span class="leather-code">{{leather.code}}</span>
                       </a>
                   </div>
               </mat-expansion-panel>
           </mat-accordion>
-<!--          <app-select-button (click)="dismiss()"></app-select-button>-->
       </ng-container>
   `,
 })
@@ -89,7 +122,8 @@ export class LeatherSelectComponent implements OnInit, OnDestroy {
 
 
   dismiss() {
-    this.bottomSheetConfig.dismiss({leather: this.selectedLeather, leatherSerial: this.selectedLeatherSerial});
+    const result = {leather: this.selectedLeather, leatherSerial: this.selectedLeatherSerial};
+    this.bottomSheetConfig.dismiss(result);
   }
 
 }

@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FIRST_CATEGORY_TO_FILTER, IDNameModel } from 'src/app/common/const';
+import { ActivatedRoute, Router } from '@angular/router';
 
 
 @Component({
@@ -18,23 +19,33 @@ import { FIRST_CATEGORY_TO_FILTER, IDNameModel } from 'src/app/common/const';
   `
 })
 export class ProductCategoryTabsComponent implements OnInit {
+  @Input() categories: IDNameModel[];
   activeCategoryID: number = FIRST_CATEGORY_TO_FILTER.id;
 
-  @Input() categories: IDNameModel[];
-  @Output() categoryChange = new EventEmitter<IDNameModel>();
 
-
-  constructor() {
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router
+  ) {
   }
 
 
   ngOnInit(): void {
+    this.getInitialCategory();
+  }
+
+
+  getInitialCategory() {
+    const category = +this.route.snapshot.queryParamMap.get('category');
+    if (category) {
+      this.activeCategoryID = category;
+    }
   }
 
 
   tabChanged(category: IDNameModel) {
     this.activeCategoryID = category.id;
-    this.categoryChange.emit(category);
+    this.router.navigate([''], {queryParams: {category: category.id}, replaceUrl: true}).then();
   }
 
 }

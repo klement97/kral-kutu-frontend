@@ -2,13 +2,12 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { OrderService } from 'src/app/order/services/order.service';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { clearCart, fromEntries, positiveIntegerWithZeroRegex, productsInCart } from 'src/app/common/const';
+import { clearCart, fromEntries, productsInCart } from 'src/app/common/const';
 import { Router } from '@angular/router';
-import { LeatherSelectResult, LeatherSerial, Order, OrderUnit } from 'src/app/order/order.model';
+import { LeatherSelectResult, LeatherSerial, OrderUnit } from 'src/app/order/order.model';
 import { MatBottomSheet } from '@angular/material/bottom-sheet';
 import { LeatherSelectComponent } from 'src/app/order/components/checkout-page/leather-select.component';
 import { takeUntil } from 'rxjs/operators';
-import { TranslocoService } from '@ngneat/transloco';
 
 
 @Component({
@@ -57,6 +56,19 @@ import { TranslocoService } from '@ngneat/transloco';
           width: unset;
       }
 
+      .input-group {
+          display: flex;
+          align-items: center;
+      }
+
+      .input-group > button {
+          width: unset;
+      }
+
+      .input-group .material-icons {
+          font-size: 21px;
+      }
+
       /* Hide Up Down Buttons on Number Input */
       /* Chrome, Safari, Edge, Opera */
       input::-webkit-outer-spin-button,
@@ -76,10 +88,10 @@ import { TranslocoService } from '@ngneat/transloco';
   `],
   template: `
       <ng-container *transloco="let t">
-          <div style="padding: 15px; width: 100%; margin: 50px auto 0 auto">
+          <div style="padding: 15px; width: 100%; margin: 0 auto">
               <mat-card class="title">
                   <h1>{{t('checkout title')}}</h1>
-                  <button mat-stroked-button color="primary" routerLink="/order">
+                  <button mat-stroked-button color="primary" routerLink="/order" queryParamsHandling="preserve">
                       <mat-icon>keyboard_backspace</mat-icon>
                   </button>
               </mat-card>
@@ -150,47 +162,67 @@ import { TranslocoService } from '@ngneat/transloco';
               <!-- Order Review Section -->
               <mat-card class="mat-elevation-z2"><h3>{{t('order review')}}</h3></mat-card>
               <br>
-              <app-order-review-table [orderUnits]="productsInCart"></app-order-review-table>
+              <app-order-review-table *ngIf="(productsInCart | async).length > 0"
+                                      [orderUnits]="productsInCart">
+              </app-order-review-table>
               <br>
               <mat-divider></mat-divider>
               <!-- Selected Products in Cards -->
               <div style="margin: 20px auto; width: 100%">
                   <mat-card><h3>{{t('selected products')}}</h3></mat-card>
               </div>
-              <div class="products" style="margin: 20px auto; width: 100%">
+              <div class="products" style="margin: 20px auto; width: 100%" *ngIf="(productsInCart | async).length > 0">
                   <!-- Selected Products -->
-                  <div class="product-card" *ngFor="let unit of productsInCart.getValue()">
-                      <div class="image-wrapper">
-                          <img [src]="unit.product.image" alt="product-image">
-                      </div>
+                  <div class="product-card" *ngFor="let unit of productsInCart | async">
+                      <ng-container *ngIf="unit?.product?.properties">
+                          <div class="image-wrapper">
+                              <img [src]="unit.product.image" [alt]="unit.product.image | imageAlt">
+                          </div>
 
-                      <!-- CARD CONTENT -->
-                      <div class="card-content">
-                          <h4>{{unit.product.properties.code}}</h4>
-                          <div class="dimensions">
-                              <div class="size">
-                                  <span>{{unit.product.properties.width | number}}</span> <img
-                                      src="../../../../assets/images/width-arrow.svg" alt="width-icon">
-                              </div>
-                              <div class="size length-dimension">
-                                  <span>{{unit.product.properties.length | number}}</span> <img
-                                      src="../../../../assets/images/depth-arrow.svg" alt="length-icon">
-                              </div>
-                              <div class="size">
-                                  <span>{{unit.product.properties.height | number}}</span> <img
-                                      src="../../../../assets/images/height-arrow.svg" alt="height-icon">
+                          <!-- CARD CONTENT -->
+                          <div class="card-content">
+                              <h4>{{unit.product.properties.code}}</h4>
+                              <div class="dimensions">
+                                  <div class="size">
+                                      <span>{{unit.product.properties.width | number}}</span> <img
+                                          src="../../../../assets/images/width-arrow.svg"
+                                          [alt]="'width-icon' | imageAlt">
+                                  </div>
+                                  <div class="size length-dimension">
+                                      <span>{{unit.product.properties.length | number}}</span> <img
+                                          src="../../../../assets/images/depth-arrow.svg"
+                                          [alt]="'length-icon' | imageAlt">
+                                  </div>
+                                  <div class="size">
+                                      <span>{{unit.product.properties.height | number}}</span> <img
+                                          src="../../../../assets/images/height-arrow.svg"
+                                          [alt]="'height-icon' | imageAlt">
+                                  </div>
                               </div>
                           </div>
-                      </div>
 
-                      <!-- CARD ACTIONS -->
-                      <div class="price-quantity" style="margin-bottom: 10px">
-                          <span>{{unit.product.price | number | prefix: '€'}}</span> <span>x</span>
-                          <input type="number" [value]="unit.quantity" class="quantity-input"
-                                 (input)="changeAmount(unit, quantity, $event)" #quantity>
-                          <span>=</span>
-                          <span>{{(unit.product.price * unit.quantity | number) | prefix: '€'}}</span>
-                      </div>
+                          <!-- CARD ACTIONS -->
+                          <div class="price-quantity" style="margin-bottom: 10px">
+                              <span>{{unit.product.price | number | prefix: '€'}}</span> <span>x</span>
+                              <span class="input-group">
+                                  <button mat-icon-button type="button" color="primary"
+                                          (click)="increaseDecreaseQuantity(unit, quantity, -1)">
+                                      <mat-icon>remove</mat-icon>
+                                  </button>
+                                  <input type="number"
+                                         [value]="unit.quantity"
+                                         class="quantity-input"
+                                         disabled
+                                         #quantity>
+                                  <button mat-icon-button type="button" color="primary"
+                                          (click)="increaseDecreaseQuantity(unit, quantity, 1)">
+                                      <mat-icon>add</mat-icon>
+                                  </button>
+                              </span>
+                              <span>=</span>
+                              <span>{{(unit.product.price * unit.quantity | number) | prefix: '€'}}</span>
+                          </div>
+                      </ng-container>
                   </div>
               </div>
           </div>
@@ -259,55 +291,48 @@ export class CheckoutComponent implements OnInit, OnDestroy {
   }
 
 
-  changeAmount(unit: OrderUnit, input, event) {
-    if (this.validateInput(input, event)) {
-      unit.quantity = +input.value;
+  increaseDecreaseQuantity(unit: OrderUnit, input: HTMLInputElement, value: number) {
+    const newQuantity = +input.value + value;
+    if (newQuantity && newQuantity >= 1 && newQuantity <= 1000) {
+      unit.quantity = newQuantity;
+      this.triggerValueChange();
     }
   }
 
 
-  validateInput(input, event) {
-    const inputChar: string = event.data;
-    // setting a timeout to let the user understand the changes
-    if (!input.value || input.value === '0') {
-      input.value = '1';
-      return false;
-    }
-    if (inputChar && !positiveIntegerWithZeroRegex.test(inputChar)) {
-      const inputValueArray: string[] = input.value.split('');
-      inputValueArray.splice(input.value.indexOf(inputChar), 1);
-      input.value = inputValueArray.join('');
-      return false;
-    }
-    if (Number(input.value) > 10_000) {
-      input.value = '10000';
-      return false;
-    }
-
-    return true;
+  /**
+   * In cases like changing quantity of a unit, the subscribers doesn't receive any information on that.
+   * We are triggering a value change to let each subscriber do their actions based on that.
+   */
+  triggerValueChange() {
+    this.productsInCart.next(this.productsInCart.getValue());
   }
 
 
   openLeatherSelection(identifier: 'inner_leather' | 'outer_leather') {
     const data = {leathersSerials: this.leathersSerials, identifier};
 
-    this.bottomSheet.open(LeatherSelectComponent, {data}).afterDismissed()
-      .pipe(takeUntil(this.uns$))
+    this.bottomSheet.open(LeatherSelectComponent, {data}).afterDismissed().pipe(takeUntil(this.uns$))
       .subscribe((result: LeatherSelectResult | undefined) => {
         if (result?.leather?.id) {
-          const formValues = fromEntries([
-            [identifier, result.leather.code],
-            [`${identifier}_str`, `${result.leatherSerial.name} ${result.leather.code}`]
-          ]);
-          this.orderForm.patchValue(formValues);
+          this.patchLeather(identifier, result);
         }
       });
   }
 
 
+  patchLeather(identifier: 'inner_leather' | 'outer_leather', result: LeatherSelectResult) {
+    const entries = fromEntries([
+      [identifier, result.leather.id],
+      [`${identifier}_str`, `${result.leatherSerial.name} ${result.leather.code}`]
+    ]);
+    this.orderForm.patchValue(entries);
+  }
+
+
   /**
    * Serialization process is to replace products with their respective ID
-   * instead of a product object.
+   * instead of a product object and flattening the product properties.
    */
   getSerializedProducts() {
     const orderUnits = Array.from(this.productsInCart.getValue());
@@ -325,15 +350,24 @@ export class CheckoutComponent implements OnInit, OnDestroy {
   submit() {
     // Replace products with serialized ones
     this.orderForm.get('products').patchValue(this.getSerializedProducts());
-    this.orderService.createOrder(this.orderForm.value)
-      .subscribe(
-        (order: Order) => {
-          this.router.navigate(['order', 'post-checkout', order.id]).then();
-          clearCart();
-          this.orderForm.reset();
-        },
-        () => {
-        });
+    this.orderService.createOrder(this.orderForm.value).subscribe(
+      () => this.onSuccess(),
+      (err) => this.onError(err)
+    );
+  }
+
+
+  onSuccess() {
+    this.productsInCart.next([]);
+    clearCart();
+    this.orderService.orderFormValue = null;
+    this.initializeOrderForm();
+    this.router.navigate(['order', 'post-checkout', ''], {queryParamsHandling: 'preserve'}).then();
+  }
+
+
+  onError(err) {
+    console.log('Error: ', err);
   }
 
 }

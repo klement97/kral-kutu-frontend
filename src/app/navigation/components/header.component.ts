@@ -35,11 +35,11 @@ import { PRODUCTS_IN_CART, productsInCart } from 'src/app/common/const';
       <ng-container *transloco="let t">
           <!-- BEGIN TOOLBAR -->
           <mat-toolbar class="header">
-              <span routerLink="/" style="cursor: pointer">ITALGOLD</span> <span class="spacer"></span>
+              <span routerLink="/" queryParamsHandling="preserve" style="cursor: pointer">ITALGOLD</span> <span
+                  class="spacer"></span>
 
               <!-- BEGIN ACTIONS -->
               <div>
-                  <!--                  <button mat-icon-button [routerLink]="'/order/checkout'" id="menuTrigger">-->
                   <button mat-icon-button [matMenuTriggerFor]="menu" id="menuTrigger">
                       <mat-icon [matBadge]="productsInCartCount" matBadgeColor="warn"
                                 [matBadgeDescription]="t('product count')">

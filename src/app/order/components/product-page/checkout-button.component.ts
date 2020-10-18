@@ -6,7 +6,7 @@ import { Component, OnInit } from '@angular/core';
   template: `
       <ng-container *transloco="let t">
           <div class="wrapper">
-              <button mat-stroked-button [routerLink]="'/order/checkout'">
+              <button mat-stroked-button routerLink="/order/checkout" queryParamsHandling="preserve">
                 <span style="display: flex; align-items: center; justify-content: center;">
                     <mat-icon>shopping_cart</mat-icon>&nbsp;{{t('cart')}}
                 </span>
@@ -22,7 +22,7 @@ import { Component, OnInit } from '@angular/core';
           position: fixed;
           bottom: 155px;
           right: 5px;
-          opacity: 0.5;
+          opacity: 0.6;
           transition: all .2s ease-in-out;
           z-index: 3;
       }
