@@ -288,7 +288,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
   }
 
 
-  increaseDecreaseQuantity(unit: OrderUnit, input: HTMLInputElement, value: -1 | 1) {
+  increaseDecreaseQuantity(unit: OrderUnit, input: HTMLInputElement, value: number) {
     const newQuantity = +input.value + value;
     if (newQuantity && newQuantity >= 1 && newQuantity <= 1000) {
       unit.quantity = newQuantity;

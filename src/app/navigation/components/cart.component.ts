@@ -53,16 +53,25 @@ import { takeUntil } from 'rxjs/operators';
           display: flex;
           justify-content: space-between;
           align-items: center;
-          padding: 15px 25px 0 10px;
-          background-color: white;
+          padding: 15px 25px 0 20px;
+          height: 35px;
+          background-color: #F5F5F5;
+          border-top: 2px solid #989898;
       }
 
       .cart-actions {
           display: flex;
           align-items: center;
           justify-content: space-around;
-          padding: 10px 0;
+          padding: 0 0 10px 0;
           background-color: #F5F5F5;
+      }
+
+      .cart-footer.sticky {
+          position: -webkit-sticky; /* Safari */
+          position: sticky;
+          bottom: 0;
+          z-index: 2;
       }
   `],
   template: `
@@ -94,21 +103,23 @@ import { takeUntil } from 'rxjs/operators';
                   </button>
               </div>
 
-              <!-- Totals -->
-              <div class="totals" *ngIf="totalPrice > 0">
-                  <h4>{{t('total')}}:</h4>
-                  <h4><b>{{totalPrice | number | prefix: '€'}}</b></h4>
-              </div>
-              <mat-divider *ngIf="totalPrice > 0"></mat-divider>
+              <div class="cart-footer sticky">
+                  <!-- Totals -->
+                  <div class="totals mat-elevation-z10" *ngIf="totalPrice > 0">
+                      <h4>{{t('total')}}:</h4>
+                      <h4><b>{{totalPrice | number | prefix: '€'}}</b></h4>
+                  </div>
 
-              <!-- Continue shopping button -->
-              <div class="cart-actions" *ngIf="totalPrice > 0">
-                  <button mat-stroked-button color="primary" type="button" (click)="navigateTo(['order'])">
-                      <span style="font-size:smaller;">{{t('continue shopping')}}</span>
-                  </button>
-                  <button mat-raised-button color="primary" type="button" (click)="navigateTo(['order', 'checkout'])">
-                      <span style="font-size: smaller">{{t('checkout')}}</span>
-                  </button>
+                  <!-- Continue shopping button -->
+                  <div class="cart-actions" *ngIf="totalPrice > 0">
+                      <button mat-stroked-button color="primary" type="button" (click)="navigateTo(['order'])">
+                          <span style="font-size:smaller;">{{t('continue shopping')}}</span>
+                      </button>
+                      <button mat-raised-button color="primary" type="button"
+                              (click)="navigateTo(['order', 'checkout'])">
+                          <span style="font-size: smaller">{{t('checkout')}}</span>
+                      </button>
+                  </div>
               </div>
           </mat-list>
       </ng-container>
