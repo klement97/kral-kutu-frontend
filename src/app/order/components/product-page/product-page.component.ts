@@ -49,6 +49,14 @@ import { ActivatedRoute, Router } from '@angular/router';
           font-size: 24px;
           color: white;
       }
+
+      .only-text-menu {
+          width: 100%;
+      }
+
+      ::ng-deep .only-text-menu > .mat-form-field-appearance-outline .mat-form-field-wrapper {
+          margin: 0 !important;
+      }
   `],
   template: `
       <ng-container *transloco="let t">
@@ -82,12 +90,37 @@ import { ActivatedRoute, Router } from '@angular/router';
                       </div>
 
                       <!-- CARD CONTENT -->
-                      <ng-container [ngSwitch]="product.category.name.toLowerCase()">
+                      <span style="display: flex">
+                          <span [ngSwitch]="product.category.name.toLowerCase()" style="width: 95%">
                           <app-table-content *ngSwitchCase="'tabaka'" [product]="product"></app-table-content>
                           <app-table-content *ngSwitchCase="'tabaka premium'" [product]="product"></app-table-content>
                           <app-table-content *ngSwitchCase="'tabaka shërbimi'" [product]="product"></app-table-content>
                           <app-accessory-content *ngSwitchCase="'aksesor'" [product]="product"></app-accessory-content>
-                      </ng-container>
+                          </span>
+                          <span class="card-content">
+                              <div>
+                              <button mat-icon-button [matMenuTriggerFor]="menu" id="menuTrigger" color="primary">
+                                  <mat-icon>add_comment</mat-icon>
+                              </button>
+                            </div>
+                            <mat-menu #menu yPosition="below" xPosition="before" class="only-text-menu">
+                                <ng-template matMenuContent>
+                                    <mat-form-field appearance="outline">
+                                        <textarea type="text"
+                                                  #notes
+                                                  (input)="product.properties.notes = notes.value"
+                                                  [value]="product.properties.notes || ''"
+                                                  (click)="$event.stopPropagation()"
+                                                  [placeholder]="t('notes') + '...'"
+                                                  matInput
+                                                  autofocus
+                                                  autocomplete="off"
+                                                  autocapitalize="off"></textarea>
+                                    </mat-form-field>
+                                </ng-template>
+                            </mat-menu>
+                          </span>
+                      </span>
 
                       <!-- CARD ACTIONS -->
                       <div class="card-actions">
@@ -268,7 +301,7 @@ export class ProductPageComponent implements OnInit, AfterViewInit, OnDestroy {
    * @param addToCartIcon     Respective icon of the product, if never added to cart
    * @param addedToCartIcon   Respective icon of the product, if already in cart
    */
-  addProductToCart(product, quantity: string, addToCartIcon?, addedToCartIcon?) {
+  addProductToCart(product: Product, quantity: string, addToCartIcon?, addedToCartIcon?) {
     // Generating a hash here to check if the product is already in cart
     const hash = hashCodeFromProduct(product);
 
@@ -280,6 +313,7 @@ export class ProductPageComponent implements OnInit, AfterViewInit, OnDestroy {
 
     if (isProductInCart) {
       selectedProducts[productIndex].quantity += Number(quantity);
+      selectedProducts[productIndex].properties.notes = product.properties.notes;
     } else {
       selectedProducts.push(composeOrderUnit(product, Number(quantity), hash));
     }
@@ -290,6 +324,7 @@ export class ProductPageComponent implements OnInit, AfterViewInit, OnDestroy {
     if (addToCartIcon) {
       this.animate(addToCartIcon, addedToCartIcon);
     }
+    console.log(selectedProducts);
   }
 
 
