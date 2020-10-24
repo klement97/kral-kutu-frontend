@@ -57,6 +57,18 @@ import { ActivatedRoute, Router } from '@angular/router';
       ::ng-deep .only-text-menu > .mat-form-field-appearance-outline .mat-form-field-wrapper {
           margin: 0 !important;
       }
+
+      .notes {
+          width: 100%;
+      }
+
+      ::ng-deep .notes .mat-form-field-appearance-outline .mat-form-field-wrapper {
+          margin: 0 !important;
+      }
+
+      ::ng-deep .notes .mat-form-field-wrapper {
+          padding-bottom: 0 !important;
+      }
   `],
   template: `
       <ng-container *transloco="let t">
@@ -105,9 +117,12 @@ import { ActivatedRoute, Router } from '@angular/router';
                             </div>
                             <mat-menu #menu yPosition="below" xPosition="before" class="only-text-menu">
                                 <ng-template matMenuContent>
-                                    <mat-form-field appearance="outline">
+                                    <mat-form-field appearance="outline" class="notes">
                                         <textarea type="text"
                                                   #notes
+                                                  cdkTextareaAutosize
+                                                  cdkAutosizeMinRows="2"
+                                                  cdkAutosizeMaxRows="10"
                                                   (input)="product.properties.notes = notes.value"
                                                   [value]="product.properties.notes || ''"
                                                   (click)="$event.stopPropagation()"
