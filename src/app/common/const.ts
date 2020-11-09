@@ -1,7 +1,7 @@
-import { formatDate } from '@angular/common';
-import { BehaviorSubject } from 'rxjs';
-import { MatPaginator } from '@angular/material/paginator';
-import { Product } from 'src/app/order/order.model';
+import {formatDate} from '@angular/common';
+import {BehaviorSubject} from 'rxjs';
+import {MatPaginator} from '@angular/material/paginator';
+import {Product} from 'src/app/order/order.model';
 
 
 export const productsInCart = new BehaviorSubject([]);
@@ -99,8 +99,13 @@ export function getSort(active: string, direction: 'asc' | 'desc' | '') {
 }
 
 
+export function deepCopy(obj: any) {
+  return JSON.parse(JSON.stringify(obj));
+}
+
+
 export function composeOrderUnit(product, quantity, hash) {
-  return {product: {...product}, quantity, hash};
+  return {product: deepCopy(product), quantity, hash};
 }
 
 
@@ -136,7 +141,7 @@ export function hashCode(value: string) {
 
 
 export function hashCodeFromProduct(product: Product, fields: string[] = ['code', 'width', 'height', 'length']) {
-  let productString = product.category.name.toLowerCase();
+  let productString = product.category.name.toLowerCase() + product.id + product.image;
   for (const field of fields) {
     if (typeof product.properties[field] !== 'undefined') {
       productString += `&${product.properties[field]}`;

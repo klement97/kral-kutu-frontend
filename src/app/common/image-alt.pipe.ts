@@ -1,4 +1,4 @@
-import { Pipe, PipeTransform } from '@angular/core';
+import {Pipe, PipeTransform} from '@angular/core';
 
 
 @Pipe({
@@ -7,8 +7,8 @@ import { Pipe, PipeTransform } from '@angular/core';
 export class ImageAltPipe implements PipeTransform {
 
   transform(value: string): string {
-    const imageName: string = value.split('/').pop().split('.')[0];
-    return `italgold ${imageName}`;
+    const imageName: string = value ? value.split('/').pop().split('.')[0] : '';
+    return `italgold leather ${imageName}`;
   }
 
 }
