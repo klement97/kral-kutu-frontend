@@ -3,8 +3,11 @@ export interface Order {
   first_name: string;
   last_name: string;
   phone: string;
+  email: string;
   address: string;
   products: any[];
+  date_created: string;
+  date_last_updated: string;
 }
 
 

@@ -31,6 +31,7 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { SelectButtonComponent } from 'src/app/order/components/checkout-page/select-button.component';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatBadgeModule } from '@angular/material/badge';
+import {InvoiceComponent} from './components/checkout-page/invoice.component';
 
 
 @NgModule({
@@ -45,7 +46,8 @@ import { MatBadgeModule } from '@angular/material/badge';
     AccessoryContentComponent,
     OrderReviewTableComponent,
     LeatherSelectComponent,
-    SelectButtonComponent
+    SelectButtonComponent,
+    InvoiceComponent
   ],
   imports: [
     SharedModule,
