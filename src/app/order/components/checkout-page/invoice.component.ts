@@ -7,6 +7,7 @@ import {OrderService} from '../../services/order.service';
   selector: 'app-invoice',
   styles: [`
     .invoice-box {
+      min-height: 900px;
       max-width: 800px;
       margin: auto;
       padding: 30px;
