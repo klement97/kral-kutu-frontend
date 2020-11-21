@@ -31,10 +31,17 @@
   "sub total": "Nëntotal",
   "search": "Kërko",
   "select": "Zgjidhe",
+  "notes": "Shënime",
   "order review": "Përmbledhje e porosisë",
   "submit": "Dërgo",
   "personal details": "Detaje personale",
   "product details": "Detaje të produktit",
   "cart": "Shporta",
-  "cart success message": "Produkti u shtua në shportë me sukses!"
+  "cart success message": "Produkti u shtua në shportë me sukses!",
+  "order success message": "Porosia juaj u dergua me sukses!",
+  "invoice": "Fatura",
+  "created": "Data",
+  "payment method": "Mënyra e pagesës",
+  "cash": "Cash",
+  "item": "Produkti"
 }

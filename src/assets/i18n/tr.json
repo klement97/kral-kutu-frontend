@@ -31,10 +31,17 @@
   "sub total": "Ara Toplam",
   "search": "Ara",
   "select": "Seç",
+  "notes": "Notlar",
   "order review": "Sipariş Özeti",
   "submit": "Gönder",
   "personal details": "Kişisel bilgiler",
   "product details": "Ürüne ait bilgiler",
   "cart": "Sepet",
-  "cart success message": "Ürün sepete başarıyla eklendi!"
+  "cart success message": "Ürün sepete başarıyla eklendi!",
+  "order success message": "Siparişiniz başarıyla işlendi!",
+  "invoice": "Fatura",
+  "created": "Tarih",
+  "payment method": "Ödeme Yöntemi",
+  "cash": "Nakit",
+  "item": "Ürün"
 }

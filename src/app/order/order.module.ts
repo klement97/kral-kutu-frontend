@@ -29,6 +29,9 @@ import { OrderReviewTableComponent } from 'src/app/order/components/checkout-pag
 import { LeatherSelectComponent } from 'src/app/order/components/checkout-page/leather-select.component';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { SelectButtonComponent } from 'src/app/order/components/checkout-page/select-button.component';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatBadgeModule } from '@angular/material/badge';
+import {InvoiceComponent} from './components/checkout-page/invoice.component';
 
 
 @NgModule({
@@ -43,7 +46,8 @@ import { SelectButtonComponent } from 'src/app/order/components/checkout-page/se
     AccessoryContentComponent,
     OrderReviewTableComponent,
     LeatherSelectComponent,
-    SelectButtonComponent
+    SelectButtonComponent,
+    InvoiceComponent
   ],
   imports: [
     SharedModule,
@@ -63,7 +67,9 @@ import { SelectButtonComponent } from 'src/app/order/components/checkout-page/se
     MatTabsModule,
     MatSelectModule,
     MatPaginatorModule,
-    MatExpansionModule
+    MatExpansionModule,
+    MatMenuModule,
+    MatBadgeModule
   ]
 })
 export class OrderModule {}

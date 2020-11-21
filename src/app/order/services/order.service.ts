@@ -64,6 +64,6 @@ export class OrderService {
 
 
   getOrder(id: number) {
-    return this.http.get<Order>(`${ORDER_URLS.ORDER}/${id}/`);
+    return this.http.get<Order>(`${ORDER_URLS.ORDER}${id}/`);
   }
 }

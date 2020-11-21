@@ -1,13 +1,13 @@
-import { IDNameModel } from 'src/app/common/const';
-
-
 export interface Order {
   id: number;
   first_name: string;
   last_name: string;
   phone: string;
+  email: string;
   address: string;
   products: any[];
+  date_created: string;
+  date_last_updated: string;
 }
 
 
@@ -32,14 +32,16 @@ export interface TableProduct extends Product {
     width: string;
     height: string;
     length: string;
-    code: string
+    code: string;
+    notes: string;
   };
 }
 
 
 export interface AccessoryProduct extends Product {
   properties: {
-    code: string
+    code: string;
+    notes: string;
   };
 }
 

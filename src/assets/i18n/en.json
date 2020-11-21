@@ -31,10 +31,17 @@
   "sub total": "Sub Total",
   "search": "Search",
   "select": "Select",
+  "notes": "Notes",
   "order review": "Order Review",
   "submit": "Submit",
   "personal details": "Personal details",
   "product details": "Product details",
   "cart": "Cart",
-  "cart success message": "The product added to the cart successfully!"
+  "cart success message": "The product added to the cart successfully!",
+  "order success message": "Your order has been processed successfully!",
+  "invoice": "Invoice",
+  "created": "Created",
+  "payment method": "Payment Method",
+  "cash": "Cash",
+  "item": "Item"
 }
