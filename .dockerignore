@@ -1,0 +1,6 @@
+.gitignore
+/node_modules
+.git
+.idea
+.github
+dist
