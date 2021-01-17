@@ -23,6 +23,8 @@
     "@angular/router": "~10.0.14",
     "@angular/service-worker": "~10.0.14",
     "@ngneat/transloco": "^2.17.3",
+    "@sentry/angular": "^5.30.0",
+    "@sentry/tracing": "^5.30.0",
     "express": "^4.17.1",
     "google-translate": "^3.0.0",
     "rxjs": "~6.6.2",
