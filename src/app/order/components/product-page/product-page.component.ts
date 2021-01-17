@@ -139,7 +139,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 
             <!-- CARD ACTIONS -->
             <div class="card-actions">
-              <span class="product-price">{{product.price | number | prefix: '€'}}</span>
+              <span class="product-price">{{product.price | number | prefix: '$'}}</span>
               <div class="quantity-input-group align-center">
                 <button mat-icon-button type="button" (click)="changeInputValue($event, quantity, -1)">
                   <mat-icon color="primary">remove</mat-icon>

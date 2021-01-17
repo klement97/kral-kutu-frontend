@@ -108,7 +108,7 @@ import { Product } from 'src/app/order/order.model';
                       </tr>
                       <tr>
                           <td *ngIf="product.properties.code">{{product.properties.code}}</td>
-                          <td *ngIf="product.price as price">{{price | number | prefix: '€'}}</td>
+                          <td *ngIf="product.price as price">{{price | number | prefix: '$'}}</td>
                           <th *ngIf="product.properties.weight as weight">{{weight | number}}</th>
                           <td *ngIf="product.properties.height as height">{{height | number}}cm</td>
                           <td *ngIf="product.properties.width as width">{{width | number}}cm</td>
@@ -120,7 +120,7 @@ import { Product } from 'src/app/order/order.model';
           <br>
           <div class="card-actions br-4">
               <!-- Product Price -->
-              <span class="product-price price-radius">{{product.price | number | prefix: '€'}}</span>
+              <span class="product-price price-radius">{{product.price | number | prefix: '$'}}</span>
 
               <!-- Quantity Inputs -->
               <div class="quantity-input-group">

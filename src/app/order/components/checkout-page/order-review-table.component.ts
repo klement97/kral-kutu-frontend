@@ -43,7 +43,7 @@ import { takeUntil } from 'rxjs/operators';
                   <!-- Price Column -->
                   <ng-container matColumnDef="price">
                       <th mat-header-cell *matHeaderCellDef>{{t('price')}}</th>
-                      <td mat-cell *matCellDef="let element"> {{element.product.price | number | prefix: '€'}} </td>
+                      <td mat-cell *matCellDef="let element"> {{element.product.price | number | prefix: '$'}} </td>
                   </ng-container>
 
                   <!-- Quantity Column -->
@@ -57,7 +57,7 @@ import { takeUntil } from 'rxjs/operators';
                   <ng-container matColumnDef="subtotal">
                       <th mat-header-cell *matHeaderCellDef>{{t('sub total')}}</th>
                       <td mat-cell *matCellDef="let element">
-                          {{(element.product.price * element.quantity) | number | prefix: '€'}}
+                          {{(element.product.price * element.quantity) | number | prefix: '$'}}
                       </td>
                       <td mat-footer-cell *matFooterCellDef>{{totalPrice | number | prefix : '€'}}</td>
                   </ng-container>
