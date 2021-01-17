@@ -73,7 +73,6 @@ import { Leather, LeatherSerial } from 'src/app/order/order.model';
       <ng-container *transloco="let t">
           <mat-card class="title sticky">
               <h3>{{t(data.identifier)}}</h3>
-              <button mat-stroked-button color="primary" (click)="dismiss()">{{t('select')}}</button>
           </mat-card>
           <div style="height: 10px"></div>
           <mat-accordion>
@@ -118,6 +117,7 @@ export class LeatherSelectComponent implements OnInit, OnDestroy {
   selectLeather(leather: Leather, leatherSerial: LeatherSerial) {
     this.selectedLeather = leather;
     this.selectedLeatherSerial = leatherSerial;
+    this.dismiss();
   }
 
 
