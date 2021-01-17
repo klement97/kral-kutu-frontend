@@ -59,7 +59,7 @@ import { takeUntil } from 'rxjs/operators';
                       <td mat-cell *matCellDef="let element">
                           {{(element.product.price * element.quantity) | number | prefix: '$'}}
                       </td>
-                      <td mat-footer-cell *matFooterCellDef>{{totalPrice | number | prefix : '€'}}</td>
+                      <td mat-footer-cell *matFooterCellDef>{{totalPrice | number | prefix: '$'}}</td>
                   </ng-container>
 
                   <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
