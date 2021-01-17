@@ -9,6 +9,7 @@ import { environment } from '../environments/environment';
 import { HttpClientModule } from '@angular/common/http';
 import { preLoad, TranslocoRootModule } from './transloco-root.module';
 import { NavigationModule } from 'src/app/navigation/navigation.module';
+import { sentryErrorHandler, sentryInitializer, sentryTracer } from 'src/app/sentry';
 
 
 @NgModule({
@@ -26,6 +27,9 @@ import { NavigationModule } from 'src/app/navigation/navigation.module';
   ],
   providers: [
     preLoad,
+    sentryErrorHandler,
+    sentryTracer,
+    sentryInitializer,
   ],
   bootstrap: [AppComponent]
 })
