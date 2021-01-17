@@ -1,222 +1,256 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
-import {OrderService} from 'src/app/order/services/order.service';
-import {BehaviorSubject, Subject} from 'rxjs';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {clearCart, fromEntries, productsInCart} from 'src/app/common/const';
-import {Router} from '@angular/router';
-import {LeatherSelectResult, LeatherSerial, Order, OrderUnit} from 'src/app/order/order.model';
-import {MatBottomSheet} from '@angular/material/bottom-sheet';
-import {LeatherSelectComponent} from 'src/app/order/components/checkout-page/leather-select.component';
-import {takeUntil} from 'rxjs/operators';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { OrderService } from 'src/app/order/services/order.service';
+import { BehaviorSubject, Subject } from 'rxjs';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { clearCart, fromEntries, productsInCart } from 'src/app/common/const';
+import { Router } from '@angular/router';
+import { LeatherSelectResult, LeatherSerial, Order, OrderUnit } from 'src/app/order/order.model';
+import { MatBottomSheet } from '@angular/material/bottom-sheet';
+import { LeatherSelectComponent } from 'src/app/order/components/checkout-page/leather-select.component';
+import { takeUntil } from 'rxjs/operators';
 
 
 @Component({
   selector: 'app-checkout',
   styles: [`
-    .container {
-      padding: 15px;
-      width: 100%;
-      margin: 0 auto;
-    }
-
-    .vertical-form {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-    }
-
-    .vertical-form > h1 {
-      margin-top: 16px;
-    }
-
-    .vertical-form > mat-form-field, button {
-      width: 80%;
-    }
-
-    .vertical-form > button {
-      margin-top: 20px;
-    }
-
-    .price-quantity {
-      display: flex;
-      justify-content: space-around;
-      align-items: center;
-    }
-
-    .order-review-table th, td {
-      padding-right: 20px;
-    }
-
-    tr.mat-footer-row {
-      font-weight: bold;
-    }
-
-    .title {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-    }
-
-    .title button {
-      width: unset;
-    }
-
-    .input-group {
-      display: flex;
-      align-items: center;
-    }
-
-    .input-group > button {
-      width: unset;
-    }
-
-    .input-group .material-icons {
-      font-size: 21px;
-    }
-
-    /* Hide Up Down Buttons on Number Input */
-    /* Chrome, Safari, Edge, Opera */
-    input::-webkit-outer-spin-button,
-    input::-webkit-inner-spin-button {
-      -webkit-appearance: none;
-      margin: 0;
-    }
-
-    /* Firefox */
-    input[type=number] {
-      -moz-appearance: textfield;
-    }
-
-    .cursor-pointer {
-      cursor: pointer;
-    }
-
-    @media print {
       .container {
-        padding: 0;
+          padding: 15px;
+          width: 100%;
+          margin: 0 auto;
       }
-    }
+
+      .vertical-form {
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+      }
+
+      .vertical-form > h1 {
+          margin-top: 16px;
+      }
+
+      .vertical-form > mat-form-field, button {
+          width: 80%;
+      }
+
+      .vertical-form > button {
+          margin-top: 20px;
+      }
+
+      .leather-select-group {
+          width: 80%;
+          display: flex;
+          flex-direction: column;
+      }
+
+      .leather-select {
+          width: 100%;
+          display: flex;
+          flex-direction: row;
+      }
+
+      .leather-select > mat-form-field {
+          width: 85%;
+      }
+
+      .leather-image {
+          width: 15%;
+          border-radius: 4px;
+          border: 3px solid rgba(27, 163, 30, 0.6);
+          margin-left: 10px;
+      }
+
+      .price-quantity {
+          display: flex;
+          justify-content: space-around;
+          align-items: center;
+      }
+
+      .order-review-table th, td {
+          padding-right: 20px;
+      }
+
+      tr.mat-footer-row {
+          font-weight: bold;
+      }
+
+      .title {
+          display: flex;
+          justify-content: space-between;
+          align-items: flex-start;
+      }
+
+      .title button {
+          width: unset;
+      }
+
+      .input-group {
+          display: flex;
+          align-items: center;
+      }
+
+      .input-group > button {
+          width: unset;
+      }
+
+      .input-group .material-icons {
+          font-size: 21px;
+      }
+
+      /* Hide Up Down Buttons on Number Input */
+      /* Chrome, Safari, Edge, Opera */
+      input::-webkit-outer-spin-button,
+      input::-webkit-inner-spin-button {
+          -webkit-appearance: none;
+          margin: 0;
+      }
+
+      /* Firefox */
+      input[type=number] {
+          -moz-appearance: textfield;
+      }
+
+      .cursor-pointer {
+          cursor: pointer;
+      }
+
+      @media print {
+          .container {
+              padding: 0;
+          }
+      }
   `],
   template: `
-    <ng-container *transloco="let t">
-      <div class="container">
-        <mat-card class="title">
-          <h1>{{t('checkout title')}}</h1>
-          <button mat-stroked-button color="primary" routerLink="/order" queryParamsHandling="preserve">
-            <mat-icon>keyboard_backspace</mat-icon>
-          </button>
-        </mat-card>
-        <br>
-        <!-- The Checkout form -->
-        <mat-card class="mat-elevation-z2" style="padding: 16px 0">
-          <form [formGroup]="orderForm" class="vertical-form">
-            <h2>{{t('leathers')}}</h2>
-            <ng-container>
-              <!-- Inner Leather -->
-              <mat-form-field color="primary" appearance="outline" class="cursor-pointer">
-                <mat-label>{{t('inner_leather')}}</mat-label>
-                <input type="text" matInput (click)="openLeatherSelection('inner_leather')"
-                       class="cursor-pointer"
-                       readonly formControlName="inner_leather_str">
-              </mat-form-field>
+      <ng-container *transloco="let t">
+          <div class="container">
+              <mat-card class="title">
+                  <h1>{{t('checkout title')}}</h1>
+                  <button mat-stroked-button color="primary" routerLink="/order" queryParamsHandling="preserve">
+                      <mat-icon>keyboard_backspace</mat-icon>
+                  </button>
+              </mat-card>
+              <br>
+              <!-- The Checkout form -->
+              <mat-card class="mat-elevation-z2" style="padding: 16px 0">
+                  <form [formGroup]="orderForm" class="vertical-form">
+                      <h2>{{t('leathers')}}</h2>
+                      <ng-container>
+                          <div class="leather-select-group">
+                              <!-- Inner Leather -->
+                              <div class="leather-select" (click)="openLeatherSelection('inner_leather')">
+                                  <mat-form-field color="primary" appearance="outline" class="cursor-pointer">
+                                      <mat-label>{{t('inner_leather')}}</mat-label>
+                                      <input type="text" matInput class="cursor-pointer"
+                                             readonly formControlName="inner_leather_str">
+                                  </mat-form-field>
+                                  <img [src]="orderForm.value.inner_leather_img"
+                                       [alt]="orderForm.value.inner_leather_img | imageAlt"
+                                       class="leather-image cursor-pointer">
+                              </div>
 
-              <!-- Outer Leather -->
-              <mat-form-field color="primary" appearance="outline" class="cursor-pointer">
-                <mat-label>{{t('outer_leather')}}</mat-label>
-                <input type="text" matInput (click)="openLeatherSelection('outer_leather')"
-                       class="cursor-pointer"
-                       readonly formControlName="outer_leather_str">
-              </mat-form-field>
-            </ng-container>
+                              <!-- Outer Leather -->
+                              <br>
+                              <div class="leather-select" (click)="openLeatherSelection('outer_leather')">
+                                  <mat-form-field color="primary" appearance="outline" class="cursor-pointer">
+                                      <mat-label>{{t('outer_leather')}}</mat-label>
+                                      <input type="text" matInput class="cursor-pointer"
+                                             readonly formControlName="outer_leather_str">
+                                  </mat-form-field>
+                                  <img [src]="orderForm.value.outer_leather_img"
+                                       [alt]="orderForm.value.outer_leather_img | imageAlt"
+                                       class="leather-image cursor-pointer">
+                              </div>
+                          </div>
+                      </ng-container>
 
-            <h2>{{t('personal details')}}</h2>
-            <!-- First Name -->
-            <mat-form-field color="primary" appearance="outline">
-              <mat-label>{{t('first name')}}</mat-label>
-              <input matInput type="text" formControlName="first_name" required maxlength="50">
-              <mat-icon matSuffix>person</mat-icon>
-            </mat-form-field>
+                      <h2>{{t('personal details')}}</h2>
+                      <!-- First Name -->
+                      <mat-form-field color="primary" appearance="outline">
+                          <mat-label>{{t('first name')}}</mat-label>
+                          <input matInput type="text" formControlName="first_name" required maxlength="50">
+                          <mat-icon matSuffix>person</mat-icon>
+                      </mat-form-field>
 
-            <!-- Last Name -->
-            <mat-form-field color="primary" appearance="outline">
-              <mat-label>{{t('last name')}}</mat-label>
-              <input matInput type="text" formControlName="last_name" required maxlength="50">
-              <!--                          <mat-icon matSuffix>person</mat-icon>-->
-            </mat-form-field>
+                      <!-- Last Name -->
+                      <mat-form-field color="primary" appearance="outline">
+                          <mat-label>{{t('last name')}}</mat-label>
+                          <input matInput type="text" formControlName="last_name" required maxlength="50">
+                          <!--                          <mat-icon matSuffix>person</mat-icon>-->
+                      </mat-form-field>
 
-            <!-- Phone -->
-            <mat-form-field color="primary" appearance="outline">
-              <mat-label>{{t('phone')}}</mat-label>
-              <input matInput type="tel" formControlName="phone" required maxlength="20">
-              <mat-icon matSuffix>phone</mat-icon>
-              <mat-hint>{{t('phone hint')}}</mat-hint>
-            </mat-form-field>
+                      <!-- Phone -->
+                      <mat-form-field color="primary" appearance="outline">
+                          <mat-label>{{t('phone')}}</mat-label>
+                          <input matInput type="tel" formControlName="phone" required maxlength="20">
+                          <mat-icon matSuffix>phone</mat-icon>
+                          <mat-hint>{{t('phone hint')}}</mat-hint>
+                      </mat-form-field>
 
-            <!-- Address -->
-            <mat-form-field color="primary" appearance="outline">
-              <mat-label>{{t('business address')}}</mat-label>
-              <input matInput type="text" formControlName="address" required maxlength="254">
-              <mat-icon matSuffix>location_on</mat-icon>
-              <mat-hint>{{t('address hint')}}</mat-hint>
-            </mat-form-field>
+                      <!-- Address -->
+                      <mat-form-field color="primary" appearance="outline">
+                          <mat-label>{{t('business address')}}</mat-label>
+                          <input matInput type="text" formControlName="address" required maxlength="254">
+                          <mat-icon matSuffix>location_on</mat-icon>
+                          <mat-hint>{{t('address hint')}}</mat-hint>
+                      </mat-form-field>
 
-            <button type="button" (click)="submit()" mat-raised-button color="primary">
-              {{t('submit')}}
-            </button>
-          </form>
-        </mat-card>
+                      <button type="button" (click)="submit()" mat-raised-button color="primary">
+                          {{t('submit')}}
+                      </button>
+                  </form>
+              </mat-card>
 
-        <br>
-        <mat-divider></mat-divider>
-        <br>
+              <br>
+              <mat-divider></mat-divider>
+              <br>
 
-        <!-- Order Review Section -->
-        <mat-card class="mat-elevation-z2"><h3>{{t('order review')}}</h3></mat-card>
-        <br>
-        <app-order-review-table *ngIf="(productsInCart | async).length > 0"
-                                [orderUnits]="productsInCart">
-        </app-order-review-table>
-        <br>
-        <mat-divider></mat-divider>
-        <!-- Selected Products in Cards -->
-        <div style="margin: 20px auto; width: 100%">
-          <mat-card><h3>{{t('selected products')}}</h3></mat-card>
-        </div>
-        <div class="products" style="margin: 20px auto; width: 100%" *ngIf="(productsInCart | async).length > 0">
-          <!-- Selected Products -->
-          <div class="product-card" *ngFor="let unit of productsInCart | async">
-            <ng-container *ngIf="unit?.product?.properties">
-              <div class="image-wrapper">
-                <img [src]="unit.product.image" [alt]="unit.product.image | imageAlt">
+              <!-- Order Review Section -->
+              <mat-card class="mat-elevation-z2"><h3>{{t('order review')}}</h3></mat-card>
+              <br>
+              <app-order-review-table *ngIf="(productsInCart | async).length > 0"
+                                      [orderUnits]="productsInCart">
+              </app-order-review-table>
+              <br>
+              <mat-divider></mat-divider>
+              <!-- Selected Products in Cards -->
+              <div style="margin: 20px auto; width: 100%">
+                  <mat-card><h3>{{t('selected products')}}</h3></mat-card>
               </div>
+              <div class="products" style="margin: 20px auto; width: 100%" *ngIf="(productsInCart | async).length > 0">
+                  <!-- Selected Products -->
+                  <div class="product-card" *ngFor="let unit of productsInCart | async">
+                      <ng-container *ngIf="unit?.product?.properties">
+                          <div class="image-wrapper">
+                              <img [src]="unit.product.image" [alt]="unit.product.image | imageAlt">
+                          </div>
 
-              <!-- CARD CONTENT -->
-              <div class="card-content">
-                <h4>{{unit.product.properties.code}}</h4>
-                <div class="dimensions">
-                  <div class="size">
-                    <span>{{unit.product.properties.width | number}}</span> <img
-                    src="../../../../assets/images/width-arrow.svg"
-                    [alt]="'width-icon' | imageAlt">
-                  </div>
-                  <div class="size length-dimension">
-                    <span>{{unit.product.properties.length | number}}</span> <img
-                    src="../../../../assets/images/depth-arrow.svg"
-                    [alt]="'length-icon' | imageAlt">
-                  </div>
-                  <div class="size">
-                    <span>{{unit.product.properties.height | number}}</span> <img
-                    src="../../../../assets/images/height-arrow.svg"
-                    [alt]="'height-icon' | imageAlt">
-                  </div>
-                </div>
-              </div>
+                          <!-- CARD CONTENT -->
+                          <div class="card-content">
+                              <h4>{{unit.product.properties.code}}</h4>
+                              <div class="dimensions">
+                                  <div class="size">
+                                      <span>{{unit.product.properties.width | number}}</span> <img
+                                          src="../../../../assets/images/width-arrow.svg"
+                                          [alt]="'width-icon' | imageAlt">
+                                  </div>
+                                  <div class="size length-dimension">
+                                      <span>{{unit.product.properties.length | number}}</span> <img
+                                          src="../../../../assets/images/depth-arrow.svg"
+                                          [alt]="'length-icon' | imageAlt">
+                                  </div>
+                                  <div class="size">
+                                      <span>{{unit.product.properties.height | number}}</span> <img
+                                          src="../../../../assets/images/height-arrow.svg"
+                                          [alt]="'height-icon' | imageAlt">
+                                  </div>
+                              </div>
+                          </div>
 
-              <!-- CARD ACTIONS -->
-              <div class="price-quantity" style="margin-bottom: 10px">
-                <span>{{unit.product.price | number | prefix: '€'}}</span> <span>x</span>
-                <span class="input-group">
+                          <!-- CARD ACTIONS -->
+                          <div class="price-quantity" style="margin-bottom: 10px">
+                              <span>{{unit.product.price | number | prefix: '€'}}</span> <span>x</span>
+                              <span class="input-group">
                                   <button mat-icon-button type="button" color="primary"
                                           (click)="increaseDecreaseQuantity(unit, quantity, -1)">
                                       <mat-icon>remove</mat-icon>
@@ -231,14 +265,14 @@ import {takeUntil} from 'rxjs/operators';
                                       <mat-icon>add</mat-icon>
                                   </button>
                               </span>
-                <span>=</span>
-                <span>{{(unit.product.price * unit.quantity | number) | prefix: '€'}}</span>
+                              <span>=</span>
+                              <span>{{(unit.product.price * unit.quantity | number) | prefix: '€'}}</span>
+                          </div>
+                      </ng-container>
+                  </div>
               </div>
-            </ng-container>
           </div>
-        </div>
-      </div>
-    </ng-container>
+      </ng-container>
   `
 })
 export class CheckoutComponent implements OnInit, OnDestroy {
@@ -280,15 +314,17 @@ export class CheckoutComponent implements OnInit, OnDestroy {
 
   initializeOrderForm() {
     this.orderForm = this.fb.group({
-      first_name: ['klement', [Validators.required, Validators.maxLength(50)]],
-      last_name: ['omeri', [Validators.required, Validators.maxLength(50)]],
-      phone: ['0909098', [Validators.required, Validators.maxLength(20)]],
-      address: ['tirane', [Validators.maxLength(254)]],
+      first_name: ['', [Validators.required, Validators.maxLength(50)]],
+      last_name: ['', [Validators.required, Validators.maxLength(50)]],
+      phone: ['', [Validators.required, Validators.maxLength(20)]],
+      address: ['', [Validators.maxLength(254)]],
       products: [[], [Validators.required]],
-      inner_leather: [1, [Validators.required]],
-      inner_leather_str: 'lorem',
-      outer_leather: [1, [Validators.required]],
-      outer_leather_str: 'lorem',
+      inner_leather: [null, [Validators.required]],
+      inner_leather_str: '',
+      inner_leather_img: '../../../assets/images/white.png',
+      outer_leather: [null, [Validators.required]],
+      outer_leather_str: '',
+      outer_leather_img: '../../../assets/images/white.png',
     });
     this.backupRestoreOrderForm();
   }
@@ -336,7 +372,8 @@ export class CheckoutComponent implements OnInit, OnDestroy {
   patchLeather(identifier: 'inner_leather' | 'outer_leather', result: LeatherSelectResult) {
     const entries = fromEntries([
       [identifier, result.leather.id],
-      [`${identifier}_str`, `${result.leatherSerial.name} ${result.leather.code}`]
+      [`${identifier}_str`, `${result.leatherSerial.name} ${result.leather.code}`],
+      [`${identifier}_img`, result.leather.image]
     ]);
     this.orderForm.patchValue(entries);
   }
