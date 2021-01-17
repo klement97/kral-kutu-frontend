@@ -249,7 +249,7 @@ import { takeUntil } from 'rxjs/operators';
 
                           <!-- CARD ACTIONS -->
                           <div class="price-quantity" style="margin-bottom: 10px">
-                              <span>{{unit.product.price | number | prefix: '€'}}</span> <span>x</span>
+                              <span>{{unit.product.price | number | prefix: '$'}}</span> <span>x</span>
                               <span class="input-group">
                                   <button mat-icon-button type="button" color="primary"
                                           (click)="increaseDecreaseQuantity(unit, quantity, -1)">
@@ -266,7 +266,7 @@ import { takeUntil } from 'rxjs/operators';
                                   </button>
                               </span>
                               <span>=</span>
-                              <span>{{(unit.product.price * unit.quantity | number) | prefix: '€'}}</span>
+                              <span>{{(unit.product.price * unit.quantity | number) | prefix: '$'}}</span>
                           </div>
                       </ng-container>
                   </div>

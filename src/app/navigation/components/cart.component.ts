@@ -90,11 +90,11 @@ import { takeUntil } from 'rxjs/operators';
                   <span style="display: inline-flex; flex-direction: column">
                       <span *ngIf="orderUnit.product.properties.code as code" style="color: grey"><b>{{code}}</b></span>
                       <span style="color: #474747">
-                          {{orderUnit.product.price | number | prefix: '€'}}
+                          {{orderUnit.product.price | number | prefix: '$'}}
                           x
                           {{orderUnit.quantity | number}}
                           =
-                          {{(orderUnit.product.price * orderUnit.quantity) | number | prefix: '€' }}
+                          {{(orderUnit.product.price * orderUnit.quantity) | number | prefix: '$' }}
                       </span>
                   </span>
                   <!-- Remove cart item button -->
@@ -107,7 +107,7 @@ import { takeUntil } from 'rxjs/operators';
                   <!-- Totals -->
                   <div class="totals mat-elevation-z10" *ngIf="totalPrice > 0">
                       <h4>{{t('total')}}:</h4>
-                      <h4><b>{{totalPrice | number | prefix: '€'}}</b></h4>
+                      <h4><b>{{totalPrice | number | prefix: '$'}}</b></h4>
                   </div>
 
                   <!-- Continue shopping button -->
