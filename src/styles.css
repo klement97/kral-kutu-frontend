@@ -27,6 +27,24 @@ body {
     color: white;
 }
 
+.danger-snackbar {
+    color: white;
+    background-color: rgb(160, 27, 27);
+}
+
+.danger-snackbar .mat-simple-snackbar-action {
+    color: white;
+}
+
+.warning-snackbar {
+    color: white;
+    background-color: rgb(196, 142, 41);
+}
+
+.warning-snackbar .mat-simple-snackbar-action {
+    color: white;
+}
+
 ::-webkit-scrollbar,
 ::-webkit-scrollbar-thumb,
 ::-webkit-scrollbar-track {
