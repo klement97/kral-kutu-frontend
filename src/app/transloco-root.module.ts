@@ -13,27 +13,10 @@ import { environment } from '../environments/environment';
 import { UserService } from 'src/app/user.service';
 
 
-const countryCodeLanguageMapping = {
-  al: 'sq',
-  tr: 'tr'
-};
-
-const getActiveLanguageFromCountryCode = (countryCode: string = 'sq') => {
-  if (countryCodeLanguageMapping[countryCode.toLowerCase()]) {
-    return countryCodeLanguageMapping[countryCode.toLowerCase()];
-  }
-  return 'sq';
-};
-
-
 export function preloadUser(userService: UserService, transloco: TranslocoService) {
   return () => {
-    return userService.ipLookUp().subscribe(
-      (res: { countryCode: string }) => {
-        const activeLanguage = getActiveLanguageFromCountryCode(res.countryCode);
-        transloco.setActiveLang(activeLanguage);
-        return transloco.load(activeLanguage).toPromise();
-      });
+    transloco.setActiveLang('sq');
+    return transloco.load('sq').toPromise();
   };
 }
 
