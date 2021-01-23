@@ -289,7 +289,10 @@ export class ProductPageComponent implements OnInit, AfterViewInit, OnDestroy {
         this.products = res.results;
         this.productsCount = res.count;
         this.isProductsLoading = false;
-        document.getElementById('navigator').scrollIntoView(true);
+        const navigator = document.getElementById('navigator');
+        if (navigator) {
+          navigator.scrollIntoView(true);
+        }
       }, () => this.isProductsLoading = false);
   }
 
