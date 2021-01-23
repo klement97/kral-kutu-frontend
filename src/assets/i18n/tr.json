@@ -43,5 +43,6 @@
   "created": "Tarih",
   "payment method": "Ödeme Yöntemi",
   "cash": "Nakit",
-  "item": "Ürün"
+  "item": "Ürün",
+  "no results": "Sonuç yok"
 }

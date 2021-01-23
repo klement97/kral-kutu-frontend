@@ -1,69 +1,76 @@
-import {Component, OnInit} from '@angular/core';
-import {PRODUCTS_IN_CART, productsInCart} from 'src/app/common/const';
+import { Component, OnInit } from '@angular/core';
+import { PRODUCTS_IN_CART, productsInCart } from 'src/app/common/const';
 
 
 @Component({
   selector: 'app-header',
   styles: [`
-    .spacer {
-      display: flex;
-      flex: 1 1 auto;
-    }
-
-    ::ng-deep .mat-menu-panel {
-      width: 280px;
-      max-height: 80vh !important;
-    }
-
-    ::ng-deep .mat-menu-content:not(:empty) {
-      padding: 0 !important;
-    }
-
-    .header {
-      height: 50px;
-      background-color: rgb(50, 50, 50);
-      color: white;
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      z-index: 9999;
-    }
-
-    @media print {
-      .header {
-        display: none;
-        position: absolute;
+      .spacer {
+          display: flex;
+          flex: 1 1 auto;
       }
-    }
+
+      ::ng-deep .mat-menu-panel {
+          width: 280px;
+          max-height: 80vh !important;
+      }
+
+      ::ng-deep .mat-menu-content:not(:empty) {
+          padding: 0 !important;
+      }
+
+      .header {
+          height: 50px;
+          background-color: rgb(50, 50, 50);
+          color: white;
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          z-index: 9998;
+      }
+
+      .loader {
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          z-index: 9999;
+      }
+
+      @media print {
+          .header {
+              display: none;
+              position: absolute;
+          }
+      }
   `
   ],
   template: `
-    <ng-container *transloco="let t">
-      <!-- BEGIN TOOLBAR -->
-      <mat-toolbar class="header">
-        <span routerLink="/" queryParamsHandling="preserve" style="cursor: pointer">ITALGOLD</span> <span
-        class="spacer"></span>
+      <ng-container *transloco="let t">
+          <!-- BEGIN TOOLBAR -->
+          <mat-toolbar class="header">
+              <span routerLink="/" queryParamsHandling="preserve" style="cursor: pointer">ITALGOLD</span> <span
+                  class="spacer"></span>
 
-        <!-- BEGIN ACTIONS -->
-        <div>
-          <button mat-icon-button [matMenuTriggerFor]="menu" id="menuTrigger">
-            <mat-icon [matBadge]="productsInCartCount" matBadgeColor="warn"
-                      [matBadgeDescription]="t('product count')">
-              shopping_cart
-            </mat-icon>
-          </button>
-        </div>
-        <mat-menu #menu yPosition="below" xPosition="before" class="menu">
-          <ng-template matMenuContent>
-            <app-cart (click)="$event.stopPropagation()" (buttonsClicked)="closeMenu()"></app-cart>
-          </ng-template>
-        </mat-menu>
-        <!-- END ACTIONS -->
-
-      </mat-toolbar>
-      <!-- END TOOLBAR -->
-    </ng-container>
+              <!-- BEGIN ACTIONS -->
+              <div>
+                  <button mat-icon-button [matMenuTriggerFor]="menu" id="menuTrigger">
+                      <mat-icon [matBadge]="productsInCartCount" matBadgeColor="warn"
+                                [matBadgeDescription]="t('product count')">
+                          shopping_cart
+                      </mat-icon>
+                  </button>
+              </div>
+              <mat-menu #menu yPosition="below" xPosition="before" class="menu">
+                  <ng-template matMenuContent>
+                      <app-cart (click)="$event.stopPropagation()" (buttonsClicked)="closeMenu()"></app-cart>
+                  </ng-template>
+              </mat-menu>
+              <!-- END ACTIONS -->
+          </mat-toolbar>
+          <!-- END TOOLBAR -->
+      </ng-container>
   `
 })
 export class HeaderComponent implements OnInit {

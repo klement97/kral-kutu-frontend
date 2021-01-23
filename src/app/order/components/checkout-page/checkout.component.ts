@@ -8,6 +8,8 @@ import { LeatherSelectResult, LeatherSerial, Order, OrderUnit } from 'src/app/or
 import { MatBottomSheet } from '@angular/material/bottom-sheet';
 import { LeatherSelectComponent } from 'src/app/order/components/checkout-page/leather-select.component';
 import { takeUntil } from 'rxjs/operators';
+import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
+import { ErrorHandler } from 'src/app/common/error-handler';
 
 
 @Component({
@@ -143,6 +145,7 @@ import { takeUntil } from 'rxjs/operators';
                                       <mat-label>{{t('inner_leather')}}</mat-label>
                                       <input type="text" matInput class="cursor-pointer"
                                              readonly formControlName="inner_leather_str">
+                                      <mat-error>{{errors.inner_leather}}</mat-error>
                                   </mat-form-field>
                                   <img [src]="orderForm.value.inner_leather_img"
                                        [alt]="orderForm.value.inner_leather_img | imageAlt"
@@ -156,6 +159,7 @@ import { takeUntil } from 'rxjs/operators';
                                       <mat-label>{{t('outer_leather')}}</mat-label>
                                       <input type="text" matInput class="cursor-pointer"
                                              readonly formControlName="outer_leather_str">
+                                      <mat-error>{{errors.outer_leather}}</mat-error>
                                   </mat-form-field>
                                   <img [src]="orderForm.value.outer_leather_img"
                                        [alt]="orderForm.value.outer_leather_img | imageAlt"
@@ -170,13 +174,14 @@ import { takeUntil } from 'rxjs/operators';
                           <mat-label>{{t('first name')}}</mat-label>
                           <input matInput type="text" formControlName="first_name" required maxlength="50">
                           <mat-icon matSuffix>person</mat-icon>
+                          <mat-error>{{errors.first_name}}</mat-error>
                       </mat-form-field>
 
                       <!-- Last Name -->
                       <mat-form-field color="primary" appearance="outline">
                           <mat-label>{{t('last name')}}</mat-label>
                           <input matInput type="text" formControlName="last_name" required maxlength="50">
-                          <!--                          <mat-icon matSuffix>person</mat-icon>-->
+                          <mat-error>{{errors.last_name}}</mat-error>
                       </mat-form-field>
 
                       <!-- Phone -->
@@ -185,6 +190,7 @@ import { takeUntil } from 'rxjs/operators';
                           <input matInput type="tel" formControlName="phone" required maxlength="20">
                           <mat-icon matSuffix>phone</mat-icon>
                           <mat-hint>{{t('phone hint')}}</mat-hint>
+                          <mat-error>{{errors.phone}}</mat-error>
                       </mat-form-field>
 
                       <!-- Address -->
@@ -193,6 +199,7 @@ import { takeUntil } from 'rxjs/operators';
                           <input matInput type="text" formControlName="address" required maxlength="254">
                           <mat-icon matSuffix>location_on</mat-icon>
                           <mat-hint>{{t('address hint')}}</mat-hint>
+                          <mat-error>{{errors.address}}</mat-error>
                       </mat-form-field>
 
                       <button type="button" (click)="submit()" mat-raised-button color="primary">
@@ -279,6 +286,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
   productsInCart: BehaviorSubject<OrderUnit[]>;
   leathersSerials: LeatherSerial[];
   orderForm: FormGroup;
+  errors: any = {};
   uns$ = new Subject();
 
 
@@ -286,7 +294,9 @@ export class CheckoutComponent implements OnInit, OnDestroy {
     private orderService: OrderService,
     private fb: FormBuilder,
     private router: Router,
-    private bottomSheet: MatBottomSheet
+    private bottomSheet: MatBottomSheet,
+    private snackbar: MatSnackBar,
+    private eh: ErrorHandler
   ) {
   }
 
@@ -294,6 +304,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.productsInCart = productsInCart;
     this.initializeOrderForm();
+    this.eh.handleErrors(this.orderForm, this.errors);
     this.getLeathers();
   }
 
@@ -320,8 +331,8 @@ export class CheckoutComponent implements OnInit, OnDestroy {
       address: ['', [Validators.maxLength(254)]],
       products: [[], [Validators.required]],
       inner_leather: [null, [Validators.required]],
-      inner_leather_str: '',
-      inner_leather_img: '../../../assets/images/white.png',
+      inner_leather_str: '',  // helper field
+      inner_leather_img: '../../../assets/images/white.png', // helper field
       outer_leather: [null, [Validators.required]],
       outer_leather_str: '',
       outer_leather_img: '../../../assets/images/white.png',
@@ -397,6 +408,15 @@ export class CheckoutComponent implements OnInit, OnDestroy {
 
 
   submit() {
+    if (this.orderForm.invalid) {
+      this.orderForm.markAllAsTouched();
+      this.snackbar.open('Ju lutem plotësoni të dhënat!', 'OK', {
+        verticalPosition: 'bottom', horizontalPosition: 'right', duration: 3000,
+        panelClass: 'warning-snackbar'
+      });
+      return;
+    }
+
     // Replace products with serialized ones
     this.orderForm.get('products').patchValue(this.getSerializedProducts());
     this.orderService.createOrder(this.orderForm.value).subscribe(
@@ -416,7 +436,11 @@ export class CheckoutComponent implements OnInit, OnDestroy {
 
 
   onError(err) {
-    console.log('Error: ', err);
+    const message = err.message ? err.message : 'Ka ndodhur një gabim, ju lutem provoni përsëri!';
+    const config: MatSnackBarConfig = {
+      horizontalPosition: 'right', duration: 3000, verticalPosition: 'bottom', panelClass: 'danger-snackbar'
+    };
+    this.snackbar.open(message, 'OK', config);
   }
 
 }

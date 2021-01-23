@@ -13,6 +13,8 @@ import { RouterModule } from '@angular/router';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatListModule } from '@angular/material/list';
 import { SharedModule } from 'src/app/common/shared.module';
+import { RouterLoaderComponent } from 'src/app/navigation/components/router-loader.component';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 
 
 @NgModule({
@@ -20,7 +22,8 @@ import { SharedModule } from 'src/app/common/shared.module';
     CartComponent,
     HeaderComponent,
     NavigationComponent,
-    NotFoundComponent
+    NotFoundComponent,
+    RouterLoaderComponent,
   ],
   exports: [
     HeaderComponent,
@@ -36,7 +39,8 @@ import { SharedModule } from 'src/app/common/shared.module';
     RouterModule,
     MatBadgeModule,
     MatListModule,
-    SharedModule
+    SharedModule,
+    MatProgressBarModule
   ]
 })
 export class NavigationModule {}
