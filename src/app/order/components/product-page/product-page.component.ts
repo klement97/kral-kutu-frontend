@@ -100,9 +100,14 @@ import { ActivatedRoute, Router } from '@angular/router';
 
           <!-- Product list container -->
           <div class="products-container">
-              <app-content-loader *ngIf="isProductsLoading"></app-content-loader>
               <app-no-results *ngIf="products?.length == 0 && !isProductsLoading"></app-no-results>
               <div class="products">
+
+                  <!-- Loader skeleton -->
+                  <ng-container *ngIf="isProductsLoading">
+                      <app-content-loader class="product-card" *ngFor="let _ of skeletonProducts"></app-content-loader>
+                  </ng-container>
+
                   <!-- CARD -->
                   <div class="product-card" *ngFor="let product of products">
                       <div class="image-wrapper" (click)="openProductDetails(product)">
@@ -189,6 +194,8 @@ export class ProductPageComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
   products: Product[];
+  // an array of random numbers to be used as skeleton loaders
+  skeletonProducts = [...Array(12)].map(() => Math.random());
   productsCount = 0;
   productCategories: IDNameModel[] = [];
   productFilterForm: FormGroup;
@@ -207,7 +214,7 @@ export class ProductPageComponent implements OnInit, AfterViewInit, OnDestroy {
     private snackbar: MatSnackBar,
     private transloco: TranslocoService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
   ) {
   }
 
@@ -289,7 +296,10 @@ export class ProductPageComponent implements OnInit, AfterViewInit, OnDestroy {
         this.products = res.results;
         this.productsCount = res.count;
         this.isProductsLoading = false;
-        document.getElementById('navigator').scrollIntoView(true);
+        const navigator = document.getElementById('navigator');
+        if (navigator) {
+          navigator.scrollIntoView(true);
+        }
       }, () => this.isProductsLoading = false);
   }
 

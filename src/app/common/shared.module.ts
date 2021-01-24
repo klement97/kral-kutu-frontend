@@ -8,6 +8,8 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { NoResultsComponent } from 'src/app/navigation/components/no-results.component';
 import { TranslocoModule } from '@ngneat/transloco';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatIconModule } from '@angular/material/icon';
 
 
 @NgModule({
@@ -29,7 +31,9 @@ import { TranslocoModule } from '@ngneat/transloco';
     CommonModule,
     MatProgressSpinnerModule,
     MatProgressBarModule,
-    TranslocoModule
+    TranslocoModule,
+    MatDividerModule,
+    MatIconModule
   ]
 })
 export class SharedModule {}

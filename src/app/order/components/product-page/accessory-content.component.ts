@@ -22,16 +22,18 @@ import { AccessoryProduct } from 'src/app/order/order.model';
       }
   `],
   template: `
-      <div class="code-input" (click)="$event.stopPropagation()">
-          <label for="code">Kodi:</label>&nbsp;
-          <input (input)="product.properties.code = code.value"
-                 #code
-                 type="text"
-                 value=""
-                 class="quantity-input"
-                 placeholder="Shkruani kodin këtu..."
-                 id="code">
-      </div>
+      <ng-container *transloco="let t">
+          <div class="code-input" (click)="$event.stopPropagation()">
+              <label for="code">{{t('code')}}:</label>&nbsp;
+              <input (input)="product.properties.code = code.value"
+                     #code
+                     type="text"
+                     value=""
+                     class="quantity-input"
+                     placeholder="{{t('write code here')}}..."
+                     id="code">
+          </div>
+      </ng-container>
   `
 })
 export class AccessoryContentComponent implements OnInit {

@@ -44,5 +44,7 @@
   "payment method": "Mënyra e pagesës",
   "cash": "Cash",
   "item": "Produkti",
-  "no results": "Nuk ka rezultate"
+  "no results message": "Na vjen keq, nuk gjetëm asnjë rezultat",
+  "write code here": "Shkruani kodin këtu",
+  "return home": "Kthehu në faqen kryesore"
 }

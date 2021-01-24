@@ -153,16 +153,6 @@ import {OrderService} from '../../services/order.service';
             <td>BKT</td>
             <td>IB09090123131BI</td>
           </tr>
-
-          <tr class="item">
-            <td>Intesa SanPaolo</td>
-            <td>RI98768089032RI</td>
-          </tr>
-
-          <tr class="item">
-            <td>Credins</td>
-            <td>CR138712390CR</td>
-          </tr>
           <br>
 
           <tr class="heading">

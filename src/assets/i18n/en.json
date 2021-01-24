@@ -44,5 +44,7 @@
   "payment method": "Payment Method",
   "cash": "Cash",
   "item": "Item",
-  "no results": "No results"
+  "no results message": "Sorry, we couldn't find any results",
+  "write code here": "Write code here",
+  "return home": "Return home"
 }

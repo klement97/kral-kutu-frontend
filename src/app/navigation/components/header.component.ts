@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { PRODUCTS_IN_CART, productsInCart } from 'src/app/common/const';
+import { TranslocoService } from '@ngneat/transloco';
 
 
 @Component({
@@ -38,6 +39,25 @@ import { PRODUCTS_IN_CART, productsInCart } from 'src/app/common/const';
           z-index: 9999;
       }
 
+      .flag-button {
+          margin-right: 3px;
+      }
+
+      .flag-button > img {
+          width: 18px;
+      }
+
+      .no-style-button {
+          background-color: rgb(50, 50, 50);
+          border: none;
+          box-shadow: none;
+          cursor: pointer;
+      }
+
+      .no-style-button:focus {
+          outline: none;
+      }
+
       @media print {
           .header {
               display: none;
@@ -50,11 +70,23 @@ import { PRODUCTS_IN_CART, productsInCart } from 'src/app/common/const';
       <ng-container *transloco="let t">
           <!-- BEGIN TOOLBAR -->
           <mat-toolbar class="header">
-              <span routerLink="/" queryParamsHandling="preserve" style="cursor: pointer">ITALGOLD</span> <span
-                  class="spacer"></span>
+              <span routerLink="/" queryParamsHandling="preserve" class="no-style-button">ITALGOLD</span>
+              <span class="spacer"></span>
 
               <!-- BEGIN ACTIONS -->
               <div>
+                  <!-- Language selection -->
+                  <button class="flag-button no-style-button" (click)="changeLanguage('en')">
+                      <img src="../../../assets/images/flags/uk.png" alt="united-kingdom-flag">
+                  </button>
+                  <button class="flag-button no-style-button" (click)="changeLanguage('sq')">
+                      <img src="../../../assets/images/flags/albania.png" alt="albania-flag">
+                  </button>
+                  <button class="flag-button no-style-button" (click)="changeLanguage('tr')">
+                      <img src="../../../assets/images/flags/turkey.png" alt="turkey-flag">
+                  </button>
+
+                  <!-- Cart button -->
                   <button mat-icon-button [matMenuTriggerFor]="menu" id="menuTrigger">
                       <mat-icon [matBadge]="productsInCartCount" matBadgeColor="warn"
                                 [matBadgeDescription]="t('product count')">
@@ -77,7 +109,9 @@ export class HeaderComponent implements OnInit {
   productsInCartCount = '0';
 
 
-  constructor() {
+  constructor(
+    private transloco: TranslocoService
+  ) {
   }
 
 
@@ -106,5 +140,10 @@ export class HeaderComponent implements OnInit {
 
   closeMenu() {
     document.getElementById('menuTrigger').click();
+  }
+
+
+  changeLanguage(language) {
+    this.transloco.setActiveLang(language);
   }
 }

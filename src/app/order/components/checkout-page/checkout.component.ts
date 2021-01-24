@@ -329,7 +329,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
       last_name: ['', [Validators.required, Validators.maxLength(50)]],
       phone: ['', [Validators.required, Validators.maxLength(20)]],
       address: ['', [Validators.maxLength(254)]],
-      products: [[], [Validators.required]],
+      products: [[]],   // not required, will be checked manually
       inner_leather: [null, [Validators.required]],
       inner_leather_str: '',  // helper field
       inner_leather_img: '../../../assets/images/white.png', // helper field
@@ -394,8 +394,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
    * Serialization process is to replace products with their respective ID
    * instead of a product object and flattening the product properties.
    */
-  getSerializedProducts() {
-    const orderUnits = Array.from(this.productsInCart.getValue());
+  getSerializedProducts(orderUnits) {
     orderUnits.forEach(orderUnit => {
       Object.keys(orderUnit.product.properties).forEach(key => {
         orderUnit[key] = orderUnit.product.properties[key];
@@ -417,8 +416,22 @@ export class CheckoutComponent implements OnInit, OnDestroy {
       return;
     }
 
+    // Making a manual check if there are any products in the cart.
+    // We can't assign a required validator
+    const orderUnits = Array.from(this.productsInCart.getValue());
+    if (orderUnits.length === 0) {
+      this.snackbar.open(
+        'Nuk mund të dërgoni një porosi pa zgjedhur asnjë produkt!',
+        'OK',
+        {
+          verticalPosition: 'bottom', horizontalPosition: 'right', duration: 3000,
+          panelClass: 'warning-snackbar'
+        });
+      return;
+    }
+
     // Replace products with serialized ones
-    this.orderForm.get('products').patchValue(this.getSerializedProducts());
+    this.orderForm.get('products').patchValue(this.getSerializedProducts(orderUnits));
     this.orderService.createOrder(this.orderForm.value).subscribe(
       (order: Order) => this.onSuccess(order),
       (err) => this.onError(err)
