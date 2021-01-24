@@ -8,8 +8,8 @@ import { Component, OnInit } from '@angular/core';
           <div class="no-results">
               <mat-divider></mat-divider>
               <div class="message">
-                  <mat-icon>info</mat-icon>&nbsp;
-                  <p>{{t('no results message')}}</p>
+                  <img src="../../../assets/images/no-data.jpg" width="200" alt="no-results-image">&nbsp;
+                  <h2>{{t('no results message')}}</h2>
               </div>
               <mat-divider></mat-divider>
           </div>
