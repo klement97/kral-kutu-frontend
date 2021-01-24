@@ -44,6 +44,6 @@
   "payment method": "Ödeme Yöntemi",
   "cash": "Nakit",
   "item": "Ürün",
-  "no results": "Sonuç yok",
+  "no results message": "Üzgünüz, hiç sonuç bulamadık",
   "write code here": "Ürün kodunu giriniz"
 }
