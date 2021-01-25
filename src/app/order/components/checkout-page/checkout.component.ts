@@ -202,7 +202,12 @@ import { ErrorHandler } from 'src/app/common/error-handler';
                           <mat-error>{{errors.address}}</mat-error>
                       </mat-form-field>
 
-                      <button type="button" (click)="submit()" mat-raised-button color="primary">
+                      <button type="button"
+                              color="primary"
+                              mat-raised-button
+                              [class.spinner]="isSubmitting"
+                              [disabled]="isSubmitting"
+                              (click)="submit()">
                           {{t('submit')}}
                       </button>
                   </form>
@@ -288,6 +293,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
   orderForm: FormGroup;
   errors: any = {};
   uns$ = new Subject();
+  isSubmitting = false;
 
 
   constructor(
@@ -407,12 +413,14 @@ export class CheckoutComponent implements OnInit, OnDestroy {
 
 
   submit() {
+    this.isSubmitting = true;
     if (this.orderForm.invalid) {
       this.orderForm.markAllAsTouched();
       this.snackbar.open('Ju lutem plotësoni të dhënat!', 'OK', {
         verticalPosition: 'bottom', horizontalPosition: 'right', duration: 3000,
         panelClass: 'warning-snackbar'
       });
+      this.isSubmitting = false;
       return;
     }
 
@@ -427,6 +435,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
           verticalPosition: 'bottom', horizontalPosition: 'right', duration: 3000,
           panelClass: 'warning-snackbar'
         });
+      this.isSubmitting = false;
       return;
     }
 
@@ -440,6 +449,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
 
 
   onSuccess(order: Order) {
+    this.isSubmitting = false;
     this.productsInCart.next([]);
     clearCart();
     this.orderService.orderFormValue = null;
@@ -449,6 +459,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
 
 
   onError(err) {
+    this.isSubmitting = false;
     const message = err.message ? err.message : 'Ka ndodhur një gabim, ju lutem provoni përsëri!';
     const config: MatSnackBarConfig = {
       horizontalPosition: 'right', duration: 3000, verticalPosition: 'bottom', panelClass: 'danger-snackbar'
