@@ -46,5 +46,11 @@
   "item": "Ürün",
   "no results message": "Üzgünüz, hiç sonuç bulamadık",
   "write code here": "Ürün kodunu giriniz",
-  "return home": "Ana sayfaya geri dön"
+  "return home": "Ana sayfaya geri dön",
+  "Table": "Tabla",
+  "Box": "Kutu",
+  "Premium Table": "Premium Tablalar",
+  "Service Table": "Servis Tablası",
+  "Accessory": "Aksesör",
+  "Display": "Vitrin"
 }

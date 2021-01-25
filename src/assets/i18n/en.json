@@ -46,5 +46,11 @@
   "item": "Item",
   "no results message": "Sorry, we couldn't find any results",
   "write code here": "Write code here",
-  "return home": "Return home"
+  "return home": "Return home",
+  "Table": "Table",
+  "Box": "Box",
+  "Premium Table": "Premium Table",
+  "Service Table": "Service Table",
+  "Accessory": "Accessory",
+  "Display": "Display"
 }

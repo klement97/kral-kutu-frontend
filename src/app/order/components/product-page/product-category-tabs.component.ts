@@ -12,7 +12,7 @@ import { ActivatedRoute, Router } from '@angular/router';
               <a mat-tab-link *ngFor="let category of categories"
                  (click)="tabChanged(category)"
                  [active]="activeCategoryID == category.id">
-                  {{category.name}}
+                  {{t(category.name)}}
               </a>
           </nav>
       </ng-container>
