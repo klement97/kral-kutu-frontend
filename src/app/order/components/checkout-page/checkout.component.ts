@@ -122,6 +122,26 @@ import { ErrorHandler } from 'src/app/common/error-handler';
               padding: 0;
           }
       }
+
+      @media only screen and (max-width: 800px) {
+          .leather-select > mat-form-field {
+              width: 75%;
+          }
+
+          .leather-image {
+              width: 25%;
+          }
+      }
+
+      @media only screen and (max-width: 450px) {
+          .leather-select > mat-form-field {
+              width: 65%;
+          }
+
+          .leather-image {
+              width: 35%;
+          }
+      }
   `],
   template: `
       <ng-container *transloco="let t">
