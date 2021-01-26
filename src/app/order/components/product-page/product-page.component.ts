@@ -345,7 +345,11 @@ export class ProductPageComponent implements OnInit, AfterViewInit, OnDestroy {
     if (product.category.name.toLowerCase() === 'accessory') {
       if (!product.properties.code || !product.properties.codes.includes(product.properties.code)) {
         // For an accessory type of product, a code must be selected from `codes`
-        this.snackbar.open(this.transloco.translate('select a code warning'));
+        this.snackbar.open(
+          this.transloco.translate('select a code warning'),
+          '',
+          {panelClass: 'warning-snackbar', duration: 2500},
+        );
         return;
       }
     }
