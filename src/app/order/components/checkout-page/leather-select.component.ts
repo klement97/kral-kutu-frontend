@@ -80,15 +80,17 @@ import { Leather, LeatherSerial } from 'src/app/order/order.model';
                   <mat-expansion-panel-header>
                       <mat-panel-title>{{leathersSerial.name}}</mat-panel-title>
                   </mat-expansion-panel-header>
-                  <div class="container">
-                      <a class="leather image-wrapper mat-elevation-z2"
-                         href="javascript: void(null);"
-                         *ngFor="let leather of leathersSerial.leathers"
-                         (click)="selectLeather(leather, leathersSerial)">
-                          <img [src]="leather.image" [alt]="leather.image | imageAlt" width="150px">
-                          <span class="leather-code">{{leather.code}}</span>
-                      </a>
-                  </div>
+                  <ng-template matExpansionPanelContent>
+                      <div class="container">
+                          <a class="leather image-wrapper mat-elevation-z2"
+                             href="javascript: void(null);"
+                             *ngFor="let leather of leathersSerial.leathers"
+                             (click)="selectLeather(leather, leathersSerial)">
+                              <img [src]="leather.image" [alt]="leather.image | imageAlt" width="150px">
+                              <span class="leather-code">{{leather.code}}</span>
+                          </a>
+                      </div>
+                  </ng-template>
               </mat-expansion-panel>
           </mat-accordion>
       </ng-container>

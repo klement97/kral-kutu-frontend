@@ -2,7 +2,7 @@
   "add": "Add",
   "all": "All",
   "add to cart": "Add to cart",
-  "quantity": "quantity",
+  "quantity": "Quantity",
   "product count": "product count",
   "checkout": "Checkout",
   "checkout title": "Checkout",
@@ -46,5 +46,14 @@
   "item": "Item",
   "no results message": "Sorry, we couldn't find any results",
   "write code here": "Write code here",
-  "return home": "Return home"
+  "return home": "Return home",
+  "Table": "Table",
+  "Box": "Box",
+  "Premium Table": "Premium Table",
+  "Service Table": "Service Table",
+  "Accessory": "Accessory",
+  "Display": "Display",
+  "select a code warning": "Please select a code from the list",
+  "fill in details warning": "Please fill in the details",
+  "cart empty warning": "Sorry, the cart is empty, we can not proceed with an order without any products."
 }

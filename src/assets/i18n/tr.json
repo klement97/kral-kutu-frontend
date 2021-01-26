@@ -2,7 +2,7 @@
   "add": "Ekle",
   "all": "Hepsi",
   "add to cart": "Sepete ekle",
-  "quantity": "miktar",
+  "quantity": "Miktar",
   "product count": "ürün sayısı",
   "checkout": "Tamamla",
   "checkout title": "Alışverişi tamamla",
@@ -46,5 +46,14 @@
   "item": "Ürün",
   "no results message": "Üzgünüz, hiç sonuç bulamadık",
   "write code here": "Ürün kodunu giriniz",
-  "return home": "Ana sayfaya geri dön"
+  "return home": "Ana sayfaya geri dön",
+  "Table": "Tabla",
+  "Box": "Kutu",
+  "Premium Table": "Premium Tablalar",
+  "Service Table": "Servis Tablası",
+  "Accessory": "Aksesör",
+  "Display": "Vitrin",
+  "select a code warning": "Lütfen bir kod seçiniz",
+  "fill in details warning": "Lütfen formu doldurunuz",
+  "cart empty warning": "Üzgünüz, hiç bir ürün seçmediniz!"
 }

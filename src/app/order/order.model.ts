@@ -41,6 +41,7 @@ export interface TableProduct extends Product {
 export interface AccessoryProduct extends Product {
   properties: {
     code: string;
+    codes: string[];
     notes: string;
   };
 }

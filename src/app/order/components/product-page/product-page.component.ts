@@ -117,10 +117,11 @@ import { ActivatedRoute, Router } from '@angular/router';
                       <!-- CARD CONTENT -->
                       <span style="display: flex">
                           <span [ngSwitch]="product.category.name.toLowerCase()" style="width: 95%">
-                          <app-table-content *ngSwitchCase="'tabaka'" [product]="product"></app-table-content>
-                          <app-table-content *ngSwitchCase="'tabaka premium'" [product]="product"></app-table-content>
-                          <app-table-content *ngSwitchCase="'tabaka shërbimi'" [product]="product"></app-table-content>
-                          <app-accessory-content *ngSwitchCase="'aksesor'" [product]="product"></app-accessory-content>
+                          <app-table-content *ngSwitchCase="'table'" [product]="product"></app-table-content>
+                          <app-table-content *ngSwitchCase="'premium table'" [product]="product"></app-table-content>
+                          <app-table-content *ngSwitchCase="'service table'" [product]="product"></app-table-content>
+                          <app-accessory-content *ngSwitchCase="'accessory'"
+                                                 [product]="product"></app-accessory-content>
                           </span>
                           <span class="card-content">
                               <div>
@@ -157,8 +158,8 @@ import { ActivatedRoute, Router } from '@angular/router';
                               <button mat-icon-button type="button" (click)="changeInputValue($event, quantity, -1)">
                                   <mat-icon color="primary">remove</mat-icon>
                               </button>
-                              <input type="text" [value]="'1'" (click)="$event.stopPropagation()"
-                                     (input)="onInputChange($event, quantity)" #quantity class="quantity-input">
+                              <input readonly type="text" [value]="'1'" (click)="$event.stopPropagation()" #quantity
+                                     class="quantity-input">
                               <button mat-icon-button type="button" (click)="changeInputValue($event, quantity, 1)">
                                   <mat-icon color="primary">add</mat-icon>
                               </button>
@@ -341,6 +342,18 @@ export class ProductPageComponent implements OnInit, AfterViewInit, OnDestroy {
    * @param addedToCartIcon   Respective icon of the product, if already in cart
    */
   addProductToCart(product: Product, quantity: string, addToCartIcon?, addedToCartIcon?) {
+    if (product.category.name.toLowerCase() === 'accessory') {
+      if (!product.properties.code || !product.properties.codes.includes(product.properties.code)) {
+        // For an accessory type of product, a code must be selected from `codes`
+        this.snackbar.open(
+          this.transloco.translate('select a code warning'),
+          '',
+          {panelClass: 'warning-snackbar', duration: 2500},
+        );
+        return;
+      }
+    }
+
     // Generating a hash here to check if the product is already in cart
     const hash = hashCodeFromProduct(product);
 

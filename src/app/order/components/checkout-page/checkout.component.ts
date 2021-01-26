@@ -10,6 +10,7 @@ import { LeatherSelectComponent } from 'src/app/order/components/checkout-page/l
 import { takeUntil } from 'rxjs/operators';
 import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
 import { ErrorHandler } from 'src/app/common/error-handler';
+import { TranslocoService } from '@ngneat/transloco';
 
 
 @Component({
@@ -122,6 +123,26 @@ import { ErrorHandler } from 'src/app/common/error-handler';
               padding: 0;
           }
       }
+
+      @media only screen and (max-width: 800px) {
+          .leather-select > mat-form-field {
+              width: 75%;
+          }
+
+          .leather-image {
+              width: 25%;
+          }
+      }
+
+      @media only screen and (max-width: 450px) {
+          .leather-select > mat-form-field {
+              width: 65%;
+          }
+
+          .leather-image {
+              width: 35%;
+          }
+      }
   `],
   template: `
       <ng-container *transloco="let t">
@@ -202,7 +223,12 @@ import { ErrorHandler } from 'src/app/common/error-handler';
                           <mat-error>{{errors.address}}</mat-error>
                       </mat-form-field>
 
-                      <button type="button" (click)="submit()" mat-raised-button color="primary">
+                      <button type="button"
+                              color="primary"
+                              mat-raised-button
+                              [class.spinner]="isSubmitting"
+                              [disabled]="isSubmitting"
+                              (click)="submit()">
                           {{t('submit')}}
                       </button>
                   </form>
@@ -288,6 +314,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
   orderForm: FormGroup;
   errors: any = {};
   uns$ = new Subject();
+  isSubmitting = false;
 
 
   constructor(
@@ -296,7 +323,8 @@ export class CheckoutComponent implements OnInit, OnDestroy {
     private router: Router,
     private bottomSheet: MatBottomSheet,
     private snackbar: MatSnackBar,
-    private eh: ErrorHandler
+    private eh: ErrorHandler,
+    private transloco: TranslocoService
   ) {
   }
 
@@ -407,12 +435,14 @@ export class CheckoutComponent implements OnInit, OnDestroy {
 
 
   submit() {
+    this.isSubmitting = true;
     if (this.orderForm.invalid) {
       this.orderForm.markAllAsTouched();
-      this.snackbar.open('Ju lutem plotësoni të dhënat!', 'OK', {
+      this.snackbar.open(this.transloco.translate('fill in details warning'), 'OK', {
         verticalPosition: 'bottom', horizontalPosition: 'right', duration: 3000,
         panelClass: 'warning-snackbar'
       });
+      this.isSubmitting = false;
       return;
     }
 
@@ -421,12 +451,13 @@ export class CheckoutComponent implements OnInit, OnDestroy {
     const orderUnits = Array.from(this.productsInCart.getValue());
     if (orderUnits.length === 0) {
       this.snackbar.open(
-        'Nuk mund të dërgoni një porosi pa zgjedhur asnjë produkt!',
+        'cart empty warning',
         'OK',
         {
           verticalPosition: 'bottom', horizontalPosition: 'right', duration: 3000,
           panelClass: 'warning-snackbar'
         });
+      this.isSubmitting = false;
       return;
     }
 
@@ -440,6 +471,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
 
 
   onSuccess(order: Order) {
+    this.isSubmitting = false;
     this.productsInCart.next([]);
     clearCart();
     this.orderService.orderFormValue = null;
@@ -449,6 +481,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
 
 
   onError(err) {
+    this.isSubmitting = false;
     const message = err.message ? err.message : 'Ka ndodhur një gabim, ju lutem provoni përsëri!';
     const config: MatSnackBarConfig = {
       horizontalPosition: 'right', duration: 3000, verticalPosition: 'bottom', panelClass: 'danger-snackbar'

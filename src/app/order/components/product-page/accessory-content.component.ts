@@ -5,33 +5,50 @@ import { AccessoryProduct } from 'src/app/order/order.model';
 @Component({
   selector: 'app-accessory-content',
   styles: [`
-      .code-input {
+      .grid {
+          min-height: 100%;
           display: flex;
+          flex-wrap: wrap;
+          flex-direction: row;
+      }
+
+      .grid > div {
+          display: flex;
+          flex-basis: calc(33.33% - 14px);
           justify-content: center;
-          align-items: center;
-          padding-bottom: 10px;
+          flex-direction: column;
       }
 
-      .code-input label {
-          font-size: 18px;
+      .grid > div:last-child {
+          display: flex;
+          margin-top: 0;
+          flex-basis: calc(100% - 22px);
+          justify-content: center;
+          flex-direction: column;
       }
 
-      .quantity-input {
-          width: unset;
-          height: 40px;
+      .box {
+          margin: 10px 0 10px 10px
+      }
+
+      .box:hover {
+          border: 3px solid rgba(27, 163, 30, 0.4);
+          transform: scale(1.15);
+      }
+
+      button:focus {
+          border: 3px solid rgba(27, 163, 30, 0.5);
+          transform: scale(1.15);
       }
   `],
   template: `
       <ng-container *transloco="let t">
-          <div class="code-input" (click)="$event.stopPropagation()">
-              <label for="code">{{t('code')}}:</label>&nbsp;
-              <input (input)="product.properties.code = code.value"
-                     #code
-                     type="text"
-                     value=""
-                     class="quantity-input"
-                     placeholder="{{t('write code here')}}..."
-                     id="code">
+          <div class="grid">
+              <button *ngFor="let code of product.properties.codes"
+                      (click)="product.properties.code = code"
+                      mat-stroked-button
+                      color="primary"
+                      class="box">{{code}}</button>
           </div>
       </ng-container>
   `
