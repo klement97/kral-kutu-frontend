@@ -342,6 +342,14 @@ export class ProductPageComponent implements OnInit, AfterViewInit, OnDestroy {
    * @param addedToCartIcon   Respective icon of the product, if already in cart
    */
   addProductToCart(product: Product, quantity: string, addToCartIcon?, addedToCartIcon?) {
+    if (product.category.name.toLowerCase() === 'accessory') {
+      if (!product.properties.code || !product.properties.codes.includes(product.properties.code)) {
+        // For an accessory type of product, a code must be selected from `codes`
+        this.snackbar.open(this.transloco.translate('select a code warning'));
+        return;
+      }
+    }
+
     // Generating a hash here to check if the product is already in cart
     const hash = hashCodeFromProduct(product);
 

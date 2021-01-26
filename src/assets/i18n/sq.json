@@ -52,5 +52,8 @@
   "Premium Table": "Tabaka Premium",
   "Service Table": "Tabaka shërbimi",
   "Accessory": "Aksesor",
-  "Display": "Vitrina"
+  "Display": "Vitrina",
+  "select a code warning": "Ju lutemi zgjidhni një kod",
+  "fill in details warning": "Ju lutem plotësoni të dhënat!",
+  "cart empty warning": "Na vjen keq, nuk mund të dërgojmë një porosi pa zgjedhur asnjë produkt!"
 }

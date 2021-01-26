@@ -52,5 +52,8 @@
   "Premium Table": "Premium Table",
   "Service Table": "Service Table",
   "Accessory": "Accessory",
-  "Display": "Display"
+  "Display": "Display",
+  "select a code warning": "Please select a code from the list",
+  "fill in details warning": "Please fill in the details",
+  "cart empty warning": "Sorry, the cart is empty, we can not proceed with an order without any products."
 }

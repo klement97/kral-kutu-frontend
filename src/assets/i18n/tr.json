@@ -52,5 +52,8 @@
   "Premium Table": "Premium Tablalar",
   "Service Table": "Servis Tablası",
   "Accessory": "Aksesör",
-  "Display": "Vitrin"
+  "Display": "Vitrin",
+  "select a code warning": "Lütfen bir kod seçiniz",
+  "fill in details warning": "Lütfen formu doldurunuz",
+  "cart empty warning": "Üzgünüz, hiç bir ürün seçmediniz!"
 }
