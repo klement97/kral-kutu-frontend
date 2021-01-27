@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { LeatherSelectComponent } from 'src/app/order/components/checkout-page/leather-select.component';
 
@@ -6,7 +6,7 @@ describe('LeatherSelectComponent', () => {
   let component: LeatherSelectComponent;
   let fixture: ComponentFixture<LeatherSelectComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ LeatherSelectComponent ]
     })
