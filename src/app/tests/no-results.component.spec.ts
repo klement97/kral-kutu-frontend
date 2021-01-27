@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { NoResultsComponent } from 'src/app/navigation/components/no-results.component';
 
@@ -6,7 +6,7 @@ describe('NoResultsComponent', () => {
   let component: NoResultsComponent;
   let fixture: ComponentFixture<NoResultsComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ NoResultsComponent ]
     })

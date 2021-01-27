@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { RouterLoaderComponent } from 'src/app/navigation/components/router-loader.component';
 
@@ -6,7 +6,7 @@ describe('RouterLoaderComponent', () => {
   let component: RouterLoaderComponent;
   let fixture: ComponentFixture<RouterLoaderComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ RouterLoaderComponent ]
     })
