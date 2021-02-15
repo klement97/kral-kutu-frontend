@@ -351,6 +351,11 @@ export class ProductPageComponent implements OnInit, AfterViewInit, OnDestroy {
           {panelClass: 'warning-snackbar', duration: 2500},
         );
         return;
+      } else {
+        // If code is selected then find the price from properties.prices
+        const selectedCode = product.properties.code;
+        const selectedCodeIndex = product.properties.codes.findIndex(code => code === selectedCode);
+        product.price = product.properties.prices[selectedCodeIndex];
       }
     }
 
