@@ -1,7 +1,7 @@
-import {formatDate} from '@angular/common';
-import {BehaviorSubject} from 'rxjs';
-import {MatPaginator} from '@angular/material/paginator';
-import {Product} from 'src/app/order/order.model';
+import { formatDate } from '@angular/common';
+import { BehaviorSubject } from 'rxjs';
+import { MatPaginator } from '@angular/material/paginator';
+import { Product } from 'src/app/order/order.model';
 
 
 export const productsInCart = new BehaviorSubject([]);
@@ -105,7 +105,7 @@ export function deepCopy(obj: any) {
 
 
 export function composeOrderUnit(product, quantity, hash) {
-  return {product: deepCopy(product), quantity, hash};
+  return {product: deepCopy(product), quantity, price: product.price, hash};
 }
 
 

@@ -44,11 +44,11 @@ import { AccessoryProduct } from 'src/app/order/order.model';
   template: `
       <ng-container *transloco="let t">
           <div class="grid">
-              <button *ngFor="let code of product.properties.codes"
+              <button *ngFor="let code of product.properties.codes; let i=index;"
                       (click)="product.properties.code = code"
                       mat-stroked-button
                       color="primary"
-                      class="box">{{code}}</button>
+                      class="box">{{code}} - {{product.properties.prices[i] | number | prefix: '$'}}</button>
           </div>
       </ng-container>
   `
