@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Order } from '../../order.model';
 import { ActivatedRoute } from '@angular/router';
 import { OrderService } from '../../services/order.service';
@@ -162,7 +162,11 @@ import { OrderService } from '../../services/order.service';
                   </tr>
 
                   <tr class="item" *ngFor="let product of order.products">
-                      <td>{{product.code}}</td>
+                      <td>
+                          <span style="font-weight: bold">{{product.code}}</span><br>
+                          <span>{{product.notes}}</span><br>
+                          <span>{{product | dimensions}}</span>
+                      </td>
                       <td>{{product.quantity}}</td>
                       <td id="align-right">{{product.price | currency: 'USD' : 'symbol'}}</td>
                       <td id="align-right">{{(product.price * product.quantity) | currency: 'USD' : 'symbol'}}</td>
@@ -172,7 +176,7 @@ import { OrderService } from '../../services/order.service';
                       <td></td>
                       <td></td>
                       <td></td>
-                      <td id="align-right">Total: {{totalPrice | currency: 'USD' : 'symbol'}}</td>
+                      <td id="align-right">{{t('total')}}: {{totalPrice | currency: 'USD' : 'symbol'}}</td>
                   </tr>
               </table>
           </div>
@@ -212,6 +216,7 @@ export class InvoiceComponent implements OnInit {
 
 
   calculateTotal(products) {
+    console.log(products);
     this.totalPrice = 0;
     for (const unit of products) {
       const price = parseFloat(unit.price);
