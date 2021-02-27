@@ -216,7 +216,6 @@ export class InvoiceComponent implements OnInit {
 
 
   calculateTotal(products) {
-    console.log(products);
     this.totalPrice = 0;
     for (const unit of products) {
       const price = parseFloat(unit.price);
