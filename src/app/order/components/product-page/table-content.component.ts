@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { TableProduct } from 'src/app/order/order.model';
 
 
@@ -107,9 +107,8 @@ export class TableContentComponent implements OnInit {
         inputEl.value = this.valuesCache[name];
       }
     };
-    inputEl.removeEventListener('focusout', restoreValue);
     this.cacheCleanFocus(inputEl, name);
-    inputEl.addEventListener('focusout', restoreValue);
+    inputEl.addEventListener('focusout', restoreValue, {once: true});
   }
 
 
