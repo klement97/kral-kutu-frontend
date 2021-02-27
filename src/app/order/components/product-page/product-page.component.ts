@@ -2,8 +2,6 @@ import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular
 import { OrderService } from 'src/app/order/services/order.service';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { MatBottomSheet } from '@angular/material/bottom-sheet';
-import { ProductDetailComponent } from 'src/app/order/components/product-page/product-detail.component';
 import {
   composeOrderUnit,
   FIRST_CATEGORY_TO_FILTER,
@@ -19,6 +17,8 @@ import { Product } from 'src/app/order/order.model';
 import { MatPaginator } from '@angular/material/paginator';
 import { distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { ActivatedRoute, Router } from '@angular/router';
+import { ProductImageComponent } from 'src/app/order/components/product-page/product-image.component';
+import { MatDialog } from '@angular/material/dialog';
 
 
 @Component({
@@ -212,7 +212,7 @@ export class ProductPageComponent implements OnInit, AfterViewInit, OnDestroy {
   constructor(
     private orderService: OrderService,
     private fb: FormBuilder,
-    private bottomSheet: MatBottomSheet,
+    private dialog: MatDialog,
     private snackbar: MatSnackBar,
     private transloco: TranslocoService,
     private route: ActivatedRoute,
@@ -324,12 +324,7 @@ export class ProductPageComponent implements OnInit, AfterViewInit, OnDestroy {
 
 
   openProductDetails(product): void {
-    this.bottomSheet.open(ProductDetailComponent, {data: product, panelClass: 'no-top-padding'})
-      .afterDismissed().subscribe(((result: { addToCart: boolean, quantity: number }) => {
-      if (result?.addToCart) {
-        this.addProductToCart(product, result.quantity.toString());
-      }
-    }));
+    this.dialog.open(ProductImageComponent, {data: product, panelClass: 'no-top-padding'});
   }
 
 
