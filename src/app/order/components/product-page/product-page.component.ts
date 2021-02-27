@@ -124,7 +124,7 @@ import { ActivatedRoute, Router } from '@angular/router';
                                                  [product]="product"></app-accessory-content>
                           </span>
                           <span class="card-content">
-                              <div>
+                              <div (click)="autoFocusNotes()">
                               <button mat-icon-button [matMenuTriggerFor]="menu" id="menuTrigger" color="primary">
                                   <mat-icon>add_comment</mat-icon>
                               </button>
@@ -144,7 +144,8 @@ import { ActivatedRoute, Router } from '@angular/router';
                                                   matInput
                                                   autofocus
                                                   autocomplete="off"
-                                                  autocapitalize="off"></textarea>
+                                                  autocapitalize="off"
+                                                  class="notes-text-area"></textarea>
                                     </mat-form-field>
                                 </ng-template>
                             </mat-menu>
@@ -445,6 +446,13 @@ export class ProductPageComponent implements OnInit, AfterViewInit, OnDestroy {
         input.value = '10000';
       }
     }, 200);
+  }
+
+
+  autoFocusNotes() {
+    const textAreaEl: HTMLTextAreaElement = document.getElementsByClassName(
+      'notes-text-area')[0] as HTMLTextAreaElement;
+    textAreaEl.focus();
   }
 
 }
