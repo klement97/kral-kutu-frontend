@@ -260,7 +260,7 @@ import { TranslocoService } from '@ngneat/transloco';
 
                           <!-- CARD CONTENT -->
                           <div class="card-content">
-                              <h4>{{unit.product.properties.code}}</h4>
+                              <h4>{{unit.product.properties.code.toUpperCase()}}</h4>
                               <div class="dimensions">
                                   <div class="size">
                                       <span>{{unit.product.properties.width | number}}</span> <img
@@ -411,7 +411,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
   patchLeather(identifier: 'inner_leather' | 'outer_leather', result: LeatherSelectResult) {
     const entries = fromEntries([
       [identifier, result.leather.id],
-      [`${identifier}_str`, `${result.leatherSerial.name} ${result.leather.code}`],
+      [`${identifier}_str`, `${result.leatherSerial.name} ${result.leather.code.toUpperCase()}`],
       [`${identifier}_img`, result.leather.image]
     ]);
     this.orderForm.patchValue(entries);

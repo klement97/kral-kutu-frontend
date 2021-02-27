@@ -62,7 +62,7 @@ import { TableProduct } from 'src/app/order/order.model';
   `],
   template: `
       <div class="content">
-          <h4>{{product.properties.code}}</h4>
+          <h4>{{product.properties.code.toUpperCase()}}</h4>
           <div class="dimensions" *ngIf="product.properties as props">
               <!-- Width Input -->
               <div class="size" (click)="width.focus()">

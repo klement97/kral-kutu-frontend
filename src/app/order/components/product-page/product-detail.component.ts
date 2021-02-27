@@ -82,7 +82,7 @@ import { Product } from 'src/app/order/order.model';
       <ng-container *transloco="let t">
           <div>
               <mat-card class="title sticky mat-elevation-z1">
-                  <h2>{{product.properties.code}}</h2>
+                  <h2>{{product.properties.code.toUpperCase()}}</h2>
                   <!-- Close button -->
                   <button mat-icon-button color="warn" (click)="closeBottomSheet()">
                       <mat-icon>close</mat-icon>
@@ -107,7 +107,7 @@ import { Product } from 'src/app/order/order.model';
                           <th *ngIf="product.properties.length">{{t('length')}}</th>
                       </tr>
                       <tr>
-                          <td *ngIf="product.properties.code">{{product.properties.code}}</td>
+                          <td *ngIf="product.properties.code">{{product.properties.code.toUpperCase()}}</td>
                           <td *ngIf="product.price as price">{{price | number | prefix: '$'}}</td>
                           <th *ngIf="product.properties.weight as weight">{{weight | number}}</th>
                           <td *ngIf="product.properties.height as height">{{height | number}}cm</td>

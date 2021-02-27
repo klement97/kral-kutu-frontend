@@ -125,7 +125,7 @@ import { OrderService } from '../../services/order.service';
 
                                   <td>
                                       {{t('invoice')}}: ITG-{{orderID}}<br>
-                                      {{t('created')}}: {{order.date_created | date: 'd/M/yyyy h:mm'}}<br>
+                                      {{t('created')}}: {{order.date_created | date: 'd/M/yyyy H:mm'}}<br>
                                   </td>
                               </tr>
                           </table>
@@ -163,8 +163,8 @@ import { OrderService } from '../../services/order.service';
 
                   <tr class="item" *ngFor="let product of order.products">
                       <td>
-                          <span style="font-weight: bold">{{product.code}}</span><br>
-                          <span>{{product.notes}}</span><br>
+                          <span style="font-weight: bold">{{product.code.toUpperCase()}}<br></span>
+                          <span>{{product.notes}}<br></span>
                           <span>{{product | dimensions}}</span>
                       </td>
                       <td>{{product.quantity}}</td>
