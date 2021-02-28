@@ -353,15 +353,15 @@ export class CheckoutComponent implements OnInit, OnDestroy {
 
   initializeOrderForm() {
     this.orderForm = this.fb.group({
-      first_name: ['k', [Validators.required, Validators.maxLength(50)]],
-      last_name: ['k', [Validators.required, Validators.maxLength(50)]],
-      phone: ['12', [Validators.required, Validators.maxLength(20)]],
-      address: ['12', [Validators.maxLength(254)]],
+      first_name: ['', [Validators.required, Validators.maxLength(50)]],
+      last_name: ['', [Validators.required, Validators.maxLength(50)]],
+      phone: ['', [Validators.required, Validators.maxLength(20)]],
+      address: ['', [Validators.maxLength(254)]],
       products: [[]],   // not required, will be checked manually
-      inner_leather: [1, [Validators.required]],
+      inner_leather: [null, [Validators.required]],
       inner_leather_str: '',  // helper field
       inner_leather_img: '../../../assets/images/white.png', // helper field
-      outer_leather: [1, [Validators.required]],
+      outer_leather: [null, [Validators.required]],
       outer_leather_str: '',
       outer_leather_img: '../../../assets/images/white.png',
     });
