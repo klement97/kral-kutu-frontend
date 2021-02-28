@@ -260,7 +260,7 @@ import { TranslocoService } from '@ngneat/transloco';
 
                           <!-- CARD CONTENT -->
                           <div class="card-content">
-                              <h4>{{unit.product.properties.code}}</h4>
+                              <h4>{{unit.product.properties.code.toUpperCase()}}</h4>
                               <div class="dimensions">
                                   <div class="size">
                                       <span>{{unit.product.properties.width | number}}</span> <img
@@ -353,15 +353,15 @@ export class CheckoutComponent implements OnInit, OnDestroy {
 
   initializeOrderForm() {
     this.orderForm = this.fb.group({
-      first_name: ['', [Validators.required, Validators.maxLength(50)]],
-      last_name: ['', [Validators.required, Validators.maxLength(50)]],
-      phone: ['', [Validators.required, Validators.maxLength(20)]],
-      address: ['', [Validators.maxLength(254)]],
+      first_name: ['k', [Validators.required, Validators.maxLength(50)]],
+      last_name: ['k', [Validators.required, Validators.maxLength(50)]],
+      phone: ['12', [Validators.required, Validators.maxLength(20)]],
+      address: ['12', [Validators.maxLength(254)]],
       products: [[]],   // not required, will be checked manually
-      inner_leather: [null, [Validators.required]],
+      inner_leather: [1, [Validators.required]],
       inner_leather_str: '',  // helper field
       inner_leather_img: '../../../assets/images/white.png', // helper field
-      outer_leather: [null, [Validators.required]],
+      outer_leather: [1, [Validators.required]],
       outer_leather_str: '',
       outer_leather_img: '../../../assets/images/white.png',
     });
@@ -411,7 +411,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
   patchLeather(identifier: 'inner_leather' | 'outer_leather', result: LeatherSelectResult) {
     const entries = fromEntries([
       [identifier, result.leather.id],
-      [`${identifier}_str`, `${result.leatherSerial.name} ${result.leather.code}`],
+      [`${identifier}_str`, `${result.leatherSerial.name} ${result.leather.code.toUpperCase()}`],
       [`${identifier}_img`, result.leather.image]
     ]);
     this.orderForm.patchValue(entries);

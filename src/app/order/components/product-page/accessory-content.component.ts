@@ -48,7 +48,7 @@ import { AccessoryProduct } from 'src/app/order/order.model';
                       (click)="product.properties.code = code"
                       mat-stroked-button
                       color="primary"
-                      class="box">{{code}} - {{product.properties.prices[i] | number | prefix: '$'}}</button>
+                      class="box">{{code.toUpperCase()}} - {{product.properties.prices[i] | number | prefix: '$'}}</button>
           </div>
       </ng-container>
   `

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { TableProduct } from 'src/app/order/order.model';
 
 
@@ -62,24 +62,24 @@ import { TableProduct } from 'src/app/order/order.model';
   `],
   template: `
       <div class="content">
-          <h4>{{product.properties.code}}</h4>
+          <h4>{{product.properties.code.toUpperCase()}}</h4>
           <div class="dimensions" *ngIf="product.properties as props">
               <!-- Width Input -->
-              <div class="size" (click)="width.focus()">
+              <div class="size" (click)="autoClean(width, 'width')">
                   <input type="number" class="quantity-input" [value]="props.width | number" #width
                          (input)="props.width = width.value">
                   <img src="../../../../assets/images/width-arrow.svg" [alt]="'width-icon' | imageAlt">
                   <span class="metric-hint">(cm)</span>
               </div>
               <!-- Length Input -->
-              <div class="size length-dimension" (click)="length.focus()">
+              <div class="size length-dimension" (click)="autoClean(length, 'length')">
                   <input type="number" class="quantity-input" [value]="props.length | number" #length
                          (input)="props.length = length.value">
                   <img src="../../../../assets/images/depth-arrow.svg" [alt]="'length-icon' | imageAlt">
                   <span class="metric-hint">(cm)</span>
               </div>
               <!-- Height Input -->
-              <div class="size" (click)="height.focus()">
+              <div class="size" (click)="autoClean(height, 'height')">
                   <input type="number" class="quantity-input" [value]="props.height | number" #height
                          (input)="props.height = height.value">
                   <img src="../../../../assets/images/height-arrow.svg" [alt]="'height-icon' | imageAlt">
@@ -91,12 +91,31 @@ import { TableProduct } from 'src/app/order/order.model';
 })
 export class TableContentComponent implements OnInit {
   @Input() product: TableProduct;
+  valuesCache = {};
 
 
   constructor() { }
 
 
   ngOnInit(): void {
+  }
+
+
+  autoClean(inputEl: HTMLInputElement, name: string): void {
+    const restoreValue = () => {
+      if (!inputEl.value) {
+        inputEl.value = this.valuesCache[name];
+      }
+    };
+    this.cacheCleanFocus(inputEl, name);
+    inputEl.addEventListener('focusout', restoreValue, {once: true});
+  }
+
+
+  cacheCleanFocus(inputEl: HTMLInputElement, name: string) {
+    this.valuesCache[name] = inputEl.value;
+    inputEl.value = null;
+    inputEl.focus();
   }
 
 }

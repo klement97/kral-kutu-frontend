@@ -8,7 +8,6 @@ import { TranslocoRootModule } from 'src/app/transloco-root.module';
 import { MatCardModule } from '@angular/material/card';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatButtonModule } from '@angular/material/button';
-import { ProductDetailComponent } from 'src/app/order/components/product-page/product-detail.component';
 import { MatBottomSheetModule } from '@angular/material/bottom-sheet';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
@@ -31,13 +30,14 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { SelectButtonComponent } from 'src/app/order/components/checkout-page/select-button.component';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatBadgeModule } from '@angular/material/badge';
-import {InvoiceComponent} from './components/checkout-page/invoice.component';
+import { InvoiceComponent } from './components/checkout-page/invoice.component';
+import { ProductImageComponent } from 'src/app/order/components/product-page/product-image.component';
+import { MatDialogModule } from '@angular/material/dialog';
 
 
 @NgModule({
   declarations: [
     ProductPageComponent,
-    ProductDetailComponent,
     CheckoutComponent,
     CheckoutButtonComponent,
     PostCheckoutPageComponent,
@@ -47,7 +47,8 @@ import {InvoiceComponent} from './components/checkout-page/invoice.component';
     OrderReviewTableComponent,
     LeatherSelectComponent,
     SelectButtonComponent,
-    InvoiceComponent
+    InvoiceComponent,
+    ProductImageComponent
   ],
   imports: [
     SharedModule,
@@ -69,7 +70,8 @@ import {InvoiceComponent} from './components/checkout-page/invoice.component';
     MatPaginatorModule,
     MatExpansionModule,
     MatMenuModule,
-    MatBadgeModule
+    MatBadgeModule,
+    MatDialogModule,
   ]
 })
 export class OrderModule {}

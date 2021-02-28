@@ -10,6 +10,7 @@ import { NoResultsComponent } from 'src/app/navigation/components/no-results.com
 import { TranslocoModule } from '@ngneat/transloco';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
+import { DimensionsPipe } from './dimensions.pipe';
 
 
 @NgModule({
@@ -18,14 +19,16 @@ import { MatIconModule } from '@angular/material/icon';
     PrefixPipe,
     IfNotNullPipe,
     ContentLoaderComponent,
-    NoResultsComponent
+    NoResultsComponent,
+    DimensionsPipe
   ],
   exports: [
     ImageAltPipe,
     PrefixPipe,
     IfNotNullPipe,
     ContentLoaderComponent,
-    NoResultsComponent
+    NoResultsComponent,
+    DimensionsPipe
   ],
   imports: [
     CommonModule,

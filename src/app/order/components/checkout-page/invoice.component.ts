@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Order } from '../../order.model';
 import { ActivatedRoute } from '@angular/router';
 import { OrderService } from '../../services/order.service';
@@ -35,6 +35,10 @@ import { OrderService } from '../../services/order.service';
           text-align: right;
       }
 
+      #align-right {
+          text-align: right;
+      }
+
       .invoice-box table tr.top table td {
           padding-bottom: 20px;
       }
@@ -67,7 +71,7 @@ import { OrderService } from '../../services/order.service';
           border-bottom: none;
       }
 
-      .invoice-box table tr.total td:nth-child(2) {
+      .invoice-box table tr.total td:nth-child(4) {
           border-top: 2px solid #eee;
           font-weight: bold;
       }
@@ -111,7 +115,7 @@ import { OrderService } from '../../services/order.service';
           <div class="invoice-box" *ngIf="order else loading">
               <table cellpadding="0" cellspacing="0">
                   <tr class="top">
-                      <td colspan="2">
+                      <td colspan="4">
                           <table>
                               <tr>
                                   <td class="title">
@@ -121,7 +125,7 @@ import { OrderService } from '../../services/order.service';
 
                                   <td>
                                       {{t('invoice')}}: ITG-{{orderID}}<br>
-                                      {{t('created')}}: {{order.date_created | date: 'd/M/yyyy h:mm'}}<br>
+                                      {{t('created')}}: {{order.date_created | date: 'd/M/yyyy H:mm'}}<br>
                                   </td>
                               </tr>
                           </table>
@@ -129,7 +133,7 @@ import { OrderService } from '../../services/order.service';
                   </tr>
 
                   <tr class="information">
-                      <td colspan="2">
+                      <td colspan="4">
                           <table>
                               <tr>
                                   <td>
@@ -148,50 +152,31 @@ import { OrderService } from '../../services/order.service';
                           </table>
                       </td>
                   </tr>
-
-                  <tr class="heading">
-                      <td>
-                          {{t('payment method')}}
-                      </td>
-                      <td></td>
-                  </tr>
-
-                  <tr class="item">
-                      <td>BKT</td>
-                      <td>IB09090123131BI</td>
-                  </tr>
                   <br>
 
                   <tr class="heading">
-                      <td>
-                          {{t('item')}}
-                      </td>
-
-                      <td>
-                          {{t('quantity')}} & {{t('price')}}
-                      </td>
+                      <td>{{t('item')}}</td>
+                      <td>{{t('quantity')}}</td>
+                      <td id="align-right">{{t('price')}}</td>
+                      <td id="align-right">{{t('sub total')}}</td>
                   </tr>
 
                   <tr class="item" *ngFor="let product of order.products">
                       <td>
-                          {{product.code}}
+                          <span style="font-weight: bold">{{product.code.toUpperCase()}}<br></span>
+                          <span>{{product.notes}}<br></span>
+                          <span>{{product | dimensions}}</span>
                       </td>
-
-                      <td>
-                          {{product.quantity}}
-                          x
-                          {{product.price | currency: 'USD' : 'symbol'}}
-                          =
-                          {{(product.price * product.quantity) | currency: 'USD' : 'symbol'}}
-                      </td>
+                      <td>{{product.quantity}}</td>
+                      <td id="align-right">{{product.price | currency: 'USD' : 'symbol'}}</td>
+                      <td id="align-right">{{(product.price * product.quantity) | currency: 'USD' : 'symbol'}}</td>
                   </tr>
 
                   <tr class="total">
                       <td></td>
-
-                      <td>
-                          Total: {{totalPrice | currency: 'USD' : 'symbol'}}
-                      </td>
+                      <td></td>
+                      <td></td>
+                      <td id="align-right">{{t('total')}}: {{totalPrice | currency: 'USD' : 'symbol'}}</td>
                   </tr>
               </table>
           </div>
@@ -232,9 +217,9 @@ export class InvoiceComponent implements OnInit {
 
   calculateTotal(products) {
     this.totalPrice = 0;
-    console.log(this.order);
     for (const unit of products) {
-      this.totalPrice += unit.price;
+      const price = parseFloat(unit.price);
+      this.totalPrice += price;
     }
   }
 

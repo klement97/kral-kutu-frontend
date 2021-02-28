@@ -88,7 +88,7 @@ import { takeUntil } from 'rxjs/operators';
                        [alt]="orderUnit.product.image | imageAlt"
                        width="80px" height="70px" class="cart-item-image">
                   <span style="display: inline-flex; flex-direction: column">
-                      <span *ngIf="orderUnit.product.properties.code as code" style="color: grey"><b>{{code}}</b></span>
+                      <span *ngIf="orderUnit.product.properties.code as code" style="color: grey"><b>{{code.toUpperCase()}}</b></span>
                       <span style="color: #474747">
                           {{orderUnit.product.price | number | prefix: '$'}}
                           x
