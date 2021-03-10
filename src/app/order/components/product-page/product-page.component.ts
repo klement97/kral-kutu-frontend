@@ -3,8 +3,10 @@ import { OrderService } from 'src/app/order/services/order.service';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import {
+  activeCategories,
   composeOrderUnit,
   FIRST_CATEGORY_TO_FILTER,
+  FIRST_SUB_CATEGORY_TO_FILTER,
   hashCodeFromProduct,
   IDNameModel,
   positiveIntegerWithZeroRegex,
@@ -13,10 +15,10 @@ import {
 } from 'src/app/common/const';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslocoService } from '@ngneat/transloco';
-import { Product } from 'src/app/order/order.model';
+import { Product, ProductCategory } from 'src/app/order/order.model';
 import { MatPaginator } from '@angular/material/paginator';
 import { distinctUntilChanged, takeUntil } from 'rxjs/operators';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { ProductImageComponent } from 'src/app/order/components/product-page/product-image.component';
 import { MatDialog } from '@angular/material/dialog';
 
@@ -88,11 +90,11 @@ import { MatDialog } from '@angular/material/dialog';
                   <button mat-icon-button matPrefix (click)="code.value = ''">
                       <mat-icon>search</mat-icon>
                   </button>
+                  <div id="navigator"></div>
               </mat-form-field>
           </mat-card>
 
           <!-- Product categories tab switcher -->
-          <div id="navigator"></div>
           <app-content-loader *ngIf="isCategoriesLoading"></app-content-loader>
           <ng-container *ngIf="productCategories.length > 0">
               <app-product-category-tabs [categories]="productCategories"></app-product-category-tabs>
@@ -199,7 +201,7 @@ export class ProductPageComponent implements OnInit, AfterViewInit, OnDestroy {
   // an array of random numbers to be used as skeleton loaders
   skeletonProducts = [...Array(12)].map(() => Math.random());
   productsCount = 0;
-  productCategories: IDNameModel[] = [];
+  productCategories: ProductCategory[] = [];
   productFilterForm: FormGroup;
   isProductsLoading = false;
   isCategoriesLoading = false;
@@ -216,23 +218,20 @@ export class ProductPageComponent implements OnInit, AfterViewInit, OnDestroy {
     private snackbar: MatSnackBar,
     private transloco: TranslocoService,
     private route: ActivatedRoute,
-    private router: Router,
   ) {
   }
 
 
   ngOnInit(): void {
-    this.getProductCategories();
+    this.getProductsAndCategories();
     this.productFilterForm = this.getProductFilterForm();
     this.productsInCart = productsInCart;
   }
 
 
   ngAfterViewInit() {
-    this.getProducts();
     this.searchCode();
     this.watchQueryParams();
-    this.watchCategory();
   }
 
 
@@ -242,20 +241,10 @@ export class ProductPageComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
 
-  watchCategory() {
-    this.productFilterForm.get('category').valueChanges.subscribe(category => {
-      const queryParam = {category};
-      this.router.navigate([''], {queryParams: {...queryParam}, replaceUrl: true}).then();
-    });
-  }
-
-
   watchQueryParams() {
-    this.route.queryParams.subscribe((params: { category: string }) => {
-      if (params.category) {
-        this.filterByCategory({id: +params.category, name: ''});
-      }
-    });
+    activeCategories
+      .pipe(takeUntil(this.uns$))
+      .subscribe(categories => this.filterByCategory(categories.category, categories.sub_category));
   }
 
 
@@ -271,28 +260,20 @@ export class ProductPageComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
 
-  getProductCategories() {
+  getProductsAndCategories() {
     this.isCategoriesLoading = true;
+    this.isProductsLoading = true;
     this.orderService.getProductCategories().subscribe(
       categories => {
         this.productCategories = categories;
         this.isCategoriesLoading = false;
+        this.getProducts();
       }, () => this.isCategoriesLoading = false
     );
   }
 
 
-  getProductFilterForm(): FormGroup {
-    let category = +this.route.snapshot.queryParamMap.get('category');
-    if (!category) {
-      category = FIRST_CATEGORY_TO_FILTER.id;
-    }
-    return this.fb.group({code: '', category});
-  }
-
-
   getProducts() {
-    this.isProductsLoading = true;
     this.orderService.getProducts(this.paginator, this.productFilterForm.value).subscribe(
       res => {
         this.products = res.results;
@@ -300,26 +281,42 @@ export class ProductPageComponent implements OnInit, AfterViewInit, OnDestroy {
         this.isProductsLoading = false;
         const navigator = document.getElementById('navigator');
         if (navigator) {
-          navigator.scrollIntoView(true);
+          navigator.scrollIntoView({behavior: 'smooth'});
         }
       }, () => this.isProductsLoading = false);
   }
 
 
-  filterByCategory(category: IDNameModel) {
-    if (this.productFilterForm.value.category !== category.id) {
-      this.productFilterForm.get('category').patchValue(category.id);
-      this.paginator.pageIndex = 0;
-      this.getProducts();
+  getProductFilterForm(): FormGroup {
+    const paramMap = this.route.snapshot.queryParamMap;
+    let category = +paramMap.get('category');
+    if (!category) {
+      category = FIRST_CATEGORY_TO_FILTER.id;
     }
+    let sub_category = +paramMap.get('sub_category');
+    if (!sub_category) {
+      sub_category = FIRST_SUB_CATEGORY_TO_FILTER.id;
+    }
+    return this.fb.group({code: '', category, sub_category});
+  }
+
+
+  filterByCategory(category: ProductCategory, sub_category: IDNameModel = null) {
+    if (category && this.productFilterForm.value.category !== category.id) {
+      this.productFilterForm.get('category').patchValue(category.id);
+    }
+    if (sub_category && this.productFilterForm.value.sub_category !== sub_category.id) {
+      this.productFilterForm.get('sub_category').patchValue(sub_category.id);
+    }
+    this.paginator.pageIndex = 0;
+    this.getProducts();
   }
 
 
   filterByCode(code, category) {
     this.paginator.pageIndex = 0;
-    this.orderService.getProductsByCode(this.paginator, {code, category}).subscribe(
-      response => this.products = response.results
-    );
+    this.orderService.getProductsByCode(this.paginator, {code, category})
+      .subscribe(response => this.products = response.results);
   }
 
 

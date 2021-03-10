@@ -4,7 +4,14 @@ import { MatPaginator } from '@angular/material/paginator';
 import { Product } from 'src/app/order/order.model';
 
 
+export const FIRST_CATEGORY_TO_FILTER = {id: 5, name: 'Accessory', sub_categories: []};
+export const FIRST_SUB_CATEGORY_TO_FILTER = {id: null, name: 'All'};
+
 export const productsInCart = new BehaviorSubject([]);
+export const activeCategories = new BehaviorSubject({
+  category: FIRST_CATEGORY_TO_FILTER,
+  sub_category: FIRST_SUB_CATEGORY_TO_FILTER
+});
 
 export const positiveIntegerRegex = new RegExp('^[1-9]\\d*$');
 export const positiveIntegerWithZeroRegex = new RegExp('^\\d+$');
@@ -12,8 +19,6 @@ export const positiveIntegerWithZeroRegex = new RegExp('^\\d+$');
 export const PRODUCTS_IN_CART = 'kralKutuCartProducts';
 export const MIN_TIME = '00:00:00.000000';
 export const MAX_TIME = '23:59:59.999999';
-
-export const FIRST_CATEGORY_TO_FILTER = {id: 5, name: 'Accessory'};
 
 
 export interface IDNameModel {

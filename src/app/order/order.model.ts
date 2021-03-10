@@ -1,3 +1,6 @@
+import { IDNameModel } from 'src/app/common/const';
+
+
 export interface Order {
   id: number;
   first_name: string;
@@ -67,4 +70,11 @@ export interface LeatherSerial {
 export interface LeatherSelectResult {
   leather: Leather;
   leatherSerial: LeatherSerial;
+}
+
+
+export interface ProductCategory {
+  id: number;
+  name: string;
+  sub_categories: IDNameModel[];
 }
