@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ORDER_URLS } from 'src/app/order/services/urls';
-import { buildQueryString, cacheValue, getFromCache, IDNameModel } from 'src/app/common/const';
+import { buildQueryString, cacheValue, getFromCache } from 'src/app/common/const';
 import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { Leather, LeatherSerial, Order, Product } from 'src/app/order/order.model';
+import { Leather, LeatherSerial, Order, Product, ProductCategory } from 'src/app/order/order.model';
 
 
 @Injectable({
@@ -33,8 +33,8 @@ export class OrderService {
   }
 
 
-  getProductCategories(): Observable<IDNameModel[]> {
-    return this.http.get<IDNameModel[]>(ORDER_URLS.PRODUCT_CATEGORY);
+  getProductCategories(): Observable<ProductCategory[]> {
+    return this.http.get<ProductCategory[]>(ORDER_URLS.PRODUCT_CATEGORY);
   }
 
 
