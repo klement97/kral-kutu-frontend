@@ -50,7 +50,7 @@ import { takeUntil } from 'rxjs/operators';
                           <button *ngFor="let subC of category.sub_categories"
                                   mat-menu-item
                                   routerLinkActive="active"
-                                  (click)="categoryChanged(category, subC)">{{subC.name}}</button>
+                                  (click)="categoryChanged(category, subC)">{{t(subC.name)}}</button>
                       </ng-template>
                   </mat-menu>
               </a>
