@@ -28,15 +28,16 @@ import { AccessoryProduct } from 'src/app/order/order.model';
       }
 
       .box {
-          margin: 10px 0 10px 10px
+          margin: 10px 0 5px 5px;
+          font-size: 12px;
       }
 
       .box:hover {
-          border: 2px solid rgba(27, 163, 30, 0.4);
+          border: 2px inset rgba(27, 163, 30, 0.4);
       }
 
       button:focus {
-          border: 2px solid rgba(27, 163, 30, 0.5);
+          border: 2px inset rgba(27, 163, 30, 0.5);
       }
   `],
   template: `
