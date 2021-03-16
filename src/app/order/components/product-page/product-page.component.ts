@@ -374,6 +374,13 @@ export class ProductPageComponent implements OnInit, AfterViewInit, OnDestroy {
     if (addToCartIcon) {
       this.animate(addToCartIcon, addedToCartIcon);
     }
+
+    if (product.category.name.toLowerCase() === 'accessory') {
+      // Only for accessories, we set the code and price based on the selected one.
+      // After the product is added to the cart successfully we reset the selected code and price.
+      product.properties.code = null;
+      product.price = null;
+    }
   }
 
 

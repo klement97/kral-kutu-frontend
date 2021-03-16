@@ -55,5 +55,16 @@
   "Display": "Vitrin",
   "select a code warning": "Lütfen bir kod seçiniz",
   "fill in details warning": "Lütfen formu doldurunuz",
-  "cart empty warning": "Üzgünüz, hiç bir ürün seçmediniz!"
+  "cart empty warning": "Üzgünüz, hiç bir ürün seçmediniz!",
+  "Bracelet": "Bilezik",
+  "Bust": "Büst",
+  "Chain": "Zincir",
+  "Earring": "Küpe",
+  "Jewel": "Mücevher",
+  "Necklace": "Kolye",
+  "Premium": "Premium",
+  "Ring": "Yüzük",
+  "Service": "Servis",
+  "Set": "Set",
+  "Watch": "Saat"
 }

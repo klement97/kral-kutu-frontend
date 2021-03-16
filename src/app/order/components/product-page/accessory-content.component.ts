@@ -32,13 +32,11 @@ import { AccessoryProduct } from 'src/app/order/order.model';
       }
 
       .box:hover {
-          border: 3px solid rgba(27, 163, 30, 0.4);
-          transform: scale(1.15);
+          border: 2px solid rgba(27, 163, 30, 0.4);
       }
 
       button:focus {
-          border: 3px solid rgba(27, 163, 30, 0.5);
-          transform: scale(1.15);
+          border: 2px solid rgba(27, 163, 30, 0.5);
       }
   `],
   template: `

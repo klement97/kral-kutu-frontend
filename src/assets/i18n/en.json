@@ -55,5 +55,16 @@
   "Display": "Display",
   "select a code warning": "Please select a code from the list",
   "fill in details warning": "Please fill in the details",
-  "cart empty warning": "Sorry, the cart is empty, we can not proceed with an order without any products."
+  "cart empty warning": "Sorry, the cart is empty, we can not proceed with an order without any products.",
+  "Bracelet": "Bracelet",
+  "Bust": "Bust",
+  "Chain": "Chain",
+  "Earring": "Earring",
+  "Jewel": "Jewel",
+  "Necklace": "Necklace",
+  "Premium": "Premium",
+  "Ring": "Ring",
+  "Service": "Service",
+  "Set": "Set",
+  "Watch": "Watch"
 }

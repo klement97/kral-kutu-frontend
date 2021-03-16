@@ -55,5 +55,16 @@
   "Display": "Vitrina",
   "select a code warning": "Ju lutemi zgjidhni një kod",
   "fill in details warning": "Ju lutem plotësoni të dhënat!",
-  "cart empty warning": "Na vjen keq, nuk mund të dërgojmë një porosi pa zgjedhur asnjë produkt!"
+  "cart empty warning": "Na vjen keq, nuk mund të dërgojmë një porosi pa zgjedhur asnjë produkt!",
+  "Bracelet": "Byrzylyk",
+  "Bust": "Bust",
+  "Chain": "Zinxhir",
+  "Earring": "Vëth",
+  "Jewel": "Mix",
+  "Necklace": "Varëse",
+  "Premium": "Premium",
+  "Ring": "Unaza",
+  "Service": "Servis",
+  "Set": "Set",
+  "Watch": "Ora"
 }
