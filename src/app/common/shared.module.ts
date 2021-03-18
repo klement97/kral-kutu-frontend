@@ -11,6 +11,7 @@ import { TranslocoModule } from '@ngneat/transloco';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
 import { DimensionsPipe } from './dimensions.pipe';
+import { LazyImageDirective } from './lazy-image.directive';
 
 
 @NgModule({
@@ -20,7 +21,8 @@ import { DimensionsPipe } from './dimensions.pipe';
     IfNotNullPipe,
     ContentLoaderComponent,
     NoResultsComponent,
-    DimensionsPipe
+    DimensionsPipe,
+    LazyImageDirective
   ],
   exports: [
     ImageAltPipe,
@@ -28,7 +30,8 @@ import { DimensionsPipe } from './dimensions.pipe';
     IfNotNullPipe,
     ContentLoaderComponent,
     NoResultsComponent,
-    DimensionsPipe
+    DimensionsPipe,
+    LazyImageDirective
   ],
   imports: [
     CommonModule,
