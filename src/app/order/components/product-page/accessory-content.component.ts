@@ -36,7 +36,7 @@ import { AccessoryProduct } from 'src/app/order/order.model';
           border: 2px inset rgba(27, 163, 30, 0.4);
       }
 
-      button:focus {
+      .button-focus {
           border: 2px inset rgba(27, 163, 30, 0.5);
       }
   `],
@@ -44,10 +44,13 @@ import { AccessoryProduct } from 'src/app/order/order.model';
       <ng-container *transloco="let t">
           <div class="grid">
               <button *ngFor="let code of product.properties.codes; let i=index;"
-                      (click)="product.properties.code = code"
+                      (click)="selectCode(i)"
                       mat-stroked-button
                       color="primary"
-                      class="box">{{code.toUpperCase()}} - {{product.properties.prices[i] | number | prefix: '$'}}</button>
+                      [ngClass]="{'button-focus': product.properties.code == code}"
+                      class="box">
+                  {{code.toUpperCase()}}- {{product.properties.prices[i] | number | prefix: '$'}}
+              </button>
           </div>
       </ng-container>
   `
@@ -60,6 +63,12 @@ export class AccessoryContentComponent implements OnInit {
 
 
   ngOnInit(): void {
+  }
+
+
+  selectCode(index: number) {
+    this.product.properties.code = this.product.properties.codes[index];
+    this.product.price = this.product.properties.prices[index].toString();
   }
 
 }

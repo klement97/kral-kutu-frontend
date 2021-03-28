@@ -112,7 +112,7 @@ import { OrderService } from '../../services/order.service';
               <app-content-loader></app-content-loader>
           </ng-template>
 
-          <div class="invoice-box" *ngIf="order else loading">
+          <div class="invoice-box" *ngIf="(order && leatherIdMap) else loading">
               <table cellpadding="0" cellspacing="0">
                   <tr class="top">
                       <td colspan="4">
@@ -162,11 +162,21 @@ import { OrderService } from '../../services/order.service';
                   </tr>
 
                   <tr class="item" *ngFor="let product of order.products">
+
+                      <!-- Code and other properties -->
                       <td>
                           <span style="font-weight: bold">{{product.code.toUpperCase()}}<br></span>
                           <span>{{product.notes}}<br></span>
-                          <span>{{product | dimensions}}</span>
+                          <span>{{product | dimensions}}<br></span>
+                          <span *ngIf="product.inner_leather">
+                              {{t('inner_leather')}}: {{leatherIdMap[product.inner_leather].name}}<br>
+                          </span>
+                          <span *ngIf="product.outer_leather">
+                              {{t('outer_leather')}}: {{leatherIdMap[product.outer_leather].name}}
+                          </span>
                       </td>
+
+
                       <td>{{product.quantity}}</td>
                       <td id="align-right">{{product.price | currency: 'USD' : 'symbol'}}</td>
                       <td id="align-right">{{(product.price * product.quantity) | currency: 'USD' : 'symbol'}}</td>
@@ -188,6 +198,7 @@ export class InvoiceComponent implements OnInit {
   order: Order = null;
   totalPrice = 0;
   isLoading = false;
+  leatherIdMap = {};
 
 
   constructor(
@@ -200,6 +211,7 @@ export class InvoiceComponent implements OnInit {
   ngOnInit(): void {
     this.orderID = +this.route.snapshot.paramMap.get('order_id');
     this.getOrder();
+    this.getLeathers();
   }
 
 
@@ -212,6 +224,15 @@ export class InvoiceComponent implements OnInit {
         this.isLoading = false;
       }, () => this.isLoading = false
     );
+  }
+
+
+  getLeathers() {
+    this.orderService.getLeathers().subscribe((leathers) => {
+      for (const leather of leathers) {
+        this.leatherIdMap[leather.id] = leather;
+      }
+    });
   }
 
 

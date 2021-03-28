@@ -27,6 +27,8 @@ export interface Product {
   category: { id: number, name: string };
   price: string;
   properties: any;
+  inner_leather?: { id: number, name: string, image: string };
+  outer_leather?: { id: number, name: string, image: string };
 }
 
 
@@ -56,6 +58,7 @@ export interface Leather {
   id: number;
   code: string;
   image: string;
+  name: string;
   serial: LeatherSerial;
 }
 
@@ -78,3 +81,10 @@ export interface ProductCategory {
   name: string;
   sub_categories: IDNameModel[];
 }
+
+
+export interface LeatherFormBottomSheetData {
+  leathersSerials: LeatherSerial[];
+  product: Product;
+}
+

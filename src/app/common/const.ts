@@ -145,8 +145,21 @@ export function hashCode(value: string) {
 }
 
 
-export function hashCodeFromProduct(product: Product, fields: string[] = ['code', 'width', 'height', 'length']) {
-  let productString = product.category.name.toLowerCase() + product.id + product.image;
+export function hashCodeFromProduct(product: Product) {
+  const fields: string[] = ['code', 'width', 'height', 'length'];
+  let productString =
+    product.category.name.toLowerCase() +
+    product.id.toString() +
+    product.image;
+
+  if (product.inner_leather) {
+    productString += product.inner_leather.id.toString();
+  }
+
+  if (product.outer_leather) {
+    productString += product.outer_leather.id.toString();
+  }
+
   for (const field of fields) {
     if (typeof product.properties[field] !== 'undefined') {
       productString += `&${product.properties[field]}`;
