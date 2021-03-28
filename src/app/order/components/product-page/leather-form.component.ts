@@ -52,7 +52,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
               <br>
               <button mat-raised-button color="primary" (click)="submit()" style="width: 100%">
                   <span class="flex-center">
-                      <mat-icon>check</mat-icon>
+                      <mat-icon>check</mat-icon>&nbsp;
                       {{t('select')}}
                   </span>
               </button>
