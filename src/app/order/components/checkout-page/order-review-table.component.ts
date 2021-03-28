@@ -16,7 +16,19 @@ import { takeUntil } from 'rxjs/operators';
                   <ng-container matColumnDef="code">
                       <th mat-header-cell *matHeaderCellDef>{{t('code')}}</th>
                       <td mat-cell *matCellDef="let element">{{element | ifNotNull: 'product.properties.code'}}</td>
-                      <td mat-footer-cell *matFooterCellDef colspan="5">{{t('total')}}</td>
+                      <td mat-footer-cell *matFooterCellDef colspan="7"><b>{{t('total')}}</b></td>
+                  </ng-container>
+
+                  <!-- Inner Leather -->
+                  <ng-container matColumnDef="inner_leather">
+                      <th mat-header-cell *matHeaderCellDef>{{t('inner_leather')}}</th>
+                      <td mat-cell *matCellDef="let element">{{element | ifNotNull: 'product.inner_leather.name'}}</td>
+                  </ng-container>
+
+                  <!-- Outer Leather -->
+                  <ng-container matColumnDef="outer_leather">
+                      <th mat-header-cell *matHeaderCellDef>{{t('outer_leather')}}</th>
+                      <td mat-cell *matCellDef="let element">{{element | ifNotNull: 'product.outer_leather.name'}}</td>
                   </ng-container>
 
                   <!-- Width Column -->
@@ -50,7 +62,7 @@ import { takeUntil } from 'rxjs/operators';
                   <ng-container matColumnDef="quantity">
                       <th mat-header-cell *matHeaderCellDef>{{t('quantity')}}</th>
                       <td mat-cell *matCellDef="let element"> {{element.quantity | number}} </td>
-                      <td mat-footer-cell *matFooterCellDef>{{totalQuantity | number}}</td>
+                      <td mat-footer-cell *matFooterCellDef><b>{{totalQuantity | number}}</b></td>
                   </ng-container>
 
                   <!-- Subtotal Column -->
@@ -59,7 +71,7 @@ import { takeUntil } from 'rxjs/operators';
                       <td mat-cell *matCellDef="let element">
                           {{(element.product.price * element.quantity) | number | prefix: '$'}}
                       </td>
-                      <td mat-footer-cell *matFooterCellDef>{{totalPrice | number | prefix: '$'}}</td>
+                      <td mat-footer-cell *matFooterCellDef><b>{{totalPrice | number | prefix: '$'}}</b></td>
                   </ng-container>
 
                   <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
@@ -75,7 +87,11 @@ export class OrderReviewTableComponent implements OnInit, OnDestroy {
   uns$ = new Subject();
   totalPrice = 0;
   totalQuantity = 0;
-  displayedColumns = ['code', 'width', 'length', 'height', 'price', 'quantity', 'subtotal'];
+  displayedColumns = [
+    'code', 'inner_leather', 'outer_leather',
+    'width', 'length', 'height', 'price',
+    'quantity', 'subtotal'
+  ];
 
 
   constructor() { }

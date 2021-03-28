@@ -15,12 +15,14 @@ import {
 } from 'src/app/common/const';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslocoService } from '@ngneat/transloco';
-import { Product, ProductCategory } from 'src/app/order/order.model';
+import { LeatherFormBottomSheetData, LeatherSerial, Product, ProductCategory } from 'src/app/order/order.model';
 import { MatPaginator } from '@angular/material/paginator';
 import { distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { ActivatedRoute } from '@angular/router';
 import { ProductImageComponent } from 'src/app/order/components/product-page/product-image.component';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import { MatBottomSheet } from '@angular/material/bottom-sheet';
+import { LeatherFormComponent } from 'src/app/order/components/product-page/leather-form.component';
 
 
 @Component({
@@ -120,8 +122,6 @@ import { MatDialog } from '@angular/material/dialog';
                       <span style="display: flex">
                           <span [ngSwitch]="product.category.name.toLowerCase()" style="width: 95%">
                           <app-table-content *ngSwitchCase="'table'" [product]="product"></app-table-content>
-                          <app-table-content *ngSwitchCase="'premium table'" [product]="product"></app-table-content>
-                          <app-table-content *ngSwitchCase="'service table'" [product]="product"></app-table-content>
                           <app-accessory-content *ngSwitchCase="'accessory'"
                                                  [product]="product"></app-accessory-content>
                           </span>
@@ -198,6 +198,7 @@ export class ProductPageComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
   products: Product[];
+  leathersSerials: LeatherSerial[];
   // an array of random numbers to be used as skeleton loaders
   skeletonProducts = [...Array(12)].map(() => Math.random());
   productsCount = 0;
@@ -218,6 +219,7 @@ export class ProductPageComponent implements OnInit, AfterViewInit, OnDestroy {
     private snackbar: MatSnackBar,
     private transloco: TranslocoService,
     private route: ActivatedRoute,
+    private bottomSheet: MatBottomSheet
   ) {
   }
 
@@ -226,6 +228,7 @@ export class ProductPageComponent implements OnInit, AfterViewInit, OnDestroy {
     this.getProductsAndCategories();
     this.productFilterForm = this.getProductFilterForm();
     this.productsInCart = productsInCart;
+    this.getLeathers();
   }
 
 
@@ -287,6 +290,13 @@ export class ProductPageComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
 
+  getLeathers() {
+    this.orderService.getLeatherSerials().subscribe((leathersSerials) => {
+      this.leathersSerials = leathersSerials;
+    });
+  }
+
+
   getProductFilterForm(): FormGroup {
     const paramMap = this.route.snapshot.queryParamMap;
     let category = +paramMap.get('category');
@@ -335,6 +345,8 @@ export class ProductPageComponent implements OnInit, AfterViewInit, OnDestroy {
    * @param addedToCartIcon   Respective icon of the product, if already in cart
    */
   addProductToCart(product: Product, quantity: string, addToCartIcon?, addedToCartIcon?) {
+
+    // Check if code is selected for accessories
     if (product.category.name.toLowerCase() === 'accessory') {
       if (!product.properties.code || !product.properties.codes.includes(product.properties.code)) {
         // For an accessory type of product, a code must be selected from `codes`
@@ -352,35 +364,64 @@ export class ProductPageComponent implements OnInit, AfterViewInit, OnDestroy {
       }
     }
 
-    // Generating a hash here to check if the product is already in cart
-    const hash = hashCodeFromProduct(product);
+    // Start with leather selection
+    const config: MatDialogConfig<LeatherFormBottomSheetData> = {
+      data: {leathersSerials: this.leathersSerials, product},
+      minWidth: '300px',
+      minHeight: '50vh'
+    };
+    this.dialog.open(LeatherFormComponent, config).afterClosed().subscribe((result) => {
+      if (!result) {
+        return;
+      }
 
-    // If hash can not be found inside the products in cart
-    // this means that we need to add the product as a new unit
-    const productIndex: number = this.findProductByHash(hash);
-    const isProductInCart: boolean = productIndex > -1;
+      if (result.inner_leather) {
+        product.inner_leather = {
+          id: result.inner_leather,
+          name: result.inner_leather_str,
+          image: result.inner_leather_img,
+        };
+      }
+      if (result.outer_leather) {
+        product.outer_leather = {
+          id: result.outer_leather,
+          name: result.outer_leather_str,
+          image: result.outer_leather_img,
+        };
+      }
 
-    const selectedProducts: any[] = this.productsInCart.getValue();
-    if (isProductInCart) {
-      selectedProducts[productIndex].quantity += Number(quantity);
-      selectedProducts[productIndex].product.properties.notes = product.properties.notes;
-    } else {
-      selectedProducts.push(composeOrderUnit(product, Number(quantity), hash));
-    }
-    setProductsInCart(this.productsInCart, selectedProducts);
-    this.snackbar.open(this.transloco.translate('cart success message'), 'OK', {
-      horizontalPosition: 'end', verticalPosition: 'bottom', duration: 2000, panelClass: ['success-snackbar']
+      // Generating a hash here to check if the product is already in cart
+      const hash = hashCodeFromProduct(product);
+
+      // If hash can not be found inside the products in cart
+      // this means that we need to add the product as a new unit
+      const productIndex: number = this.findProductByHash(hash);
+      const isProductInCart: boolean = productIndex > -1;
+
+      const selectedProducts: any[] = this.productsInCart.getValue();
+      if (isProductInCart) {
+        selectedProducts[productIndex].quantity += Number(quantity);
+        selectedProducts[productIndex].product.properties.notes = product.properties.notes;
+      } else {
+        selectedProducts.push(composeOrderUnit(product, Number(quantity), hash));
+      }
+      setProductsInCart(this.productsInCart, selectedProducts);
+      this.snackbar.open(this.transloco.translate('cart success message'), 'OK', {
+        horizontalPosition: 'end', verticalPosition: 'bottom', duration: 2000, panelClass: ['success-snackbar']
+      });
+      if (addToCartIcon) {
+        this.animate(addToCartIcon, addedToCartIcon);
+      }
+
+      if (product.category.name.toLowerCase() === 'accessory') {
+        // Only for accessories, we set the code and price based on the selected one.
+        // After the product is added to the cart successfully we reset the selected code and price.
+        // product.properties.code = null;
+        // product.price = null;
+        product.inner_leather = null;
+        product.outer_leather = null;
+      }
     });
-    if (addToCartIcon) {
-      this.animate(addToCartIcon, addedToCartIcon);
-    }
-
-    if (product.category.name.toLowerCase() === 'accessory') {
-      // Only for accessories, we set the code and price based on the selected one.
-      // After the product is added to the cart successfully we reset the selected code and price.
-      product.properties.code = null;
-      product.price = null;
-    }
   }
 
 

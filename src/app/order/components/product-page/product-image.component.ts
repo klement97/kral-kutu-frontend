@@ -12,7 +12,7 @@ import { Product } from 'src/app/order/order.model';
   `,
   styles: [`
       .image {
-          max-height: 75vh;
+          max-height: 80vh;
       }
 
       @media only screen and (max-width: 700px) {

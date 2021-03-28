@@ -1,13 +1,11 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { OrderService } from 'src/app/order/services/order.service';
-import { BehaviorSubject, Subject } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { clearCart, fromEntries, productsInCart } from 'src/app/common/const';
+import { clearCart, productsInCart } from 'src/app/common/const';
 import { Router } from '@angular/router';
-import { LeatherSelectResult, LeatherSerial, Order, OrderUnit } from 'src/app/order/order.model';
+import { Order, OrderUnit } from 'src/app/order/order.model';
 import { MatBottomSheet } from '@angular/material/bottom-sheet';
-import { LeatherSelectComponent } from 'src/app/order/components/checkout-page/leather-select.component';
-import { takeUntil } from 'rxjs/operators';
 import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
 import { ErrorHandler } from 'src/app/common/error-handler';
 import { TranslocoService } from '@ngneat/transloco';
@@ -39,29 +37,6 @@ import { TranslocoService } from '@ngneat/transloco';
 
       .vertical-form > button {
           margin-top: 20px;
-      }
-
-      .leather-select-group {
-          width: 80%;
-          display: flex;
-          flex-direction: column;
-      }
-
-      .leather-select {
-          width: 100%;
-          display: flex;
-          flex-direction: row;
-      }
-
-      .leather-select > mat-form-field {
-          width: 85%;
-      }
-
-      .leather-image {
-          width: 15%;
-          border-radius: 4px;
-          border: 3px solid rgba(27, 163, 30, 0.6);
-          margin-left: 10px;
       }
 
       .price-quantity {
@@ -114,33 +89,9 @@ import { TranslocoService } from '@ngneat/transloco';
           -moz-appearance: textfield;
       }
 
-      .cursor-pointer {
-          cursor: pointer;
-      }
-
       @media print {
           .container {
               padding: 0;
-          }
-      }
-
-      @media only screen and (max-width: 800px) {
-          .leather-select > mat-form-field {
-              width: 75%;
-          }
-
-          .leather-image {
-              width: 25%;
-          }
-      }
-
-      @media only screen and (max-width: 450px) {
-          .leather-select > mat-form-field {
-              width: 65%;
-          }
-
-          .leather-image {
-              width: 35%;
           }
       }
   `],
@@ -157,38 +108,6 @@ import { TranslocoService } from '@ngneat/transloco';
               <!-- The Checkout form -->
               <mat-card class="mat-elevation-z2" style="padding: 16px 0">
                   <form [formGroup]="orderForm" class="vertical-form">
-                      <h2>{{t('leathers')}}</h2>
-                      <ng-container>
-                          <div class="leather-select-group">
-                              <!-- Inner Leather -->
-                              <div class="leather-select" (click)="openLeatherSelection('inner_leather')">
-                                  <mat-form-field color="primary" appearance="outline" class="cursor-pointer">
-                                      <mat-label>{{t('inner_leather')}}</mat-label>
-                                      <input type="text" matInput class="cursor-pointer"
-                                             readonly formControlName="inner_leather_str">
-                                      <mat-error>{{errors.inner_leather}}</mat-error>
-                                  </mat-form-field>
-                                  <img [src]="orderForm.value.inner_leather_img"
-                                       [alt]="orderForm.value.inner_leather_img | imageAlt"
-                                       class="leather-image cursor-pointer">
-                              </div>
-
-                              <!-- Outer Leather -->
-                              <br>
-                              <div class="leather-select" (click)="openLeatherSelection('outer_leather')">
-                                  <mat-form-field color="primary" appearance="outline" class="cursor-pointer">
-                                      <mat-label>{{t('outer_leather')}}</mat-label>
-                                      <input type="text" matInput class="cursor-pointer"
-                                             readonly formControlName="outer_leather_str">
-                                      <mat-error>{{errors.outer_leather}}</mat-error>
-                                  </mat-form-field>
-                                  <img [src]="orderForm.value.outer_leather_img"
-                                       [alt]="orderForm.value.outer_leather_img | imageAlt"
-                                       class="leather-image cursor-pointer">
-                              </div>
-                          </div>
-                      </ng-container>
-
                       <h2>{{t('personal details')}}</h2>
                       <!-- First Name -->
                       <mat-form-field color="primary" appearance="outline">
@@ -310,10 +229,8 @@ import { TranslocoService } from '@ngneat/transloco';
 })
 export class CheckoutComponent implements OnInit, OnDestroy {
   productsInCart: BehaviorSubject<OrderUnit[]>;
-  leathersSerials: LeatherSerial[];
   orderForm: FormGroup;
   errors: any = {};
-  uns$ = new Subject();
   isSubmitting = false;
 
 
@@ -333,21 +250,11 @@ export class CheckoutComponent implements OnInit, OnDestroy {
     this.productsInCart = productsInCart;
     this.initializeOrderForm();
     this.eh.handleErrors(this.orderForm, this.errors);
-    this.getLeathers();
   }
 
 
   ngOnDestroy(): void {
     this.orderService.orderFormValue = this.orderForm.value;
-    this.uns$.next();
-    this.uns$.complete();
-  }
-
-
-  getLeathers() {
-    this.orderService.getLeatherSerials().subscribe((leathersSerials) => {
-      this.leathersSerials = leathersSerials;
-    });
   }
 
 
@@ -358,12 +265,6 @@ export class CheckoutComponent implements OnInit, OnDestroy {
       phone: ['', [Validators.required, Validators.maxLength(20)]],
       address: ['', [Validators.maxLength(254)]],
       products: [[]],   // not required, will be checked manually
-      inner_leather: [null, [Validators.required]],
-      inner_leather_str: '',  // helper field
-      inner_leather_img: '../../../assets/images/white.png', // helper field
-      outer_leather: [null, [Validators.required]],
-      outer_leather_str: '',
-      outer_leather_img: '../../../assets/images/white.png',
     });
     this.backupRestoreOrderForm();
   }
@@ -396,28 +297,6 @@ export class CheckoutComponent implements OnInit, OnDestroy {
   }
 
 
-  openLeatherSelection(identifier: 'inner_leather' | 'outer_leather') {
-    const data = {leathersSerials: this.leathersSerials, identifier};
-
-    this.bottomSheet.open(LeatherSelectComponent, {data}).afterDismissed().pipe(takeUntil(this.uns$))
-      .subscribe((result: LeatherSelectResult | undefined) => {
-        if (result?.leather?.id) {
-          this.patchLeather(identifier, result);
-        }
-      });
-  }
-
-
-  patchLeather(identifier: 'inner_leather' | 'outer_leather', result: LeatherSelectResult) {
-    const entries = fromEntries([
-      [identifier, result.leather.id],
-      [`${identifier}_str`, `${result.leatherSerial.name} ${result.leather.code.toUpperCase()}`],
-      [`${identifier}_img`, result.leather.image]
-    ]);
-    this.orderForm.patchValue(entries);
-  }
-
-
   /**
    * Serialization process is to replace products with their respective ID
    * instead of a product object and flattening the product properties.
@@ -427,6 +306,10 @@ export class CheckoutComponent implements OnInit, OnDestroy {
       Object.keys(orderUnit.product.properties).forEach(key => {
         orderUnit[key] = orderUnit.product.properties[key];
       });
+      orderUnit.outer_leather = orderUnit.product.outer_leather.id;
+      if (orderUnit.product.inner_leather) {
+        orderUnit.inner_leather = orderUnit.product.inner_leather.id;
+      }
       orderUnit.product = orderUnit.product.id;
     });
 

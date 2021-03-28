@@ -33,6 +33,7 @@ import { MatBadgeModule } from '@angular/material/badge';
 import { InvoiceComponent } from './components/checkout-page/invoice.component';
 import { ProductImageComponent } from 'src/app/order/components/product-page/product-image.component';
 import { MatDialogModule } from '@angular/material/dialog';
+import { LeatherFormComponent } from 'src/app/order/components/product-page/leather-form.component';
 
 
 @NgModule({
@@ -48,7 +49,8 @@ import { MatDialogModule } from '@angular/material/dialog';
     LeatherSelectComponent,
     SelectButtonComponent,
     InvoiceComponent,
-    ProductImageComponent
+    ProductImageComponent,
+    LeatherFormComponent
   ],
   imports: [
     SharedModule,

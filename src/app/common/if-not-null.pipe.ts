@@ -12,10 +12,15 @@ export class IfNotNullPipe implements PipeTransform {
     const suffix = args[2] || '';
 
     let property = null;
-    for (const prop of properties.split('.')) {
-      property = value[prop];
-      value = property;
+    try {
+      for (const prop of properties.split('.')) {
+        property = value[prop];
+        value = property;
+      }
+    } catch {
+      return '--';
     }
+
     return property ? prefix + property + suffix : '--';
   }
 
